@@ -1,0 +1,3485 @@
+<ADP 준비 노트>
+
+ 실기 문제는 최근 3가지 유형으로 출제
+
+ 1. 기계학습
+  - EDA, 데이터 분할, 교호작용을 고려한 다중 선형 회귀, 3가지 분류 모델 생성 및 비교 후 선택
+ 2. 시각화 및 시계열 분석
+  - 시계열 그래프 출력, 지수 생성 및 해석, 시계열 분석 및 예측 모델 생성
+ 3. 통계분석
+  - 그룹별 평균, 표준편차, 왜도, 첨도 산출 (카이제곱 검정..)
+
+ 데이터 분석 과정
+
+  데이터 -> 목표 설정(회귀, 분류) -> 결측값, 이상치 처리 -> 변수 생성 및 분할 -> 시각화 및 변수 선택(회귀일 경우, 다중공선성 고려) -> 데이터셋 분할 후 모델 적용 -> 결과 해석 -> 모델 검증 -> 모델 선택 -> 결과 해석 및 정리 후 보고서 작성 -> 제출 (word)
+
+ 준비해야할 것
+
+  - 각 기법에 필요한 라이브러리 및 코드 숙지
+
+  - dplyr, ggplot 자유자재로 다루는 능력 (데이터 분할, 변수 조합, 변수 생성, 원하는 변수끼리의 시각화, 다양한 시각화)
+
+  - 다중공선성 처리, 교호작용 처리(회귀일 경우)
+   -> 변수들간의 상관관계를 구하고 시각화 해주는 코드, VIF를 구하고 어떤 기준으로 변수를 자를건지
+
+  - 다중 클래스 분류 분석 기법 숙지(로지스틱 회귀 이외 SVM, randomForest, xgboost..)
+
+  - 모델 검증 과정 숙지 (분류, 회귀 정확도 비교 코드)
+
+  - 시계열 분석 (변수 추출 후, 시계열 그래프 생성)
+
+  - 통계 분석(교호작용 분석 - 변수 A,B간 유의미한 관계가 있는지, 인사이트 도출, 그룹별 평균)
+
+  - 보고서 작성(R notebook, word 에 코드 결과 삽입)
+
+ 예비로 준비해야할 것
+
+  - PCA(주성분분석)으로 변수 선택
+  - Timestamp 변수 처리
+  - 군집분석(적합한 모형을 선택해서 군집분석을 실시하고 F1 score를 통해 모델이 나아지는가)
+   -> 군집을 독립변수로 놓고 학습하면 모델의 질이 높아질 수 있다
+
+ 주의해야할 점
+
+  - 데이터를 학습시킬때 유형이 적합한가 (Numeric or Factor)
+  - 결측치, 이상값, 중복값 처리
+  - 변수의 Scale을 표준화 or 정규화?
+    -> 데이터가 정규분포를 따른다면 정규화
+    -> 만약 정규분포를 따르지 않는다면 표준화
+  - 회귀, 분류 모형 결과 해석 숙지
+  - 요약변수 생성(데이터 기반으로 특징값 추출)
+
+ 시험(2020.9.19) 까지 남은 기간 약 5주 내(2020.8.19기준) 계획
+
+  - 1주차(08.19 ~ 08.23)
+   -> 통계분석, 보고서 작성 공부
+  - 2주차(08.24 ~ 08.30)
+   -> 시계열 분석 공부, 예비 공부(PCA, Timestamp, 군집분석)
+  - 3주차(08.31 ~ 09.06)
+   -> dplyr, ggplot 심화공부, 다중공선성, 교호작용 처리 공부
+  - 4주차(09.07 ~ 09.13)
+   -> 다중 클래스 분류 기법 코드, 모델 검증 과정 코드 숙지(분류, 회귀 정확도 비교)
+  - 5주차(09.14 ~ 09.18)
+   -> 1~4주차 내용 복습, 실기문제 풀이 과정 시뮬레이션, 최종 점검
+
+  
+------------------------------------------------------------------------------------
+
+ <통계분석>
+
+ T-검정
+
+   1. 일표본 t검정
+    -> 단일모집단에서 관심있는 연속형 변수의 평균값을 측정값과 비교
+    -> ex) 과수원의 사과가 평균이 200g인지
+    -> (가정) 모집단이 정규분포, 종속변수는 연속형 변수, 기준이 되는 값 존재
+    -> 데이터의 크기가 크지 않을시, 중심극한정리를 만족하지 않음(n<=20)
+     -> 샤피로-윌크 검정 실시
+     -> (귀무가설) 데이터가 정규분포를 따른다 (유의수준:0.05)
+     -> shapiro.test(data)
+    -> t.test(x, alternative, mu)
+    -> x:data, alternative:"two.sided", "less", "greater", mu:기준값
+    -> (귀무가설) data의 평균이 mu이다.(mu보다 작다 or mu보다 크다)
+
+    ex)
+    ## 데이터가 적을시,중심극한정리에 의해 모집단이 정규분포를 따른다고 가정할 수 없음 따라서 샤피로-윌크 검정 실시
+
+  	data = c(200, 210, 180, 190, 185, 170, 180, 180, 210, 180, 183, 191, 204, 201, 186)
+  	shapiro.test(data)
+
+  	## 단일표본 t검정
+  	## alternative = "two.sided", "less", "greater"
+  	## mu = 기준값
+
+	  t.test(data, alternative = 'two.sided', mu = 200)
+
+
+   2. 대응표본 t검정
+    -> 단일모집단에서 두 번의 처리를 했을때, 그 평균의 차이를 비교
+    -> ex) 교육을 하기 전과 후 성적이 향상 되었는가
+    -> (가정) 일표본 t검정과 동일
+    -> t.test(x, y, alternative, paired, mu)
+    -> x,y:비교대상, alternative:"two.sided", "less", "greater", paired:"TRUE", mu:0
+    -> paired = "TRUE": 대응표본은 같은 모집단이기 때문에 TRUE값
+    -> mu = 0 은 쓰지않아도 됨, 모평균의 차이가 0인지 검정하기 때문
+    -> (귀무가설) 두 개의 모집단의 평균의 차이는 없다(유의수준:0.05)
+
+  	data = data.frame(before = c(7, 3, 4, 5, 2, 1, 6, 6, 5, 4),
+  	                  after = c(8, 4, 5, 6, 2, 3, 6, 8, 6, 5))
+  	t.test(data$before, data$after, alternative = "less", paired = T)
+
+   3. 독립표본 t검정
+    -> 두 개의 독립된 모집단의 평균을 비교
+    -> ex) 남녀간 출근시간 차이
+    -> (가정) 두 모집단은 정규성을 만족, 서로 독립적, 등분산성 가정 만족, 독립변수는 범주형, 종속변수는 연속형
+     -> 등분산성 가정은 두 독립 집단의 모분산이 동일해야함. (등분산성 검정을 먼저 수행)
+     -> (귀무가설) 두 집단의 분산이 동일하다
+     -> var.test(x, y, alternative) or (formula, dataframe, alternative)
+    -> t.test(x, y, alternative, var.equal) or (formula, data.frame, alternative, var.equal)
+    -> var.equal = "TRUE": 등분산성을 만족하는지 여부\
+
+    ex)
+  	## 독립표본 t검정은 등분산성 검정을 먼저 해야함
+
+  	group = factor(rep(c("A", "B"), each = 10))
+  	A = c(-1, 0, 3, 4, 1, 3, 3, 1, 1, 3)
+  	B = c(6, 6, 8, 8, 11, 11, 10, 8, 8, 9)
+  	weather = data.frame(group = group, temp = c(A,B))
+  	weather
+
+  	var.test(temp ~ group, data = weather, alternative = "two.sided")
+  	t.test(temp ~ group, data = weather, alternative = "two.sided", var.equal = T)
+
+
+ 분산분석(ANOVA)
+
+  - 두 개 이상의 집단에서 그룹 평균간 차이를 그룹 내 변동에 비교
+
+   1. 일원배치 분산분석
+    -> 독립변수 1개, 종속변수 1개
+    -> ex) iris에서 식물 종에 대하여 꽃잎 넓이 평균의 차이
+    -> 모집단 수에는 제한 없음, 표본의 수는 같지 않아도 됨
+    -> F-검정 통계량 사용
+    -> (가정) 각 집단 측정치는 독립적, 정규분포 따르고(정규성) 분산은 같다.(등분산성)
+    -> (귀무가설) 집단 간 모평균 차이는 없다.
+    -> 그룹을 구분하는 기준이 되는 변수는 반드시 Factor형
+    -> aov(formula, data)
+    -> 사후검정(어떤 집단들에 대해서 평균의 차이가 존재하는지 알아보기 위해 실시)
+     -> TukeyHSD(aov(), conf.level)
+     -> aov(): 분산분석 결과, conf.level:신뢰수준, 기본값 0.95
+     -> 결과에서 각 집단에 대한 평균의 차이 p-value가 나오고, 반응값, 하한값, 상한값이 나옴
+
+  ex)# 2. 분산분석(ANOVA)
+
+	## 일원배치 분산분석
+
+	data(iris)
+	str(iris)
+	result = aov(Sepal.Width ~ Species, data = iris)
+	summary(result)
+
+	## 사후검정
+
+	TukeyHSD(result)
+
+
+   2. 이원배치 분산분석
+    -> 독립변수 2개, 종속변수 1개
+    -> 반응값에 대해 두 개의 범주형 변수의 영향을 알아보기 위한 분석방법
+    -> ex) 성별과 학년에 따른 시험점수의 차이
+    -> 교호작용에 대한 검증이 반드시 진행(두 독립변수의 조합으로 종속변수에 미치는 영향)
+     -> 두 독립변수 사이에 상관관계가 존재할 경우, 교호작용이 있음
+     -> 교호작용이 없을 경우: 주효과 검정 진행
+     -> 교호작용이 있을 경우: 검정이 무의미
+    -> (가정) 일원배치와 동일.
+    -> aov(y ~ a + b + a:b, data)
+     -> y에 대해 주효과 a,b와 교호작용 a:b 검정
+     -> 결과표의 p-value를 보고 가설 검정
+
+     ex) ## 이원배치 분산분석
+
+  	gender.fac <- as.factor(c(rep("M", 9), rep("F", 9)))
+  	gender.fac
+  	class <- c("class_1", "class_1", "class_1", "class_2", "class_2", "class_2", "class_3", "class_3", "class_3")
+  	class.fac <- as.factor(c(rep(class, 2)))
+  	class.fac
+  	score_stats <- c(71, 77, 78, 76, 77, 78, 71, 70, 69, 80, 76, 80, 79, 78, 77, 73, 71, 70)
+  	score.df <- data.frame(gender.fac, class.fac, score_stats)
+  	score.df
+  	 
+  	install.packages("doBy")
+
+  	library(doBy)
+  	summaryBy(score_stats ~ gender.fac, data=score.df, FUN = c(mean, sd, min, max))
+  	summaryBy(score_stats ~ class.fac, data=score.df, FUN = c(mean, sd, min, max))
+  	summary(score_stats, data=score.df)
+
+  	par(mfrow = c(2, 2))
+  	plot(score_stats ~ gender.fac, main="box plot by gender")
+  	plot(score_stats ~ class.fac, main="box plot by class")
+  	interaction.plot(gender.fac, class.fac, score_stats, bty='l', main="interaction effect plot")
+  	interaction.plot(class.fac, gender.fac, score_stats, bty='l', main="interaction effect plot")
+
+  	aov_model = aov(score_stats ~ gender.fac + class.fac + gender.fac:class.fac)
+  	summary(aov_model)
+  	TukeyHSD(aov_model)
+
+
+ 교차분석
+
+  - 범주형 자료인 두 변수 간의 관계를 알아보기 위한 분석 기법
+  - 교차표 사용, 교차표에서 각 셀의 관찰빈도와 기대빈도간의 차이 검정
+
+   1. 적합도 검정
+    -> 실험에서 얻어진 관측값들이 예상한 이론과 일치하는지 아닌지 검정
+    -> 모집단 분포에 대한 가정이 옳게 됐는지 관측 자료와 비교
+    -> ex) 전체 설문 응답자중 왼손잡이는 20%, 오른손 잡이는 80%일 것이다.
+    -> 카이제곱 검정 통계량 사용
+    -> 카이제곱 통계량이 큰 경우: 일치한다고 볼 수 없다. (적합도가 낮다)
+    -> 카이제곱 통계량이 작은 경우: 일치한다고 볼 수 있다. (적합도가 높다)
+     -> 귀무가설을 채택
+    -> chisq.test(x, y, p)
+    -> x,y: 검정하고자 하는 데이터가 저장된 숫자 벡터 혹은 행렬(x가 행렬일 경우 y는 무시), p: 귀무가설을 통해 설정한 확률 값
+    -> (귀무가설) 실제 분포와 이론적 분포 간에는 차이가 없다.
+
+    ex) 
+  	# 3. 교차분석
+  	## 적합도 검정
+
+  	data(survey, package = "MASS")
+  	str(survey)
+  	table(survey$W.Hnd)
+  	data = table(survey$W.Hnd)
+  	chisq.test(data, p = c(0.2, 0.8))
+    
+   2. 독립성 검정
+    -> 모집단이 두 개의 변수에 의해 범주화되었을때, 두 변수들 사이의 관계가 독립인지 아닌지 검정
+    -> 교차표 활용
+    -> (귀무가설) 두 변수 사이에는 연관이 없다.(독립)
+    -> 카이제곱 통계량이 큰 경우: 두 변수 사이에는 연관이 있다.(종속 관계)
+    -> 카이제곱 통계량이 작은 경우: 두 변수 사이에는 연관이 없다.(독립 관계)
+     -> 귀무가설을 채택
+
+   3. 동질성 검정
+    -> 모집단이 임의의 변수에 따라 R개의 속성으로 범주화되었을때, R개의 부분 모집단에서 추출한 각 표본인 C개의 범주화된 집단의 분포는 서로 동일한지 아닌지 검정
+    -> 교차표 활용, 독립성 검정과 같은 방법으로 진행
+    -> (귀무가설) P1j = P2j = P3j ... = Prj(모든 Pn은 동일하다)
+    -> 카이제곱 통계량이 큰 경우: Pn중 다른 값이 하나 이상 존재한다.
+    -> 카이제곱 통계량이 작은 경우: 모든 Pn는 동일하다.
+     -> 귀무가설을 채택
+
+ 중심극한정리
+
+  - 모집단의 분포가 어떤 분포를 따르는지에 관계없이 표본의 개수 n이 커질수록 표본 평균의 분포가 정규분포에 가까워지는 현상
+  - 표본평균은 표본의 크기 n이 크면 근사적으로 평균이 m인 정규분포를 따름
+  - 표본의 크기가 커질수록 표본평균은 모집단의 평균에 가까워진다는 의미
+
+
+ 왜도, 첨도
+
+  왜도(skewness)
+   - 자료의 대칭성을 알아보는 측도
+   - 정규분포의 왜도는 0
+   - 오른쪽으로 꼬리가 긴 분포는 왜도 점수가 0보다 큼
+   - 왼쪽으로 꼬리가 긴 분포는 왜도 점수가 0보다 작다
+   - skewness(x) "library(fBasics)"
+    -> x에 대한 왜도점수
+   - with(data, tapply(x, y, skewness))
+    -> data의 y별 x의 왜도점수
+
+    ex) # 5. 왜도, 첨도
+
+    	library(MASS)
+    	data(Cars93)
+    	str(Cars93)
+
+    	# 히스토그램으로 그래프화
+
+    	library(ggplot2)
+    	ggplot(Cars93, aes(x=Price)) + 
+    	     geom_histogram(binwidth=3, fill = "blue", colour = "black") + 
+    	     ggtitle("Histogram, Price by Type") + 
+    	     facet_grid(Type ~ .)
+    	    # skewness : 왜도
+
+    	library(fBasics)
+
+    	skewness(Cars93$Price)
+    	with(Cars93, tapply(Price, Type, skewness))
+
+
+  첨도(kurtosis)
+   - 정규분포 대비 봉오리의 높이를 알아보는 측도 
+   - 첨도가 0보다 크면 정규분포보다 뾰족
+   - 첨도가 0보다 작으면 정규분포보다 납작 
+   - 데이터가 이봉분포에 대해서 얼마나 단봉분포에 가깝게 있는가를 판단하는데도 사용
+   - kurtosis(x) "library(fBasics)"
+    -> x에 대한 첨도점수
+   - with(data, tapply(x, y, kurtosis))
+    -> data의 y별 x의 첨도점수
+
+    ex) 
+    	# kurtosis : 첨도
+    	 
+    	kurtosis(Cars93$Price)
+    	with(Cars93, tapply(Price, Type, kurtosis))
+
+-----------------------------------------------------------------------------------
+
+ <보고서 작성>
+
+ 1. 마크다운 문서 생성
+ [File -> New File -> R Markdown]
+
+ 2. 다른 형식으로 문서 생성
+ 스크립트 위에 Knit 뜨개질 모양 버튼 클릭 후 HTML, PDF, Word 형태로 저장 선택
+
+ 3. 마크다운 문법
+
+ ---
+ title: "Untitled" -> 타이틀 내용
+ author: "Hong JinWon" -> 저자
+ date: "2020년 8월 23일" -> 작성년도
+ output: word_document -> 저장형식 (표시x)
+ ---
+ 
+
+ #, ##, ### -> 대주제에서 소주제
+ ex) # 데이터 분석 보고서
+     ## R 마크다운
+     ### R 마크다운 문법 예제
+
+ * -> 기울임체
+ ex) *마크다운 문법*
+
+ ** -> 강조체
+ ex) **마크다운 문법**
+
+ ~~ -> 취소선
+ ex) ~~마크다운 문법~~
+
+ [내용](하이퍼링크) -> 하이퍼링크 삽입, 소괄호에 링크, 대괄호에 이름 
+ ex) [마크다운 문법](http://www.google.com/...)
+
+ <하이퍼링크> -> 표시 내용없이 하이퍼링크 바로 삽입.
+
+ ` -> 문장 안에 코드 입력
+ ex) 데이터 일부를 출력하려면 `head()`를 이용
+
+ ```{r}
+
+ ``` or ctrl+Alt+i -> 코드 청크, 코드와 실행 결과 출력
+ ex)
+ ```{r}
+ summary(car)
+ ```
+
+ -------------------------------------------------------------------------------
+
+ <시계열 분석>
+
+ 기본 시계열 분석
+  
+  - 필요 라이브러리: 
+   library(TTR) - 기술 거래 규칙, 
+   library(forecast) - 시계열 데이터 예측 함수
+
+  1. ts(data) 함수로 시계열 데이터 변환
+  
+  2. 평균을 내서 그래프를 부드럽게 표현하는 함수 
+    SMA(ts_data, n)
+    plot()그래프로 확인
+  
+  3. 차분을 해서 비정상성 그래프를 정상성을 만족시키도록 변환 
+    diff(ts_data, differences)
+    plot()그래프로 확인
+    *library(tseries) # 안정적 시계열인지 확인
+	  adf.test(diff(log(AirPassengers)), alternative="stationary", k=0)
+  
+  4. 이동평균모형(MA) - ACF 그래프의 절단점 확인
+    acf(ts_data, lag.max)
+  
+  5. 자기회귀모형(AR) - PACF 그래프의 절단점 확인
+    pacf(ts_data, lag.max)
+  
+  6. 자동으로 적절한 ARIMA 모형 찾아 적용
+    auto.arima(data) - data에 순수데이터
+    arima(data, order) - order에 auto.arima(data) 결과를 적용, data에는 순수데이터
+    forecast(data, h) - data에 arima(data, order)를 적용한 결과, h는 몇개까지 예측할 것인지
+    plot() 함수로 확인
+    *(1) 변환이 필요하면 auto.arima()에 넣기 전에 변환을 해야한다.
+          -> 로그 변환: log() # 분산이 일정하지 않음: 차이가 오르락 내리락
+	  (2) 차분이 필요해도 auto.arima()에 넣기 전에 차분을 하면 안 된다.
+	        -> 차분: diff() # 평균이 일정하지 않음: 평균이 증가 or 감소
+
+    # 시계열 분석
+
+	install.packages("TTR")
+	install.packages("forecast")
+
+	library(TTR)              # R과 기술 거래 규칙을 구성하는 기능
+	library(forecast)         # 시계열 또는 시계열 모델에서 예측하기 위한 일반적인 함수입니다.
+
+	kings <- scan("http://robjhyndman.com/tsdldata/misc/kings.dat", skip = 3)
+	kings
+
+	kings_ts <- ts(kings)
+	plot.ts(kings_ts)
+
+	# 평균을 내서 그래프를 부드럽게 표현
+	kings_sma3 <- SMA(kings_ts, n=3)
+	plot.ts(kings_sma3)
+	kings_sma8 <- SMA(kings_ts, n=8)
+	plot.ts(kings_sma8)
+
+	# 차분을 해 정상성을 만족하도록 변환
+	kings_diff1 <- diff(kings_ts, differences = 1)
+	plot.ts(kings_diff1)
+
+	# 이동평균모형(MA) - ACF 그래프의 절단점 확인
+	acf(kings_diff1, lag.max = 20)  # lag 2부터 점선 안에 존재. lag 절단값 = 2 --> MA(1)
+
+	# 자기화귀모형(AR) - PACF 그래프의 절단점 확인
+	pacf(kings_diff1, lag.max = 20) # lag 4에서 절단값 -->AR(3)
+
+	kings_arima <- arima(kings_ts, order = c(3,1,1)) # 차분을 통해 확인한 값 적용
+	kings_fcast <- forecast(kings_arima, h = 5)
+	plot(kings_fcast)
+
+	# 자동으로 적절한 ARIMA 모형 찾아 적용
+	auto.arima(kings)
+	king.arima = arima(kings, order = c(0, 1, 1))
+	king.forecast = forecast(king.arima, h = 5)
+	king.forecast
+	plot(king.forecast)
+
+
+ --------------------------------------------------------------------------------
+
+ <dplyr, ggplot 라이브러리>
+
+ - ggplot() + 
+  geom_boxplot() - 상자그림(수량형, 범주형x&수량형y)
+  geom_density() - 분포그래프(수량형)
+  geom_histogram() - 히스토그램(수량형)
+  geom_col() - 막대그래프(수량형)
+  geom_bar() - 바그래프(범주형)
+  geom_line() - 선그래프(수량형, 시계열)
+  geom_point() - 점그래프(수량형x&수량형y)
+  geom_jitter() - 흩어진 점그래프(수량형x&수량형y)
+  geom_smooth() - 회귀선 추가
+  ggtitle() - 제목 추가 ex) data %>% ggtitle("x", subtitle = "y")
+  labs() - x축, y축, 범례 제목 변경 ex) data %>% labs(x = "x", y = "y", fill = "x")
+  theme_void() - 배경 전부 제거 
+  theme_dark() - 어두운 배경
+  theme_minimal() - 심플한 배경
+  theme_classic() - 클레식 배경
+  facet_grid() - y,x 축으로 분류하여 그래프화
+  scale_y(x)_continuous(breaks= seq(0, 800000, by=100000)) - x or y 축으로 구간을 나눔
+  coord_cartesian(ylim = c(0, 200000)) - x or y축 상한선 설정
+  coord_flip() - x,y축 바뀜
+  geom_hline(yintercept=163000, linetype="dashed", color = "red") - 수평선 추가
+  geom_vline(xintercept=163000, linetype="dashed", color = "red") - 수직선 추가
+  geom_label(stat = "count", aes(label = ..count.., y = ..count..), size=3) - 막대그래프에 숫자 표시
+  grid.arrange() - ggplot 그래프를 한꺼번에 나타냄 (library(gridExtra))
+
+ ex) data %>% ggplot(aes(x)) + geom_col(aes(fill = y)) + 
+      geom_point(aes(shape = y), size = 3) + geom_line(aes(group = y, linestyle = z))
+     data %>% ggplot(aes(x, y)) + geom_line(size = 2, aes(group = x, col = y)) + 
+      geom_point(size = 2)
+     total_data %>% ggplot(aes(SaleCondition)) + geom_bar() + theme_grey() + 
+      geom_label(stat = "count", aes(label = ..count.., y = ..count..), size=4) + geom_hline(yintercept=1000, linetype="dashed", color = "red")
+	 total_data %>% ggplot(aes(MSZoning, SalePrice, fill = SaleCondition)) +  
+	  geom_col()
+	 total_data %>% ggplot(aes(SalePrice, fill = SaleCondition)) + 
+	  geom_density(alpha = 0.5) + geom_vline(xintercept = 200000, linetype = "dashed", col = "red")
+	 total_data %>% ggplot(aes(OverallQual, OverallCond)) + geom_jitter() +
+	  geom_smooth(method = "lm")
+	 total_data %>% ggplot(aes(MSZoning, SalePrice)) + geom_boxplot(col = "blue")
+
+ - dplyr
+  filter() - 조건에 따라 행선택 ex) data %>% filter(y < 20) 
+  arrange() - 행을 변수들의 오름차순으로 정렬 ex) data %>% arrange(x)
+  select() - 열을 선택 ex) data %>% select(x)
+  mutate() - 변수를 변환, 생성 ex) data %>% mutate(x = y + z)
+  summarize() - 요약 통계량 계산 ex) data %>% summarize(x = max(x))
+                함수: max, min, mean, median, IQR, sum, sd, n, n_distinct
+  group_by - 범주형 변수를 묶어 함수 적용 ex) data %>% group_by(x) %>% summarize(mean(y))
+             함수: summarize, select, sample_n, sample_frac
+  distinct() - 고유한 행을 찾아냄 ex) data %>% distinct(select(x))
+  sample_n() or sample_frac() - 랜덤 샘플링 ex) data %>% sample_n(100) or sample_frac(0.1)
+  
+  ex) na.omit(total_data) %>% filter(Title == 'Mrs.') %>% 
+       mutate(Survived = as.numeric(Survived) - 1) %>%
+       group_by(Ticket) %>%
+       mutate(FamilyLive = sum(Survived)) 
+
+      total_data %>% 
+       filter(Parch + SibSp > 0) %>% 
+       group_by(family_name) %>% 
+       summarise(freq = n()) %>% 
+       filter(freq >= 2))
+
+      na.omit(total_data) %>% 
+       mutate(Status = ifelse(Family == 1, 'Family', ifelse(Group == 0, 'Alone', 'Group')))
+
+---------------------------------------------------------------------------------
+
+ <다중공선성, 교호작용 처리>
+
+ 다중공선성 처리
+  -> 변수들의 상관행렬 확인(상관계수가 1에 가까움)
+
+ex) install.packages("corrplot")
+  # 히트맵
+	library(corrplot)
+
+	all = total_data
+
+	numericVars <- which(sapply(all, is.numeric)) #index vector numeric variables
+	numericVarNames <- names(numericVars) #saving names vector for use later on
+	cat('There are', length(numericVars), 'numeric variables')
+
+	all_numVar <- all[, numericVars]
+	cor_numVar <- cor(all_numVar, use="pairwise.complete.obs") #correlations of all numeric variables
+
+	cor_sorted <- as.matrix(sort(cor_numVar[,'SalePrice'], decreasing = TRUE))
+	CorHigh <- names(which(apply(cor_sorted, 1, function(x) abs(x)>0.5)))
+	cor_numVar <- cor_numVar[CorHigh, CorHigh]
+
+	corrplot.mixed(cor_numVar, tl.col="black", tl.pos = "lt")
+
+	panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...){
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(0, 1, 0, 1))
+  r <- abs(cor(x ,y))
+  txt <- format(c(r, 0.123456789), digits = digits)[1]
+  txt <- paste0(prefix, txt)
+  if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
+  text(0.5, 0.5, txt, cex = cex.cor * r)
+}
+
+	pairs(total_data[!is.na(total_data[, "SalePrice"]), ] %>% sample_n(min(1000, nrow(total_data))) %>% select(59, 1:10), 
+      lower.panel = function(x,y){ points(x,y); abline(0, 1, col = 'red')},
+      upper.panel = panel.cor)
+
+  -> 분산팽창인수(VIF) 확인(5또는 10초과하는 값)
+
+  car::vif(lm(y~x, data)) 결과 확인
+
+  1. 회귀에서 문제가 있는 변수들 중 하나를 제외
+  2. 공선성 변수들을 단일 설명변수로 결합
+
+  3. 변수 선택법으로 의존적인 변수 삭제
+
+  	library(MASS)
+  	data_step <- stepAIC(data_lm_full, scope = list(upper = ~.^2, lower = ~1))
+	anova(data_step)
+	summary(data_step)
+	length(coef(data_step))
+
+  4. PCA(principal component analysis) 방법으로 의존적인 성분 삭제
+
+  5. 정규화(regularized) 방법 사용
+  	library(glmnet)
+   xx <- model.matrix(medv ~ .^2-1, data)
+	x <- xx[training_idx, ]
+	y <- training$medv
+
+	data_cvfit <- cv.glmnet(x, y) # alpha = 0 -> ridge, alpha = 1 -> lasso
+	plot(data_cvfit)
+	coef(data_cvfit, s = c("lambda.min"))
+	coef(data_cvfit, s = c("lambda.1se"))
+	predict(data_cvfit, s = "lambda.min", newx = x[1:5, ])
+
+	y_obs <- validate$medv
+	yhat_glmnet <- predict(data_cvfit, newx = xx[validate_idx, ], s = "lambda.min")
+	yhat_glmnet <- yhat_glmnet[, 1]
+
+
+ 교호작용 처리
+  -> 아노바 검정(anova) 후 결과 확인
+     -> aov(y ~ a + b + a:b)
+     -> p-value값 확인 후 교호작용 효과가 있으면 상호작용항 추가
+
+----------------------------------------------------------------------------------
+
+ <다중 클래스 분류(xgboost, 신경망)>
+
+  - 사용할 분류 알고리즘: RandomForest, xgboost, lasso, neuralnet, Logistic Regression
+   - 다중 클래스: RF, xgboost, neuralnet
+   - 이진 분류: RF, Logistic Regression, lasso, xgboost
+
+  - XGBOOST
+
+   - xgb.DMatrix로 매트릭스 생성, label에 범주형을 숫자형으로 바꾸고 -1 해야함.(분류)
+   - 파라미터 설정(params)
+    -> booster = "gbtree"(분류, 회귀)
+    		   = "gblinear" (회귀)
+       objective = "reg:linear" (선형 회귀)
+       			 = "binary:logistic" (로지스틱 회귀)
+       			 = "multi:softmax" (다중 분류, 레이블 반환) 
+       			    - num_class(예측 클래스 수) 설정
+       			 = "multi:softprob" (다중 분류, 확률 반환)
+       eta = [0, 1] (학습속도, 기본값 = 0.3, 낮을수록 계산속도 느려짐)
+       gamma = [0, Inf] (정규화 제어, 기본값 = 0, 값이 높을수록 정규화 높아짐)
+       max_depth = [0, Inf] (트리 깊이 제어, 기본값 = 6, 깊이 클수록 복잡한 모델, 
+                           CV로 조정)
+       min_child_weight = [0, Inf] (과적합 방지, 잠재적인 상호작용 차단, 기본값 = 1, 
+                                   CV로 조정)
+       subsample = [0, 1] (트리에 공급되는 샘플 수 제어, 기본값 = 1, 일반적으로 0.5 ~
+                          0.8)
+       colsample_bytree = [0, 1] (트리에 제공되는 변수의 수 제어, 기본값 = 1, 
+                                일반적으로 0.5 ~ 0.9)
+
+   - xgb.cv
+    -> (params, data, nrounds, nfold, showsd, stratified, print.every.n, ealry.stop.round, maximize)
+    -> nrounds(최대 반복 횟수 제어, 기본값 = 100, CV로 조정)
+
+   - min(xgb.cv$test.error.min) = CV 오류
+
+   - xgb.train(params, data, nrounds, watchlist, print.every.n, early.stop.round, 
+             maximize, eval_metric)
+    -> params, nrounds에 CV로 확인하고 조정
+    -> watchlist = list(val = dtest, train = dtrain)
+    -> eval_metric = "mae" (평균 절대 오차, 회귀)
+    			   = "RMSE" (평균 제곱 오차, 회귀)
+    			   = "Logloss" (음의 로그 확률, 분류)
+    			   = "AUC" (곡선 아래 면적, 분류)
+    			   = "error" (이진 분류 오류율, 분류)
+    			   = "mlogloss" (멀티 클래스 logloss, 분류)
+
+   - predict(xgb_model, dtest)
+
+   ex)
+	library(xgboost)
+
+  # 데이터 전처리(DMatrix화)
+  training$Type = as.numeric(training$Type)
+  test$Type = as.numeric(test$Type)
+
+  labels = as.numeric(training$Type) - 1
+
+  train_data = model.matrix(Type ~ . -1, data = training)
+  test_data = model.matrix(Type ~ . -1, data = test)
+
+  trainDx = xgb.DMatrix(data = train_data, label = labels)
+  testDx = xgb.DMatrix(data = test_data)
+
+  # 파라미터 설정
+  params <- list(booster = "gbtree", objective = "multi:softmax", 
+                 eta=0.3, gamma=0, max_depth=10, min_child_weight=1, subsample=0.8, colsample_bytree=0.8, num_class = 6)
+
+  # xgboost 훈련
+  set.seed(2011)
+  xgbcv <- xgb.cv( params = params, data = trainDx, nrounds = 200, nfold = 5, 
+                   showsd = T, stratified = T, print_every_n = 10, early_stopping_rounds = 20, maximize = F)
+
+  # 이상적인 반복횟수
+  xgbcv$best_iteration
+
+  # xgboost 적용
+  xgb1 <- xgb.train (params = params, data = trainDx, nrounds = 34, watchlist = list(train = trainDx), print_every_n = 10, early_stopping_rounds = 10, maximize = F , eval_metric = "mlogloss")
+
+  # 예측값 산출
+  xgbpred <- predict (xgb1, testDx)
+  xgbpred
+
+  # 확률로 변환 (임계치: 0.5)
+  # xgbpred <- ifelse (xgbpred > 0.5,1,0)
+
+  # 혼동행렬 생성
+  table(xgbpred, test$Type)
+
+
+  - neuralnet
+
+   - 목표변수 numeric화 (factor 사용 불가)
+   - neuralnet(formular, data, hidden, threshold, linear.output, stepmax)
+    -> hidden: 은닉 노드수( ex)c(2, 2) -> 은닉층 2, 은닉 노드 2)
+    -> threshold: 임계값(보다 작으면 stop)
+    -> linear.output: 회귀일 경우 TRUE(기본값:TRUE)
+    -> stepmax: 운전 수행 최대 횟수
+
+   - plot(model)
+   - gwplot(model, selected.covariate, min, max)
+    -> 각 변수 영향도(일반화 가중치): 분산이 0에 가까울 수록 영향 미미
+      selected.covariate = "변수"
+   - compute(model, test_data)$net.result (predict() 아님)
+   - 혼동행렬, ROC 확인
+   - 정규화하면 정확도가 올라갈 수도 있음
+   - 식에서 "y ~ ." 지원하지 않아 변수이름 전부 적어야함
+
+   ex) library(neuralnet)
+
+	train_data3 = total_data3[!is.na(total_data3$Survived), ]
+	test_data3 = total_data3[is.na(total_data3$Survived), ] %>% select(-Survived)
+
+	# 변수 정규화
+	train_data3 = train_data3 %>% mutate(Age = (Age - min(Age))/(max(Age) - min(Age)))
+	train_data3 = train_data3 %>% mutate(Fare = (Fare - min(Fare))/(max(Fare) - min(Fare)))
+	test_data3 = test_data3 %>% mutate(Age = (Age - min(Age))/(max(Age) - min(Age)))
+	test_data3 = test_data3 %>% mutate(Fare = (Fare - min(Fare))/(max(Fare) - min(Fare)))
+	test_data3$Survived = NULL
+
+	# 변수 수치화
+	train_data3$Survived = as.numeric(train_data3$Survived) - 1
+	train_data3$Pclass = as.numeric(train_data3$Pclass)
+	train_data3$SibSp = as.numeric(train_data3$SibSp) - 1
+	train_data3$Parch = as.numeric(train_data3$Parch) - 1
+
+	test_data3$Pclass = as.numeric(test_data3$Pclass)
+	test_data3$SibSp = as.numeric(test_data3$SibSp) - 1
+	test_data3$Parch = as.numeric(test_data3$Parch) - 1
+
+	# 매트릭스 행렬로 변경
+	train_data3 = model.matrix(~ . -1, data = train_data3)
+	test_data3 = model.matrix(~ . -1, data = test_data3)
+	colnames(train_data3)
+
+	# 변수이름 모두 적기
+	formula = as.formula("Survived ~ Pclass + Sexfemale + Sexmale + Age + SibSp + Parch + Fare + CabinB + CabinC + CabinD + CabinE + CabinF + CabinG + CabinNone + CabinT + EmbarkedQ + EmbarkedS")
+	 # formula = as.formula("Survived ~ Pclass + Sexfemale + Sexmale + Age + SibSp + Parch + Fare + EmbarkedQ + EmbarkedS")
+
+	data_nnfit = neuralnet(formula, data = train_data3, hidden = c(5, 2), threshold = 0.01, linear.output = F, stepmax = 1e7)
+	plot(data_nnfit)
+	gwplot(data_nnfit, selected.covariate = "Pclass", min = -6, max = 6)
+	gwplot(data_nnfit, selected.covariate = "Age", min = -6, max = 6)
+
+	# predict 함수가 아닌 compute 함수 사용
+	pred_nnet = compute(data_nnfit, test_data3)$net.result
+	pred_nnet = ifelse(pred_nnet>0.5, 1, 0)
+	pred_nnet
+
+  - nnet
+
+   - 목표변수 factor형 (분류)
+   - nnet(formular, data, size, decay, maxit, rang)
+    -> size: 은닉 노드 수
+    -> maxit: 반복횟수
+    -> decay: 과적합 방지 파라미터
+    -> rang: 처음 가중치(기본값: 0.5)
+
+   - library(NeuralNetTools)
+    garson(model) -> 변수 중요도 확인
+
+   - predict(model, newdata, type)
+   - confusionMatrix(pred_nnet, actual_g) : 혼동행렬
+
+   ex) library(nnet)
+	set.seed(2006)
+	nn_model1 = nnet(Survived ~ ., data=trainx, size=3, maxit=1000)
+	nn_model2 = nnet(Survived ~ ., data=trainx, size=4, maxit=1000)
+
+	plot.nnet(nn_model2)
+	library(NeuralNetTools)
+
+	garson(nn_model2)
+
+	pred_nnet = predict(nn_model2, newdata = testx, type = "class")
+	pred_nnet
+
+  # nnet 시각화 라이브러리
+  library(devtools)
+  source('https://gist.githubusercontent.com/fawda123/7471137/raw/466c1474d0a505ff044412703516c34f1a4684a5/nnet_plot_update.r')
+  plot.nnet(data_nnfit)
+
+
+
+------------------------------------------------------------------------------------
+
+ <PCA>
+  -ex)
+ secu_com_finance_2007 <- read.csv("C:/Users/user/Documents/R/secu_com_finance_2007.csv",header = TRUE,stringsAsFactors = FALSE)
+ 
+ # 표준화 변환 (standardization) > secu_com_finance_2007 <- transform(secu_com_finance_2007, +  V1_s = scale(V1), +  V2_s = scale(V2), +  V3_s = scale(V3), +  V4_s = scale(V4), +  V5_s = scale(V5))
+
+ cor(secu_com_finance_2007_2[,-1])
+ round(cor(secu_com_finance_2007_2[,-1]), digits=3) # 반올림
+
+ # Scatter plot matrix
+ plot(secu_com_finance_2007_2[,-1])
+
+ # 주성분분석 PCA(Principal Component Analysis)
+ secu_prcomp <- prcomp(secu_com_finance_2007_2[,c(2:6)]) # 첫번째 변수 회사명은 빼고 분석
+ 
+ summary(secu_prcomp)
+ print(secu_prcomp)
+
+ # Scree Plot
+ plot(prcomp(secu_com_finance_2007_2[,c(2:6)]), type="l",sub = "Scree Plot")
+
+  # Biplot
+ biplot(prcomp(secu_com_finance_2007_2[,c(2:6)]), cex = c(0.7, 0.8))
+
+ # 관측치별 주성분1, 주성분2 점수 계산(PC1 score, PC2 score)
+ secu_pc1 <- predict(secu_prcomp)[,1]
+ secu_pc2 <- predict(secu_prcomp)[,2]
+
+
+ # 관측치별 이름 매핑(rownames mapping)
+ text(secu_pc1, secu_pc2, labels = secu_com_finance_2007_2$company, cex = 0.7, pos = 3, col = "blue")
+
+ ## 변수에 대한 설명력의 누적기여율이 80%가 되는 주성분의 개수 k개를 찾아서 주성분 k번째까지의 주성분점수를 반환하는 사용자 정의함수
+
+ pca <- function(dataset){   
+  		pc = prcomp(dataset, scale = TRUE) 
+  	    k = 0  
+  	    R = 0  
+  	    while(R < 0.8) {  
+  	    	k = k + 1   
+  	    	R = sum(pc[[1]][1:k]^2)/sum(pc[[1]]^2) 
+  	    	cat("When number of Principal Component(k) is ", k, ", Cumulative Proportion(R) is ", R, "\n", "\n", sep="")   
+  	    	}
+  	    SelectedDataSet = pc[[5]][,1:k]  
+  	    return(SelectedDataSet)  
+  	    } 
+
+ pca(secu_com_finance_2007_2[,c(2:6)])
+
+------------------------------------------------------------------------------------
+
+ <데이터 분석 흐름 코드 정리>
+
+ - 데이터 분석 과정
+
+  데이터 -> 목표 설정(회귀, 분류) -> 결측값, 이상치 처리 -> 변수 생성 및 분할 -> 시각화 및 변수 선택(회귀일 경우, 다중공선성 고려) -> 데이터셋 분할 후 모델 적용 -> 결과 해석 -> 모델 검증 -> 모델 선택 -> 결과 해석 및 정리 후 보고서 작성 -> 제출 (word)
+
+ - 분류 분석
+
+# 라이브러리 로딩
+library(dplyr)
+library(ISLR)
+library(MASS)
+library(glmnet)
+library(ggplot2)
+library(randomForest)
+library(gbm)
+library(rpart)
+library(boot)
+
+# 데이터 읽어오기, 살펴보기
+data <- tbl_df(read.table("C:/Users/HongJinWon/Downloads/wdbc.data", strip.white = T, sep = ",", header = F))
+featur_names <- c('radius', 'texture', 'perimeter', 'area', 'smoothness', 'compactness', 'concavity', 
+                  'concave_points', 'symmetry', 'fractal_dim')
+names(data) <- c('id', 'class', paste0('mean_', featur_names), paste0('se_', featur_names), paste0('worst_', featur_names))
+glimpse(data)
+summary(data)
+
+# 변수 변환
+data <- data %>% dplyr::select(-id)
+data$class <- factor(ifelse(data$class == 'B', 0, 1))
+
+# 사용자 정의 함수: panel.cor -> pairs() 함수에서 그래프와 상관계수 표현
+panel.cor <- function(x, y, digits = 2, prefix = "", cex.cor, ...){
+  usr <- par("usr"); on.exit(par(usr))
+  par(usr = c(0, 1, 0, 1))
+  r <- abs(cor(x ,y))
+  txt <- format(c(r, 0.123456789), digits = digits)[1]
+  txt <- paste0(prefix, txt)
+  if(missing(cex.cor)) cex.cor <- 0.8/strwidth(txt)
+  text(0.5, 0.5, txt, cex = cex.cor * r)
+}
+
+# 사용자 정의 함수: binomial_deviance -> 분류 정확도 추출
+binomial_deviance <- function(y_obs, yhat){
+  epsilon = 0.0001
+  yhat = ifelse(yhat < epsilon, epsilon, yhat)
+  yhat = ifelse(yhat > 1-epsilon, 1-epsilon, yhat)
+  a = ifelse(y_obs==0, 0, y_obs * log(y_obs/yhat))
+  b = ifelse(y_obs==1, 0, (1-y_obs) * log((1-y_obs)/(1-yhat)))
+  return(2 * sum(a + b))
+}
+
+# pairs() 함수로 특징 추출
+pairs(data %>% dplyr::select(class, starts_with('worst_')) %>%
+        sample_n(min(1000, nrow(data))),
+      lower.panel = function(x,y){ points(x,y); abline(0, 1, col = 'red')},
+      upper.panel = panel.cor)
+
+# 목표변수, 특이점이 있느 변수 시각화
+p1 <- data %>% ggplot(aes(class)) + geom_bar()
+p2 <- data %>% ggplot(aes(class, mean_concave_points)) + 
+  geom_jitter(col = 'gray') + 
+  geom_boxplot(alpha = .5)
+p3 <- data %>% ggplot(aes(class, mean_radius)) + 
+  geom_jitter(col = 'gray') + 
+  geom_boxplot(alpha = .5)
+p4 <- data %>% ggplot(aes(mean_concave_points, mean_radius)) + 
+  geom_jitter(col = 'gray') + geom_smooth()
+grid.arrange(p1, p2, p3, p4, ncol = 2)
+
+# 데이터 분류
+set.seed(1606)
+n <- nrow(data)
+idx <- 1:n
+training_idx <- sample(idx, n * .60)
+idx <- setdiff(idx, training_idx)
+validate_idx <- sample(idx, n * .20)
+test_idx <- setdiff(idx, validate_idx)
+training <- data[training_idx, ]
+validate <- data[validate_idx, ]
+test <- data[test_idx, ]
+
+# 로지스틱 회귀
+data_lm_full <- glm(class ~ ., data = training, family = binomial)
+summary(data_lm_full)
+predict(data_lm_full, newdata = data[1:5, ], type = 'response')
+
+y_obs <- as.numeric(as.character(validate$class))
+yhat_lm <- predict(data_lm_full, newdata = validate, type = 'response')
+
+# AUC 면적값 추출
+pred_lm <- prediction(yhat_lm, y_obs)
+performance(pred_lm, "auc")@y.values[[1]]
+
+# 분류 정확도 확인
+binomial_deviance(y_obs, yhat_lm)
+
+
+# 변수 매트릭스화 -> lasso 모형
+xx <- model.matrix(class ~ .-1, data)
+x <- xx[training_idx, ]
+y <- as.numeric(as.character(training$class))
+glimpse(x)
+
+# lasso 회귀
+data_cvfit <- cv.glmnet(x, y, family = "binomial")
+plot(data_cvfit)
+
+coef(data_cvfit, s = c("lambda.1se"))
+coef(data_cvfit, s = c("lambda.min"))
+
+predict.cv.glmnet(data_cvfit, s = "lambda.min", newx = x[1:5, ], type = 'response')
+
+yhat_glmnet <- predict(data_cvfit, s = "lambda.min", newx = xx[validate_idx, ], type = 'response')
+yhat_glmnet <- yhat_glmnet[, 1]
+pred_glmnet <- prediction(yhat_glmnet, y_obs)
+performance(pred_glmnet, "auc")@y.values[[1]]
+binomial_deviance(y_obs, yhat_glmnet)
+
+# 분류트리
+data_tr <- rpart(class ~., data = training)
+data_tr
+printcp(data_tr)
+summary(data_tr)
+
+# 트리 시각화
+opar <- par(mfrow = c(1, 1), xpd = NA)
+plot(data_tr)
+text(data_tr, use.n = T)
+par(opar)
+
+yhat_tr <- predict(data_tr, validate)
+yhat_tr <- yhat_tr[, "1"]
+pred_tr <- prediction(yhat_tr, y_obs)
+performance(pred_tr, "auc")@y.values[[1]]
+binomial_deviance(y_obs, yhat_tr)
+
+# 랜덤포레스트
+set.seed(1607)
+data_rf <- randomForest(class ~., training)
+data_rf
+
+opar <- par(mfrow = c(1, 2))
+plot(data_rf)
+varImpPlot(data_rf)
+par(opar)
+yhat_rf <- predict(data_rf, newdata = validate, type = 'prob')[, '1']
+pred_rf <- prediction(yhat_rf, y_obs)
+performance(pred_rf, "auc")@y.values[[1]]
+binomial_deviance(y_obs, yhat_rf)
+
+# GBM
+set.seed(1607)
+data_for_gbm <- training %>% mutate(class = as.numeric(as.character(class)))
+data_gbm <- gbm(class ~ ., data = data_for_gbm, distribution = "bernoulli", n.trees = 30000, cv.folds = 3, verbose = T)
+(best_iter = gbm.perf(data_gbm, method = "cv"))
+yhat_gbm <- predict(data_gbm, n.trees = best_iter, newdata = validate, type = 'response')
+pred_gbm <- prediction(yhat_gbm, y_obs)
+performance(pred_gbm, "auc")@y.values[[1]]
+binomial_deviance(y_obs, yhat_gbm)
+
+# 각 기법 AUC값 비교
+data.frame(method = c('lm', 'glmnet', 'rf', 'gbm'), 
+           auc = c(performance(pred_lm, "auc")@y.values[[1]], 
+                   performance(pred_glmnet, "auc")@y.values[[1]],
+                   performance(pred_rf, "auc")@y.values[[1]],
+                   performance(pred_gbm, "auc")@y.values[[1]]),
+           bin_dev = c(binomial_deviance(y_obs, yhat_lm), 
+                       binomial_deviance(y_obs, yhat_glmnet),
+                       binomial_deviance(y_obs, yhat_rf), 
+                       binomial_deviance(y_obs, yhat_gbm)))
+
+# ROCR 그래프 시각화
+perf_lm <- performance(pred_lm, measure = "tpr", x.measure = "fpr")
+perf_glmnet <- performance(pred_glmnet, measure = "tpr", x.measure = "fpr")
+perf_rf <- performance(pred_rf, measure = "tpr", x.measure = "fpr")
+perf_gbm <- performance(pred_gbm, measure = "tpr", x.measure = "fpr")
+plot(perf_lm, col = 'black', main = "ROC Curve")
+plot(perf_glmnet, col = 'blue', add = T)
+plot(perf_lm, col = 'red', add = T)
+plot(perf_lm, col = 'cyan', add = T)
+abline(0, 1)
+legend('bottomright', inset = .1,
+       legend = c("GLM", 'glmnet', "RF", 'GBM'), 
+       col = c('black', 'blue', 'red', 'cyan'), lty = 1, lwd = 2)
+
+# 모델 선택 후 테스트
+y_obs_test <- as.numeric(as.character(test$class))
+yhat_glmnet_test <- predict(data_cvfit, s = "lambda.min", newx = xx[test_idx, ], type = 'response')
+yhat_glmnet_test <- yhat_glmnet_test[, 1]
+pred_glmnet_test <- prediction(yhat_glmnet_test, y_obs_test)
+performance(pred_glmnet_test, "auc")@y.values[[1]]
+binomial_deviance(y_obs_test, yhat_glmnet_test)
+
+# 각 기법 비교 시각화
+pairs(data.frame(y_obs = y_obs,
+                 yhat_lm = yhat_lm,
+                 yhat_glmnet = c(yhat_glmnet),
+                 yhat_rf = yhat_rf,
+                 yhat_gbm = yhat_gbm),
+      lower.panel = function(x, y){ points(x,y); abline(0, 1, cor = 'red')},
+      upper.panel = panel.cor)
+
+ - 회귀 분석
+
+# 사용자 정의 함수: rmse -> 회귀 정확도: 평균 오차 제곱
+ rmse <- function(yi, yhat_i){
+  sqrt(mean((yi - yhat_i)^2))
+}
+
+# 데이터 불러오기
+data <- tbl_df(Boston)
+glimpse(data)
+summary(data)
+
+# 데이터 시각화
+pairs(data %>% sample_n(min(1000, nrow(data))),
+      lower.panel = function(x, y){; abline(0, 1, col = 'red')},
+      upper.panel = panel.cor)
+
+# 데이터 분할
+set.seed(1606)
+n <- nrow(data)
+idx <- 1:n
+training_idx <- sample(idx, n * .60)
+idx <- setdiff(idx, training_idx)
+validate_idx <- sample(idx, n * .20)
+test_idx <- setdiff(idx, validate_idx)
+training <- data[training_idx, ]
+validate <- data[validate_idx, ]
+test <- data[test_idx, ]
+
+# 선형 회귀
+data_lm_full <- lm(medv ~ ., data = training)
+summary(data_lm_full)
+predict(data_lm_full, newdata = data[1:5, ])
+
+# 선형 회귀: 이차 변수
+data_lm_full_2 <- lm(medv ~ .^2, data = training)
+summary(data_lm_full_2)
+length(coef(data_lm_full_2))
+
+# step함수: 변수 선택
+data_step <- stepAIC(data_lm_full, scope = list(upper = ~.^2, lower = ~1))
+data_step
+
+# 교호작용 검증
+anova(data_step)
+summary(data_step)
+length(coef(data_step))
+
+y_obs <- validate$medv
+yhat_lm <- predict(data_lm_full, newdata = validate)
+yhat_lm_2 <- predict(data_lm_full_2, newdata = validate)
+yhat_step <- predict(data_step, newdata = validate)
+rmse(y_obs, yhat_lm)
+rmse(y_obs, yhat_lm_2)
+rmse(y_obs, yhat_step)
+
+# lasso 회귀
+xx <- model.matrix(medv ~ .^2-1, data)
+x <- xx[training_idx, ]
+y <- training$medv
+glimpse(x)
+
+data_cvfit <- cv.glmnet(x, y)
+plot(data_cvfit)
+coef(data_cvfit, s = c("lambda.min"))
+coef(data_cvfit, s = c("lambda.1se"))
+predict(data_cvfit, s = "lambda.min", newx = x[1:5, ])
+
+y_obs <- validate$medv
+yhat_glmnet <- predict(data_cvfit, newx = xx[validate_idx, ], s = "lambda.min")
+yhat_glmnet <- yhat_glmnet[, 1]
+rmse(y_obs, yhat_glmnet)
+
+# 회귀 트리
+data_tr <- rpart(medv ~ ., data = training)
+data_tr
+summary(data_tr)
+printcp(data_tr)
+
+opar <- par(mfrow = c(1,1), xpd = NA)
+plot(data_tr)
+text(data_tr, use.n = T)
+par(opar)
+
+yhat_tr <- predict(data_tr, newdata = validate)
+rmse(y_obs, yhat_tr)
+
+# 랜덤 포레스트
+set.seed(1607)
+data_rf <- randomForest(medv ~ ., data = training)
+data_rf
+plot(data_rf)
+varImpPlot(data_rf)
+
+yhat_rf <- predict(data_rf, newdata = validate)
+rmse(y_obs, yhat_rf)
+
+# GBM
+set.seed(1607)
+data_gbm <- gbm(medv ~ ., data = training, n.trees = 40000, cv.folds = 3, verbose = T)
+(best_iter <- gbm.perf(data_gbm, method = "cv"))
+yhat_gbm <- predict(data_gbm, newdata = validate, n.trees = best_iter)
+rmse(y_obs, yhat_gbm)  
+
+
+# 각 기법 정확도 비교
+data.frame(lm = rmse(y_obs, yhat_step),
+           glmnet = rmse(y_obs, yhat_glmnet),
+           rf = rmse(y_obs, yhat_rf),
+           gbm = rmse(y_obs, yhat_gbm)) %>% 
+  reshape2::melt(value.name = 'rmse', variable.name = 'method')
+
+rmse(test$medv, predict(data_rf, newdata = test))
+
+# 각 기법 정확도 시각화
+boxplot(list(lm = y_obs - yhat_step,
+             glmnet = y_obs - yhat_glmnet,
+             rf = y_obs - yhat_rf,
+             gbm = y_obs - yhat_gbm), ylab = "Error in Validation Set")
+abline(h = 0, lty = 2, col = 'blue')
+
+pairs(data.frame(y_obs = y_obs,
+                 yhat_lm = yhat_lm,
+                 yhat_glmnet = c(yhat_glmnet),
+                 yhat_rf = yhat_rf,
+                 yhat_gbm = yhat_gbm),
+      lower.panel = function(x, y){ points(x,y); abline(0, 1, cor = 'red')},
+      upper.panel = panel.cor)
+
+-----------------------------------------------------------------------------
+
+ 2020-09-19 ADP 실기시험문제
+
+  1. 기계학습, 텍스트 마이닝
+   - Data 정보
+    (1) sales.csv
+     - 고객 데이터(분류)
+     - 5개 변수: id(고객 번호), 
+                duration(최종 물품 구매 후 기간), 
+                grade(고객 등급, 1 ~ 5), 
+                count(총 구매 횟수), 
+                amount(총 구매 금액)
+     - 결측값 O, 이상치 O
+     - 전부 수치형 변수
+
+    (2) data.txt
+     - 영어로 된 텍스트 파일, 문장 단위로 구성
+
+    (3) data.csv
+     - 시계열 데이터
+     - 2개 변수: YR-MO(연도, 월),
+                ER(판매량?)
+     - 결측값 X, 이상치 X
+
+    - 문제
+     1) 기계학습
+      (1) EDA와 결측값 처리 과정과 시각화
+      (2) 고객 등급을 예측하는 모형을 만드는데 필요한 파생 변수 3개와 근거
+      (3) 데이터를 훈련셋:테스트셋 = 7:3 비율로 분할, 훈련셋으로 랜덤포레스트 모형을
+         적용시키고 SOM으로 군집분석한 결과를 정오분류표(confusionMatrix)로 분석
+      (4) 다중 클래스 모형을 랜덤포레스트, 다층신경망 모형을 포함한 4개 이상의 분류 모델을
+         작성하고 분석 결과를 ROC 곡선과 F1 Score로 나타내어 비교
+
+     2) 텍스트 마이닝
+      (1) 텍스트 데이터를 분석하여 명사를 추출하고 불용어 처리하여 어간을 추출
+      (2) 빈도 수 별로 막대그래프화
+
+     3) 통계 분석(시계열 분석)
+      (1) 데이터가 정상성을 만족할 수 있도록 차분, 변환을 조정, 그 결과를 시각화
+      (2) 자기회귀모형과 이동평균모형을 포함하여 3개 이상의 시계열 모형을 적용
+      (3) 위에서 나온 모형들 중 어느 모형이 가장 적합한지 추정,근거를 들어 설명
+      (4) 최종 모형의 정확도를 어떻게 판단할 것인지 근거를 들어 설명
+
+  - 부족한 부분
+
+   1. 데이터프레임 다루는 함수(dplyr)
+   2. 시각화(ggplot2)
+   3. 군집분석(SOM)
+   4. 다중 클래스 모형(다중 분류일 때 정확도 산출)
+   5. 텍스트 마이닝
+   6. 시계열 분석
+
+------------------------------------------------------------------------------------
+ 
+ 자가 피드백
+
+  1. 군집분석(SOM)
+   
+   <참고사이트> 
+   https://m.blog.naver.com/PostView.nhn?blogId=pmw9440&logNo=221588292503&proxyReferer=https:%2F%2Fwww.google.com%2F
+   https://woosa7.github.io/R-Clustering-Kmens-SOM/
+
+  2. 다중 클래스 정확도 산출(ROC, F1)
+
+   <참고사이트>
+   https://www.python2.net/questions-454673.htm
+
+  3. 다중 클래스 분류 모형 4개(xgboost, RF, neuralnet, SOM)
+
+   <인공신경망 참고사이트>
+   https://chancoding.tistory.com/36
+   https://todayisbetterthanyesterday.tistory.com/44
+   http://blog.naver.com/PostView.nhn?blogId=jjy0501&logNo=221473233444
+   https://blog.naver.com/ro971013/221980738554
+
+   <국내 R 참고사이트>: http://web-r.org/
+
+  ADP 실기 계획(20.12.13)
+   1주차 - 군집분석(SOM), 다중클래스 정확도 산출(ROC, F1 score)
+   2주차 - 텍스트 마이닝
+   3주차 - kaggle을 통해 데이터 분석 과정 숙지 
+   4주차 - kaggle을 통해 데이터 분석 과정 숙지 
+   5주차 - kaggle을 통해 데이터 분석 과정 숙지 
+   6주차 - 통계분석, 시계열분석 정리
+   7주차 - 총정리, 복습, 과정 시뮬레이션
+   
+   * 다중 선형 회귀, 다중 클래스 분류 분석, 군집분석, 주성분분석, 텍스트마이닝 다양한 분석 기법 적용해보는 것 필요
+   * 다중 클래스 분류에 사용할 기법: xgboost, SOM, RF, multinom, mlp(or nnet)
+
+------------------------------------------------------------------------------
+ 
+  - 기본적인 코드
+
+   - 문자 개수 출력
+     - nchar(): ex) nchar(c("1234", "2345")): 4 4
+
+   - 문자열 자르기
+     - substr(): ex) substr("1234567", 2, 4): "234"
+
+   - 특정 문자로 데이터 나누기
+     - strsplit(): ex) strsplit('2020/11/15', split = "/"): "2020" "11" "15"
+
+   - 문자열 합치기
+     - paste(): ex) paste("30 + ", "20", " = 50", sep = ""): 30 + 20 = 50
+
+   - 대/소문자 변환
+     - toupper(), tolower()
+
+   - 펙터 생성
+     - factor(x, levels, ordered)
+       -> x의 범주가 3개인데 범주를 2개 ( ex) levels = c("a", "b")) 로 한 경우, 나머지 범주는 NA값을 가짐
+       -> 서열형 데이터를 다시 정의할때 levels = c("...")로 서열 순서를 다시 조정 가능 
+       -> factor (x, levels = c("c", "b", "a"), ordered = T) -> Levels: c < b < a
+       -> 숫자 펙터를 숫자 벡터로 변환할때는 문자형으로 변환후 숫자형으로 변환
+
+   - 벡터 값 선택
+     - a[c(1, 3, 6, 5)]: a 벡터의 1, 3, 6, 5번째 값
+     - a[2:6]: a 벡터의 2~6 번째 값
+     - a[c(F,F,T,F)]: a 벡터의 3번째 값만 선택
+     - a[a<3]: a 벡터에서 3보다 작은 값들 선택
+   
+   - 벡터 값 추가(중간에)
+     - append(vector, value, after) 
+       ex) a = c("a", "c"), b = c("b"), append(a, b, 1): "a" "b" "c"
+     - a <- c(c(0, 1), a): a 벡터 앞에 0, 1 추가
+
+   - 벡터 값 삭제
+     - v1 = v1[1:n]: v1 벡터의 1에서 n까지 선택
+     - v1 = v1[-n]: v1 벡터의 n번째 값만 삭제
+       ex) a[-c(1, 3, 5, 6)]: a 벡터의 1, 3, 5, 6번째 값 삭제
+
+   - 벡터 값 수정
+     - v1[n] = m
+
+   - 벡터 길이
+     - length(a)
+
+   - 인덱스 생성
+     - seq(from, to, by): ex) seq(from = 10, to = 20, by = 2): 10 12 14 16 18 20
+
+   - 데이터 프레임 행,열 개수
+     - nrow(), ncol()
+
+   - 4분위수
+     - quantile()
+
+   - 데이터프레임 조회
+     - View(df): 간단한 조건 검색
+
+   - 데이터프레임 조건 검색(데이터 프레임으로 출력됨)
+     - subset(df, condition, select): condition(조건), select(선택한 열)
+       ex) subset(iris, Sepal.Width > 5 & Petal.Length <= 5, c("Sepal.Width"))
+           subset(iris, Species %in% c("setosa", "virginica"))
+
+   - 데이터프레임 설정, 해제
+     - attach(df), detach(df)
+
+   - 한 개의 열을 벡터로 자동 변환 방지
+     - df[, c("a"), drop=FALSE]: 결과는 벡터가 아닌 데이터프레임 형식
+
+   - 데이터 프레임, 행렬에 행, 열 추가
+     - rbind(): 행 추가, cbind(): 열 추가
+     - iris$newColumn <- vector
+
+   - 데이터 프레임 병합
+     - merge(df1, df2, by = "col")
+       ex) merge(df_age, df_name, by = c("id", "name"))
+     - cbind(df1, df2)
+     - rbind(df1, df2)
+
+   - 데이터 프레임 SQL로 검색(library("sqldf"))
+     - sqldf("select Petal.Length from iris where Petal.Length > 5000")
+
+   - 데이터 프레임 정렬
+     - order(vector, decreasing, na.last) -> 인덱스로 출력, vector에 두 개이상 벡터 가능
+       : decreasing(TRUE면 내림차순), na.last(NA값 위치 지정, TRUE면 맨 끝에, FALSE면 맨 앞에, NA면 값 제거)
+       ex) iris[order(iris$Petal.Length, decreasing = T), ]
+     - sort(vector, decreasing) -> vector를 정렬된 벡터 자체로 출력
+
+   - 그룹별 집계함수
+     - aggregate(formula, data, function) -> 데이터 프레임으로 출력
+       ex) aggregate(Petal.Length ~ setosa, iris, mean)
+           aggregate(cbind(Petal.Length, Sepal.Width) ~ setosa, iris, mean)
+           aggregate(sahire ~ deptno + sajob, dept, mean)
+
+   - 데이터 직접 수정
+     - iris_m <- edit(iris)  
+
+   - 데이터프레임 다중열 삭제
+     - iris[, c(1, 2, 3)] <- list(NULL)
+
+   - NA값 확인
+     - complete.case(a): NA가 있는 값은 FALSE 반환, 없으면 TRUE
+                         데이터프레임은 행 단위로 계산, 한 행의 모든 값에 NA가 없어야 TRUE
+       ex) iris[complete.case(iris), ]: NA가 없는 행만 검색
+
+   - NA값 제외하고 계산(sum, mean, ...)
+     - sum(vector, na.rm=TRUE)
+
+   - 데이터프레임 열이름 수정
+     - colnames(iris)[3] <= "column3"
+
+   - 데이터프레임 변수 종류 분류
+     - 수치형: which(sapply(dataframe, is.numeric))
+       ex) numericVars <- which(sapply(dataframe, is.numeric)) #index vector numeric variables
+       numericVarNames <- names(numericVars) #saving names vector for use later on
+       cat('There are', length(numericVars), 'numeric variables')
+
+     - 문자형: which(sapply(dataframe, is.character))
+     - 범주형: which(sapply(dataframe, is.factor))
+     
+   - 리스트 요소 이름 출력, 변경
+     - names(list)
+     - names(list)[3] <- "item3"
+
+   - 리스트 요소 개수
+     - length(list)
+
+   - 리스트 요소에 접근
+     - list[[1]]
+     - list[["item1"]]
+     - list$item1
+
+   - 모든 요소에 일괄 변경
+     - lapply(list, function): 결과값을 리스트로 받음
+     - sapply(list, function): 결과값이 한 개이면 벡터, 그 이상이면 행렬이나 리스트
+
+   - else if, ifelse
+     - ifelse(조건, 조건이 맞았을때, 조건이 맞지 않았을때) 
+     - else if(){}: 다중 if문
+
+   - for(x in 시작인덱스:종료인덱스)
+
+   - 메모리 상의 모든 객체 삭제
+     - rm(list = ls())
+
+   - 엑셀 데이터 불러오기(library(xlsx))
+     - read.xlsx(excel, n): n번째 시트에 있는 엑셀 데이터 불러오기
+
+   - 행이름 제외한 데이터 저장
+     - write.table(data, filename, sep, col.names, row.names=FALSE, fileEncoding)  
+
+   - 저장된 데이터에 추가하기  
+     - write.table(data, filename, sep, col.names, row.names, fileEncoding, append=TRUE)
+
+   - 문자열 찾기(library(stringr))
+     - str_detect(c("hello", "world"), "h"): TRUE FALSE
+
+   - dplyr
+     - 병합: %>% inner_join(df)
+     - 정렬: %>% arrange(column)
+
+   - 평균은 이상치의 영향을 많이 받기때문에 중앙값과 사분위수로 데이터의 분포를 보는 것이 효과적
+
+   - 상자그림(특정 여러 구간에 데이터가 몰려있는 경우 확인할 수 없음)
+     - boxplot(vector)
+     - boxplot(vector1, vector2, names=c("a", "b"))
+     - boxplot(vector, range=2): (IQR:2)
+
+   - 행렬에 합계 붙이기
+     - addmargins(table)
+
+   - R에서 지원하는 색상명
+     - colors()
+
+   - 색상 팔레트에 자동으로 색상 지정
+     - heat.colors(n), rainbow(n), terrain.colors(n), topo.colors(n), cm.colors(n)
+       ex) pie(x, col=rainbow(4))
+
+   - geom_bar()과 geom_col()의 차이점
+     : 빈도수가 계산된 경우 -> +geom_col()
+       빈도수가 계산되지 않은 경우 -> +geom_bar()
+
+   - 산점도에 추세선 추가하기
+     - lines(lowess(x, y))
+
+   - 트리맵(library(treemap))
+     - treemap(dataframe, vSize, index, title)
+       : vSize - 값을 나타내는 dataframe의 열 이름(사각형 크기 결정)
+         index - 사각형으로 구분지을 dataframe의 열 이름 벡터
+         ex) treemap(sales_df, vSize = "sales", index = c("product", "local"))
+
+   - 데이터프레임 열별 NA값 확인
+     - colSums(is.na(data.frame))
+
+   - 데이터 프레임 NA값 존재하는 열 확인
+     - colnames(dataframe[, colSums(is.na(dataframe)) > 0])
+
+   - 날짜 데이터로 변환
+     - as.Date(x, "%d/%m/%Y")
+
+   - 날짜 추출(library(lubridate))
+     - day(date): 일
+     - month(date): 월
+     - year(date): 년도
+
+   - 현재 날짜
+     - Sys.Date()
+     - Sys.time(): 현재 시간
+
+   - 그래프 여러개 그리기
+     - par(mfrow = c(a, b)): 가로 a개, 세로 b개의 그래프
+
+
+   - 변하지 않는 값(분산이 0) 제거(library(caret))
+     - nearZeroVar(data, saveMetrics): 결과 -> 인덱스
+                                       saveMetrics(TRUE면 상세 내역 확인)
+                                       -> freqRatio(값이 클수록 특정 값에 집중적으로 몰려있음),
+                                          percentUnique(값이 클수록 다양한 값 존재)
+                                          zeroVar(분산이 0)
+                                          nzv(분산이 거의 0) -> freqRatio가 19이상, percentUnique가 10% 이하
+
+     - 거의 변하지 않는 항목(열) 조회: colnames(data)[nzvResult]
+
+     - 연관성 높은 항목 도출 함수(library(FSelector))
+       - cfs
+       - chi.squared
+       - linear.correlation(이 함수만 범주형 안됌)
+       - information.gain
+       - random.forest.importance
+       ex) csR = chi.squared(Class ~ ., data)
+    
+       - 연관성 깊은 상위 항목만 도출
+         - cutoff.k(fun, k): fun(FSelector 패키지 함수 결과, csf 함수는 필요없음), k(보고싶은 항목 개수)
+
+   - 샘플링
+     - sample(data, n, replace): data(추출할 값의 범위), n(추출할 개수 or 비율), replace(TRUE면 복원 추출, 기본값은 FALSE)
+     - stratified(dataframe, group, size, replace): 특정 항목 기준으로 추출 (library(splitstackshape))
+                                                    group(기준 항목/열), size(추출 개수 or 비율) 
+
+   - 결측값 처리
+     - 결측값 시각화(library(VIM))
+       - aggr(data, numbers, sortVars, cex.axis): numbers(빈도수, 비율을 숫자로 표현할지(T or F)),
+                                                  sortVars(결측치가 많이 존재하는 항목 순으로 정렬 여부(T or F)),
+                                                  cex.axis(축 글자 크기)
+     - 결측값 대체(library(mice))
+       - mice(data, m, method, printFlag, seed): m(도출할 대체값 집합 개수, 기본값:5)
+                                                 method(적용할 알고리즘, 벡터 형식으로 지정하면 열별로 알고리즘 적용)
+                                                 printFlag(발생 로그 콘솔에 출력 여부)
+                                                 seed(set.seed 설정)
+       - 대체값 접근: miceResult$imp
+       - 대체값 구조 확인: summary(miceResult$imp)
+       - 대체값 추출한 알고리즘: miceResult$method
+       - 대체값 도출시 사용한 항목: miceResult$predictorMatrix
+       - 선택한 그룹으로 결측치 대체: complete(miceReulst, n) - n(대체값 집합 중 n번째 집합)
+
+------------------------------------------------------------------------------
+
+ - 군집분석 & 연관성 분석
+
+   - 표준화(평균 0, 표준편차 1)
+     - scale(x)
+
+   - 거리행렬 생성
+     - dist(dataframe, method): method - euclidean(유클리디안, 기본값), manhattan(맨하탄), Canberra(캔버라), minkowski(민코우스키)
+
+   - 계층적 군집분석
+     - hclust(dist, method): method - complete(최장연결, 기본값), single(최단연결), average(평균연결), centroid(중심연결)
+
+     - cutree(hclustResult, k): hclustResult(군집분석 결과), k(군집개수)
+                                결과 -> 인덱스
+   - 비계층적 군집분석
+     - pam(dataframe, k, stand): k(군집개수), stand(표준화 처리 여부, TRUE = 표준화한 후 분석), library(cluster)
+     - pamResult$medoids: 군집 중심 개체
+     - pamResult$clustering: 군집 결과
+
+   - 군집분석을 선택해 그래프화해서 분석(library(factoextra, rlang))
+     - fviz_nbclust(dataframe, clusterFunction, method, k.max): clusterFunction - hcut(hlcust), pam, kmeans 
+                                                                method - wss(elbow), silhouette(실루엣)
+   - 범주형 변수 군집분석(library(clustMixType))
+     - kproto(dataframe, k): k(군집개수) 
+                             -> hlcust, pam은 연속형 변수만 가능 
+                             => kproto는 범주형 변수도 가능, 내부적으로 표준화 처리
+     - 군집내 편차 제곱의 합: kprotoResult$tot.withinss
+     - 엘보우 그래프 그리기
+       
+       for(i in 1:10){
+        kprotoResult = kproto(data, i)
+        wss[i] = kprotoResult$tot.withinss
+       }
+       plot(wss, type = "b")
+     - 항목별 군집간 차이 확인
+       - clprofiles(kprotoResult, dataframe): dataframe(군집분석 시 사용한 데이터)
+
+   - %in% 연산자
+     - a %in% c("b", "c"): a항목에 b or c 포함
+     - a %ain% c("b", "c"): a항목에 b and c 포함
+     - a %oin% c("b", "c"): a항목에 b or c or b&c 포함
+     - a %pin% "b": a항목에 "b" 문자열이 들어간 부분
+
+   - 항목별 빈도수 시각화(library(arules))
+     - itemFrequencyPlot(transData, stand): transData(트랜잭션 데이터), 
+                                            stand(기준) - support, confidence, lift ex) support = 0.2
+   - 평행좌표 그래프(library(arulesViz))
+     - plot(aprioriResult[n], method="paracoord"): aprioriResult[n](연관성 분석 결과 n번째 규칙)
+
+   - 네트워크 그래프(library(arulesViz))
+     - plot(aprioriResult[a:b], method="graph"): aprioriResult[a:b](연관성 분석 결과 a부터 b번쨰 규칙)
+
+   - 트랜잭션 데이터 변환
+     - as(data, "transactions")
+
+   - 트랜잭션 내용 확인, 연관성 규칙 확인
+     - inspect(transData)
+
+   - 연관성 분석
+     - apriori(transData, parameter): parameter=list(support=a, confidence=b, minlen(연관성 규칙 최소 항목수), maxlen(연관성 규칙 최대 항목수))
+     
+     - 연관성 규칙 정렬
+       - sort(aprioriResult, by=c("support", "confidence", "lift"))
+
+     - 조건 or 결과에 단어 검색
+       - subset(aprioriResult, lhs(or rhs) %in% c("a"))
+
+     - 조건 or 결과 별도 추출해 리스트 변환
+       - as(lhs(aprioriResult), "list")
+       - as(rhs(aprioriResult), "list")
+
+     - 리스트 -> 벡터 변환
+       - unlist(list)
+
+     - 중복 항목 제거
+       - unique(vector)
+
+
+------------------------------------------------------------------------------
+
+ 피드백 보충
+
+ - SOM(자기조직화지도, Self-organizing map)
+  : 대뇌피질의 시각피질을 모델화한 인공신경망의 일종 
+    차원축소(dimensionality reduction)와 군집화(clustering)를 동시에 수행
+    사람이 눈으로 볼 수 있는 저차원(2차원 내지 3차원) 격자에 고차원 데이터의 
+    각 개체들이 대응하도록 인공신경망과 유사한 방식의 학습을 통해 
+    군집을 도출해내는 기법
+
+    - 오직 숫자형 데이터만 입력 가능
+    - som 알고리즘 학습방식은 초기에 가중치는 랜덤값으로 생성
+    - 장점 및 단점
+     - SOM의 최대 장점은 통합거리매트릭스를 이용하여 손쉽게 2차원 데이터의 
+      클러스터를 생성하고 데이터가 암시하는 패턴, 흥미로운 사실을 이해할 수 있음.
+     - 어떤 유사성/거리 함수를 선택하느냐에 따라 클러스터의 내용이 매우 
+      크게 달라질 수 있음.
+     - SOM 모델의 수학 연산상의 복장성으로 인해 수천 개 이상의 데이터세트는
+      분석하는 것이 불가능함.
+
+ ## kogonen 패키지의 som
+ ## 데이터셋이 list형이어야 함
+
+ # grid 갯수 및 모양 설정
+ # somgrid() 입력인자
+ # xdim: x의 차원, ydim: y의 차원, topo: 형태("hexagonal", "rectangular")
+
+ gr = somgrid(xdim = 3, ydim = 5, topo = "hexagonal") 
+
+ # som 학습하기
+ # supersom() 입력인자: data, grid, rlen, alpha, radius, init, toroidal, n.hood, keep.data
+ # grid: 출력층 표현, rlen: 학습횟수, alpha: 학습계수, radius: 뉴런의 반경
+ # init: 초기치, toroidal: map의 단말부 표현여부
+ # n.hood: 주변부 표현형태("circular" or "square"), keep.data: 자료수용여부
+
+ # 학습데이터 list형
+ train_set <- list( x = as.matrix(training[, -10]), Type = as.factor(training[, 10]))
+
+ # 테스트 데이터 list형
+ test_set <- list(x = as.matrix(test[, -10]), Type = as.factor(test[, 10])) 
+
+ ss = supersom(train_set, gr, rlen = 200, alpha = c(0.05, 0.01))
+
+ # upersom() 함수의 rlen(학습횟수)을 200로 지정하였기 때문에 
+ # 200회 SOM 알고리즘이 돌면서 각 뉴련의 가중치가 업데이트
+ # 학습을 거듭하면서 뉴런과 학습 데이터의 거리가 짧아짐
+ plot(ss, type = "changes")
+
+ # 학습된 som 모델의 각 뉴런이 몇 개의 학습 데이터와 
+ # 맵핑이 되는 지를 그림으로 확인
+ # som 모델의 질(quality)를 평가할 수 있는 하나의 지표
+ # 이상적으로 각 뉴런이 비슷한 갯수의 학습데이터와 맵핑이 되는 것이 좋으며 
+ # 맵핑이 되지 않는 뉴런이 있다면 som 모델의 신경망 크기가 
+ # 크다는 것는 것을 의미
+ # Node count plot
+ plot(ss, type = "count")
+
+ # 통상 통합거리메트릭스(U-matrix)
+ # U-matirx는 각 뉴런의 이웃간 거리를 나타냄
+ # 값이 높을 수록 그 뉴런은 이웃뉴런와 비유사
+ plot(ss, type="dist.neighbours", main = "SOM neighbour distances")
+
+ # 각 뉴런에 대한 학습 데이터의 가중치 기여율을 확인
+ plot(ss, type="codes")
+
+ # 정오분류표
+ # 행렬의 대각원소가 모델에 의해 정분류된 Case이며 이외는 오분류라고 판단
+ pred_som = predict(ss, test_set)
+ table(pred_som$predictions$Type, test[, 10])
+
+ - 다중클래스 정확도 산출(F1 score, ROC 곡선)
+
+  * ROC
+   : 임계치가 굉장히 높다면 진짜 도둑임에도 놓치는 경우도 생길 겁니다. 
+   반면, 억울한 사람은 굉장히 적어지겠죠. 이처럼 도둑을 많이 잡을수록 
+   높아지는 재현율(recall)과 억울한 사람이 늘어날 수록 높아지는 
+   위양성률(fall-out)은 일반적으로 양의 상관 관계를 가지는데, 
+   ROC(Receiver operating characteristics)는 저 관계를 그래프로 
+   나타냅니다.
+
+   혼동행렬 참고사이트: https://nittaku.tistory.com/295
+
+  # 라이브러리 로딩
+  library(datasets)
+  library(caret)
+  library(OneR)
+  library(pROC)
+  
+  # 데이터 분할
+  trainIndex <- createDataPartition(iris$Species, p = 0.6, list = FALSE, times=1)
+  trainingSet <- iris[ trainIndex,]
+  testingSet  <- iris[-trainIndex,]
+  train_x <- trainingSet[, -ncol(trainingSet)]
+  train_y <- trainingSet$Species
+  testing_x <- testingSet[, -ncol(testingSet)]
+  testing_y <- testingSet$Species
+
+  # oneR 알고리즘을 통한 예측값 산출(문자형)
+  oneRM <- OneR(trainingSet, verbose = TRUE)
+  oneRM_pred <- predict(oneRM, testing_x)
+  
+  # 혼동행렬 생성
+  cm <- as.matrix(confusionMatrix(oneRM_pred, testing_y))
+  n = sum(cm) # number of instances
+  nc = nrow(cm) # number of classes
+  rowsums = apply(cm, 1, sum) # number of instances per class
+  colsums = apply(cm, 2, sum) # number of predictions per class
+  
+  # 정확하게 분류된 클래스 개수
+  diag = diag(cm)  # number of correctly classified instances per class 
+  
+  # 정확도 = TP/TP+FP
+  precision = diag / colsums 
+  # 재현율(민감도) = TP/TP+FN
+  recall = diag / rowsums 
+  # F1 score = 2*(정확도*재현율)/(정확도+재현율)
+  f1 = 2 * precision * recall / (precision + recall) 
+  print(data.frame(precision, recall, f1))
+  
+  # 평균 정확도, 재현율, F1 score
+  macroPrecision = mean(precision)
+  macroRecall = mean(recall)
+  macroF1 = mean(f1)
+  print(" ************ Macro Precision/Recall/F1 ************")
+  print(data.frame(macroPrecision, macroRecall, macroF1))
+  
+  # 다중클래스 roc
+  roc.multi <- multiclass.roc(testing_y, as.numeric(oneRM_pred))
+  print(auc(roc.multi))
+
+- XGBOOST, 다층신경망 다중 클래스 분류 적용
+  - 다중 클래스 분류에 활용할 알고리즘: SOM, RF, mlp(nnet), multinom, xgboost
+## xgboost
+
+# 데이터 전처리(DMatrix화)
+training$Type = as.numeric(training$Type)
+test$Type = as.numeric(test$Type)
+
+labels = as.numeric(training$Type) - 1
+
+train_data = model.matrix(Type ~ . -1, data = training)
+test_data = model.matrix(Type ~ . -1, data = test)
+
+trainDx = xgb.DMatrix(data = train_data, label = labels)
+testDx = xgb.DMatrix(data = test_data)
+
+# 파라미터 설정
+params <- list(booster = "gbtree", objective = "multi:softmax", 
+               eta=0.3, gamma=0, max_depth=10, min_child_weight=1, subsample=0.8, colsample_bytree=0.8, num_class = 6)
+
+# xgboost 훈련
+set.seed(2011)
+xgbcv <- xgb.cv( params = params, data = trainDx, nrounds = 200, nfold = 5, 
+                 showsd = T, stratified = T, print_every_n = 10, early_stopping_rounds = 20, maximize = F)
+
+# 이상적인 반복횟수
+xgbcv$best_iteration
+
+# xgboost 적용
+xgb1 <- xgb.train (params = params, data = trainDx, nrounds = 34, watchlist = list(train = trainDx), print_every_n = 10, early_stopping_rounds = 10, maximize = F , eval_metric = "mlogloss")
+
+# 예측값 산출
+xgbpred <- predict (xgb1, testDx)
+xgbpred
+
+# 확률로 변환 (임계치: 0.5)
+# xgbpred <- ifelse (xgbpred > 0.5,1,0)
+
+cm <- as.matrix(xgb_cf_mat)
+n = sum(cm) # number of instances
+nc = nrow(cm) # number of classes
+rowsums = apply(cm, 1, sum) # number of instances per class
+colsums = apply(cm, 2, sum) # number of predictions per class
+
+# 정확하게 분류된 클래스 개수
+diag = diag(cm)  # number of correctly classified instances per class 
+
+# 예측값이 없을 경우 M x M 행렬이 아닌 M x N 행렬이 나옴
+# diag 값을 조정 (없는 예측값은 0)
+
+cm
+diag
+diag = append(diag, 2, 4)
+diag = append(diag, 12, 5)
+diag
+
+# 정확도 = TP/TP+FP
+precision = diag / colsums 
+# 재현율(민감도) = TP/TP+FN
+recall = diag / rowsums 
+
+# F1 score = 2*(정확도*재현율)/(정확도+재현율)
+f1 = 2 * precision * recall / (precision + recall) 
+
+# 예측값이 없을 경우 f1 score에 NaN 발생 => 0 대치
+f1[3] = 0
+f1[4] = 0
+
+print(data.frame(precision, recall, f1))
+
+# 평균 정확도, 재현율, F1 score
+xgb_macroPrecision = mean(precision)
+xgb_macroRecall = mean(recall)
+xgb_macroF1 = mean(f1)
+print(" ************ Macro Precision/Recall/F1 ************")
+print(data.frame(xgb_macroPrecision, xgb_macroRecall, xgb_macroF1))
+
+# 다중클래스 roc
+xgb_roc_multi <- multiclass.roc(test$Type, as.numeric(xgbpred))
+print(auc(multinom_roc_multi))
+xgb_auc = as.numeric(xgb_roc_multi$auc)
+
+# 혼동행렬 생성
+confusionMatrix(xgbpred, test$Type)
+
+## nnet(분류할 클래스 수에 비해 데이터가 적은 경우. 다층 신경망 불가)
+data_nnfit = nnet(Type ~ ., data = training, size = 6, rang = 0.5, decay = 1e-2, maxit = 2000)
+summary(data_nnfit)
+
+pred_nnet = predict(data_nnfit, newdata = test, type = "class")
+pred_nnet
+
+# 혼동행렬 생성
+confusionMatrix(pred_nnet, test$Type)
+plot.nnet(data_nnfit)
+
+cm <- as.matrix(nnet_cf_mat)
+n = sum(cm) # number of instances
+nc = nrow(cm) # number of classes
+rowsums = apply(cm, 1, sum) # number of instances per class
+colsums = apply(cm, 2, sum) # number of predictions per class
+
+# 정확하게 분류된 클래스 개수
+diag = diag(cm)  # number of correctly classified instances per class 
+diag = append(diag, 0, 2)
+diag[4] = 1
+diag[5] = 1
+diag[6] = 12
+diag
+cm
+rowsums
+colsums
+
+# 정확도 = TP/TP+FP
+precision = diag / colsums 
+# 재현율(민감도) = TP/TP+FN
+recall = diag / rowsums 
+# F1 score = 2*(정확도*재현율)/(정확도+재현율)
+f1 = 2 * precision * recall / (precision + recall) 
+f1[3] = 0
+print(data.frame(precision, recall, f1))
+# 평균 정확도, 재현율, F1 score
+nnet_macroPrecision = mean(precision)
+nnet_macroRecall = mean(recall)
+nnet_macroF1 = mean(f1)
+print(" ************ Macro Precision/Recall/F1 ************")
+print(data.frame(nnet_macroPrecision, nnet_macroRecall, nnet_macroF1))
+
+# 다중클래스 roc
+nnet_roc_multi <- multiclass.roc(test$Type, as.numeric(pred_nnet))
+print(auc(nnet_roc_multi))
+nnet_auc = as.numeric(nnet_roc_multi$auc)
+
+## MLP (RSNNS 패키지, 다중 클래스 분류)
+
+training2 = training %>% select(-Type)
+test2 = test %>% select(-Type)
+
+# decodeClassLabels(): 종속변수를 더미변수로 변환(0, 1)
+# learnFuncParams: 학습 함수의 파라미터[0, 1]
+mod<-mlp(training2, decodeClassLabels(training[, "Type"]), size=c(4, 4, 4), learnFuncParams=c(0.1), maxit = 4000)
+summary(mod)
+predictions <- predict(mod, test2)
+predictions
+
+# 혼동행렬
+table(test$Type, encodeClassLabels(predictions))
+
+## multinom (다중 로지스틱 회귀)
+data_multinom = multinom(Type ~ ., data = training)
+pred_multinom = predict(data_multinom, newdata = test)
+as.matrix(confusionMatrix(pred_multinom, test$Type))
+
+--------------------------------------------------------------------------------
+
+ - 자연어 처리(NLP)
+
+  <참고사이트> https://rpubs.com/LuizFelipeBrito/NLP_Text_Mining_001
+  
+  - 자주 사용하는 라이브러리
+  
+  dplyr: 데이터 조작 문법
+  ggplot2: 그래픽 문법을 사용하여 우아한 데이터 시각화 작성
+  tidytext: 'dplyr', 'ggplot2' 및 기타 정리 도구를 사용한 텍스트 마이닝
+  stringr: 일반 문자열 작업에 대한 단순하고 일관된 래퍼
+  tidyr: 'spread()' 및 'gather()' 기능으로 데이터를 쉽게 정리
+  wordcloud: 워드 클라우드
+  reshape2: 유연한 데이터 재구성: 재구성 패키지 재부팅
+  hunspell: 고성능 Stemmer, Tokenizer 및 맞춤법 검사기
+  SnowballC: C '리브스템머' UTF-8 라이브러리에 기반한 Stemmer
+  xtable: 테이블을 LaTeX 또는 HTML로 내보내기
+  knitr: 동적 보고서 작성을 위한 Genaral-Package in R
+  kableExtra: 'kable' 및 파이프 구문을 사용하여 복합 테이블 구성
+
+  - NLP 과정(영어)
+
+   - 텍스트 사전 처리
+
+   cleaned_text <- raw_text %>% filter(str_detect(text_review, "^[^>]+[A-Za-z\\d]") | text_review !="") 
+   cleaned_text$text_review <- gsub("[_]", "", cleaned_text$text_review)
+   cleaned_text$text_review <- gsub("<br />", "", cleaned_text$text_review)
+
+   - 토큰화 (텍스트를 개별 토큰으로 나눔)
+     : 토큰은 우리가 분석에 사용하는 데 관심이 있는, 가장 흔히 한 단어의 의미 있는 텍스트 단위
+
+   text_df <- tibble(id_review = cleaned_text$id_review , text_review = cleaned_text$text_review)
+   text_df <- text_df %>%  unnest_tokens(word, text_review)
+
+   - 파생어 (토큰화 후 각 단어를 뿌리(줄기)와 결합, 세분화하여 분석)
+
+   getStemLanguages() %>%
+   kable() %>%
+   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F)
+
+   text_df$word <- wordStem(text_df$word,  language = "english")
+   head(table(text_df$word)) %>%
+   kable() %>%
+   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F)
+
+   - 중지 단어 (텍스트 분석에서 일반적으로 "the", "of", "to" 등과 같은 극히 일반적인 단어인 중지 단어를 제거)
+
+   data(stop_words)
+   text_df <- text_df %>% anti_join(stop_words, "word")
+
+   - 가장 일반적인 단어들을 전체적으로 찾아내고 시각화
+
+   xtable(head(text_df %>% 
+   count(word, sort = TRUE))) %>%
+   kable() %>%
+   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F)
+
+   # Plot_01_word_count
+   text_df %>% 
+   count(word, sort = TRUE) %>% 
+   filter(n > 3000) %>% 
+   mutate(word = reorder(word, n)) %>% 
+   ggplot(aes(word, n)) + 
+   geom_col() + 
+   xlab(NULL) + 
+   coord_flip()
+
+   - 감정 분석 (텍스트 마이닝의 도구를 사용하여 텍스트의 감정적 내용에 프로그래밍적으로 접근)
+   #get_sentiments("bing")
+   #bing 어휘집 : 단어를 긍정 부정으로만 분류
+   
+   #get_sentiments("afinn")
+   #AFINN 어휘집은 : 긍정/ 부정 단어들을 각각 -5에서 +5점 사이 점수들 준다
+   
+   #get_sentiments("nrc")
+   #NRC 어휘집은 : 긍정, 부정, 분노, 기대감, 혐오감, 두려움, 기쁨, 슬픔, 놀라움 및 신뢰 범주로 단어 구분
+
+   Sentiment_Analysis <- text_df %>% 
+   inner_join(get_sentiments("bing"), "word") %>% 
+   count(id_review, sentiment) %>% 
+   spread(sentiment, n, fill = 0) %>% 
+   mutate(sentiment = positive - negative)
+
+   * 본문의 정서를 분석하는 한 가지 방법은 본문을 개별단어의 조합으로, 전체 본문의 정서의 내용을 개별단어의 정서의 합으로 보는 것
+
+   head(Sentiment_Analysis)%>%
+   kable() %>%
+   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), full_width = F)
+
+   - 가장 긍정적이고 부정적인 단어. 각각의 감정에 기여하는 단어 수를 분석
+
+   Sentiment_Analysis_Word_Count <- text_df %>% 
+   inner_join(get_sentiments("bing"), "word") %>% 
+   count(word, sentiment, sort = TRUE) %>% 
+   ungroup()
+
+   #Pot_02_word_count
+   Sentiment_Analysis_Word_Count %>% 
+   group_by(sentiment) %>% 
+   top_n(12, n) %>%
+   ungroup() %>%
+   mutate(word = reorder(word, n)) %>%
+   ggplot(aes(word, n, fill = sentiment)) + 
+   geom_col(show.legend = FALSE) + 
+   facet_wrap(~sentiment, scales = "free_y") + 
+   labs(y = "Contribution to Sentiment", x = NULL) + 
+   coord_flip()
+
+   - 검토의 긍정/부정적 평가 점수에 가장 큰 기여를 하는 단어
+
+   Sentiment_Analysis_Word_Contribution <- text_df %>% 
+   inner_join(get_sentiments("afinn"), by = "word") %>% 
+   group_by(word) %>% 
+   summarize(occurences = n(), contribution = sum(score))
+
+   #PLot_03_word_contribution
+   Sentiment_Analysis_Word_Contribution %>% 
+   top_n(50, abs(contribution)) %>%
+   mutate(word = reorder(word, contribution)) %>%
+   ggplot(aes(word, contribution, fill = contribution > 0)) + 
+   geom_col(show.legend = FALSE) + 
+   coord_flip()
+
+   - Word Clouds
+
+   #plot_04_word_cloud
+   text_df %>% 
+   anti_join(stop_words, "word") %>%
+   count(word) %>% 
+   with(wordcloud(word, n, max.words = 100))
+
+   #pplot_05_word_clouD
+   text_df %>% 
+   inner_join(get_sentiments("bing"), "word") %>%
+   count(word, sentiment, sort = TRUE) %>% 
+   acast(word ~ sentiment, value.var = "n", fill = 0) %>% 
+   comparison.cloud(colors = c("gray20", "gray80"), max.words = 100)
+
+   - 통계 tf-idf (문서의 모음(코퍼스)에 있는 문서에 단어가 얼마나 중요한지 표시하기 위한 것)
+     : 용어 빈도(tf) - 한 단어가 얼마나 중요할 수 있는지, 문서에서 얼마나 단어가 발생하는지를 보여주는 하나의 척도 
+       역 문서 빈도(idf) - 일반적으로 사용되는 단어의 가중치를 줄이고 문서 모음에서 그다지 많이 사용되지 않는 단어의 가중치를 높임 
+       tf-idf 첨부파일을 계산하여 텍스트에서 중요하지만 너무 흔하지는 않은 단어 찾기.
+
+   term_frequency_review <- text_df %>% count(word, sort = TRUE)
+   term_frequency_review$total_words <- as.numeric(term_frequency_review %>% summarize(total = sum(n)))
+   term_frequency_review$document <- as.character("Review")
+   term_frequency_review <- term_frequency_review %>% bind_tf_idf(word, document, n)
+
+   #Plot_06_tf_idf
+   term_frequency_review %>% 
+   arrange(desc(tf)) %>% 
+   mutate(word = factor(word, levels = rev(unique(word)))) %>% 
+   group_by(document) %>% 
+   top_n(15, tf) %>% 
+   ungroup() %>% 
+   ggplot(aes(word, tf, fill = document)) + 
+   geom_col(show.legend = FALSE) + 
+   labs(x = NULL, y = "tf-idf") + 
+   facet_wrap(~document, ncol = 2, scales = "free") + 
+   coord_flip()
+
+  - NLP 과정 (한국어)
+
+   - 문장 정제
+   gsub(pattern, replacement, x, ignore.case)
+   ex) gsub("ABC", "***", "ABCabcABC") => ***abc***
+  
+   - 정규표현식
+   . : 문자 1개 
+       ex) a.b: a와 b사이 문자한개
+   \\w: '_'을 포함한 문자와 숫자
+        ex) gsub("\\w", "*", "abcd안녕하세요^^")
+            => *********^^
+   \\W: '_'와 문자,숫자를 제외한 기호
+        ex) gsub("\\W", "*", "abcd안녕하세요^^")
+            => abcd안녕하세요**
+   \\d: 숫자
+        ex) gsub("\\d", "*", "1234안녕하세요^^")
+            => ****안녕하세요^^
+   \\D: 숫자를 제외한 기호와 문자
+        ex) gsub("\\D", "*", "1234안녕하세요^^")
+            => 1234*******
+   []: 대괄호 안의 문자 중 한 개
+        ex) a[bc]d => abd, acd
+   [^]: 대괄호 안의 문자가 없는 패턴
+        ex) a[^bc]d => aed, afd ...
+   [-]: 대괄호 안의 연속된 문자 패턴
+        ex) [a-d] => abcd
+   ?: 앞 문자가 0 또는 1회 
+      ex) a?b => b, ab
+   *: 앞 문자가 0회 이상
+      ex) a*b => b, ab, aab, aaab ...
+   +: 앞 문자가 1회 이상
+      ex) a+b => ab, aab, aaab ...
+   {}: 앞 문자가 N회
+      ex) [0-9]{4} => 0~9 사이 숫자 4개
+   \: 정규 표현식의 패턴 문자를 패턴이 아닌 문자로 인식
+      ex) a\+b => a+b
+   (): 패턴을 묶음 (|를 사용해 여러 패턴을 or 형태로 연결)
+      ex) (abc|poi)d => abcd, poid
+   [:punct]: 단락을 표현하는 문자들을 모은 집합
+
+   - XML 태그 공란으로 치환
+   gsub("<(\\/?)(\\w+)*([^<>]*)>", " ", vector)
+
+   - 단락을 표현하는 불필요한 문자를 공란으로 치환
+   gsub("[[:punct:]]", " ", vector)
+
+   - 영어 소문자를 공란으로 치환
+   gsub("[a-z]", " ", vector)
+
+   - 숫자를 공란으로 치환
+   gsub("[0-9]", " ", vector)
+
+   - 여러 공란을 한 개의 공란으로 변경
+   gsub(" +", " ", vector)
+
+   - 단어 추출(KoNLP)
+
+    - extractNoun: 문장에서 단어를 추출해 벡터로 반환
+    extractNoun("안녕하세요 오늘은 기분 좋은 하루 입니다")
+    -> 안녕 오늘 기분 하루
+    nouns = extractNoun(string)
+
+    - 길이가 1인 문자를 제외
+    nouns = nouns[nchar(nouns) > 1]
+
+    - 제외할 특정 단어를 정의
+    excluNouns = c("얼마", "오늘", "저희", "해서"...)
+
+    - 특정 단어를 제외
+    nouns = nouns[!nouns %in% excluNouns]
+
+    - 빈도수 기준으로 상위 N개 단어 추출
+      (워드 클라우드로 모든단어를 표현할 수 없음)
+
+    wordT = sort(table(nouns), decreasing = T)[1:50]
+
+  - 워드 클라우드(wordcloud2)
+
+   wordcloud2(data, size, shape)
+   - data: 단어와 빈도수 정보가 포함된 데이터프레임 또는 테이블
+   - size: 글자 크기
+   - shape: 워드 클라우드의 전체 모양(circle(기본값), cardioid, diamond,
+                                    triangle, star..)
+
+  - 웹 크롤링 참고사이트: https://m.blog.naver.com/PostView.nhn?blogId=knowch&logNo=221060289410&proxyReferer=https:%2F%2Fwww.google.com%2F
+
+-------------------------------------------------------------------------------------------
+
+  - My Study
+
+    - 정규화 함수
+
+     normalize <- function(x) {
+      return((x-min(x))/(max(x)-min(x)))
+     }
+
+    - scale(x)
+      : 표준화
+
+    - 다중 리턴값을 가지는 함수
+    
+     myfunc <- function(x,y) {   
+        val.sum <- x+y   
+        val.mul <- x*y   
+        return(list(sum=val.sum, mul=val.mul))   
+     } 
+
+
+    - 데이터 분류 함수
+
+     data_split = function(data, p = 0.7, seed = 1234){
+      
+       set.seed(seed)
+       n <- nrow(data)
+       idx <- 1:n
+       train_idx <- sample(idx, n * p)
+       validate_idx <- setdiff(idx, train_idx)
+      
+       train_data <- data[training_idx, ]
+       vali_data <- data[validate_idx, ]
+       return(list(train_data, vali_data))
+     }
+
+    - 메모리 확인 & 부족 해결
+      # 현재 사용 메모리 확인
+      memory.size()
+
+      # 최대 가상 메모리 확인
+      memory.limit()
+
+      # 최대 가상 메모리 5000mb로 늘리기
+      memory.limit(5000)
+
+    - caret::RMSE(ypred, ytrue)
+      : rmse 구하기
+
+    - caret::MAE(ytrue, ypred)
+      : mae 구하기
+
+    - ctrl + shift + c
+      : 드래그한 곳 한번에 주석처리
+
+    - 데이터 읽기/쓰기 함수 비교
+
+    write.csv(), read.csv() : base 패키지
+    write_csv(), read_csv() : readr 패키지
+    fwrite(), fread() : data.table 패키지
+    saveRDS(), readRDS() : base 패키지
+    write_feather(), read_feather() : feather 패키지
+
+    write.csv(), read.csv() : 기본 함수. 권장하지 않음
+    fwrite(), fread() : 데이터 압축 없음, 문자 데이터 읽고 쓰기가 빠름, 텍스트 에디터 등으로 바로 열람 가능
+    write_csv() read_csv() : 데이터 압축 없음, 무난한 읽기 및 쓰기 속도, 텍스트 에디터 등으로 바로 열람 가능
+    saveRDS(), readRDS() : 높은 데이터 압축률, 빠른 읽기 속도, 느린 쓰기 속도
+    write_feather() read_feather() : 낮은 데이터 압축률, 매우 빠른 읽기 및 쓰기 속도
+
+    read.csv     = read.csv(file="df_num.csv", header=F),
+    fread        = fread(file="df_num.csv", header=F, showProgress = F),
+    read_csv     = read_csv(file="df_num.csv", col_names = F, progress = F),
+    readRDS      = readRDS(file="df_num.rds"),
+    read_feather = read_feather(path="df_num.feather")
+
+    write.csv     = write.csv(df_str, file="df_str.csv"),
+    fwrite        = fwrite(df_str, file="df_str.csv", col.names = F),
+    write_csv     = write_csv(df_str, path="df_str.csv", col_names = F),
+    saveRDS       = saveRDS(df_str, file="df_str.rds"),
+    write_feather = write_feather(df_str, path="df_str.feather")
+
+    - 엑셀, CSV 등 파일 불러올 때 영어 깨짐 현상 (첫 번째 데이터 or 열이름)
+    # fileEncoding="UTF-8-BOM" 추가
+    read.csv("data/loan_train.xls", encoding = "utf-8", fileEncoding="UTF-8-BOM", stringsAsFactors = FALSE)
+
+    - 변수 자료형(타입) 확인
+
+    typeof(x)
+    is.double(x)
+    is.integer(x)
+    is.character(x)
+    is.factor(x)
+    ...
+
+    - 수치형 변수 로그 변환 함수
+
+    # log 변환 함수
+  
+    log1p_transf = function(data){
+      for(i in 1:length(data)){
+        if(typeof(unlist(data[i])) == "integer" | typeof(unlist(data[i])) == "double"){
+          data[i] = log1p(data[i])
+        } 
+      }
+      return(data)
+    }
+    
+    train = log1p_transf(train)
+
+    - 더미변수화
+
+    library(fastDummies)
+
+    # 더미 변수를 컬럼 측에 생성
+    # remove_first_dummy: 열에 처음 변수를 제외
+    dummy_cols(.data = data, select_columns = c("col1", "col2"), remove_first_dummy = FALSE)
+
+
+    - Error in eval(predvars, data, env) : object '변수명' not found 에러 해결방법
+      -> R에서 여러 데이터를 불러오기 때문에 어떤 데이터의 변수명인지 인식 못하는 문제
+      -> attach(데이터프레임) 사용
+
+----------------------------------------------------------------------------
+<ADP 준비 노트3>
+
+- timestamp
+# timestamp 변수 형식: 1543590900
+# 시계열 변수로 변환
+library(lubridate)
+as_datetime(1543590900)
+
+# timestamp 형식의 칼럼을 변환하고 연,월,일,시,분 분리
+df$datetime <- as_datetime(df$timestamp)
+dt$yyyymmdd <- format(df$datetime, "%Y%m%d")
+df$hhmm <- format(df$datetime, '%H%S')
+
+# lubridate 함수 사용법
+year(dt)
+month(dt)
+day(dt)
+minute(dt)
+second(dy)
+wday(dt, label = T)
+now()
+
+- 나이브 베이지반 분류 분석
+
+# 나이브 베이지안 패키지
+library(klaR)
+
+# 나이브 베이지안 함수 입력인자1
+# NaiveBayes(formula, data, subset, na.action)
+# subset: 그룹
+# na.action: 결측치 처리 방법
+
+# 나이브 베이지안 함수 입력인자2
+# NaiveBayes(x, grouping, prior, usekernel)
+# x: 독립변수(수치형 메트릭스 or 수치 벡터로 이루어진 데이터프레임)
+# grouping: 종속변수(factor)
+# prior: 각 클래스에 대한 사전확률(설정하지 않으면 학습 데이터의 분류비율로 설정됨)
+# usekernel: TRUE이면 kernel density estimate 방법 사용, FALSE 이면 정규분포
+
+nb <- NaiveBayes(Species ~ ., data = iris, subset = train)
+nb_predict <- predict(nb, iris[-train, ])$class
+
+# 정오분류표
+confusionMatrix(iris$Species[-train], nb_predict)
+
+- caret 패키지를 활용한 하이퍼 파라미터 튜닝
+# caret 패키지 로딩
+library(caret)
+
+# 데이터 분할
+# createDataPartition(y = 분할할 변수, p = 분할 비율, list = FALSE)
+idx <- createDataPartition(iris$Species, p = 0.7, list = F)
+train <- iris[idx, ]
+test <- iris[-idx, ]
+
+# 데이터 변환
+# preProcess(x = 변환할 데이터, method = 변환 방식)
+# method = "range": 최대-최소 정규화
+# method = c("center", "scale"): 표준화
+prepro <- preProcess(x = iris[:, -5], method = c("center", "scale"))
+
+# 훈련 컨트롤
+# trainControl(method = 데이터 샘플링 기법, number = 교차 검증을 몇 개의 fold로 나눌지/부트스트래핑을 몇 번 수행할 것인지, repeats = 데이터 샘플링 반복 횟수)
+# method = "boot": 부트스트래핑
+# method = "CV": CV fold 교차 검증
+# method = "repeatedcv" 반복 교차 검증
+# method = "LOOCV": Leave One Out 교차 검증
+# method = "none": 교차 검증 적용 X
+tune <- trainControl(method = "repeatedcv", number = 5, repeats = 5)
+
+# 각 알고리즘별 필요한 파라미터 제공
+# modelLookup(알고리즘 이름)
+modelLookup("rf")
+
+# GridSearch
+# expand.grid(변수 = 튜닝할 변수 범위)
+tune_grid <- expand.grid(mtry = 1:4, min.node.size = 1:5)
+
+# RandomSearch
+# 모든 하이퍼 파라미터 튜닝을 해보는 GridSearch의 오랜 훈련시간 단점을 보완
+# 가능한 경우의 수가 지나치게 많은 경우 효과적으로 사용됨
+tune <- trainControl(method = "repeatedcv", number = 5, repeats = 5, search = "random")
+
+# 모델 훈련
+# train(formula, data, method, trControl, preProcess, tuneGrid, weights, metric)
+# method: 적용할 알고리즘
+# weights: 데이터의 가중치
+# metric: 평가 메트릭
+model_fit <- train(Species ~ ., data = train, method = "rf", trControl = tune, preProcess = prepro, tuneGrid = tune_grid)
+model_fit
+
+# 지원되는 전체 모델 목록 확인
+names(getModelInfo())
+
+# 모델 예측
+pred <- predict(model_fit, test)
+
+# 병렬 처리
+library(doMC)
+
+# 현재 활성화된 코어수 확인
+getDoParWorkers()
+
+# 코어수 확장
+registerDoMC(cores = 2)
+
+- 텍스트 마이닝
+
+# KoNLP에 필요한 패키지 로딩
+library(Sejong)
+library(hash)
+library(tau)
+library(RSQLite)
+# rJava를 올리기 전에 java 위치를 지정
+Sys.setenv(JAVA_HOME = 'C:/Program Files/Java/jre1.8.0_221')
+library(rJava)
+library(devtools)
+library(KoNLP)
+
+# 시각화, 데이터 마이닝에 필요한 패키지 로딩
+library(wordcloud)
+library(tm)
+
+#### 토픽분석 (단어 워드클라우드)
+
+### 페이스북 텍스트마이닝
+## 텍스트 자료 가져오기
+facebook <- file("C:/data/facebook_bigdata.txt", encoding = "UTF-8")
+# 줄 단위 데이터 생성
+facebook_data <- readLines(facebook)
+
+## 세종 사전에 신규 단어 추가
+# term(): 추가 단어 저장
+# tag(): 저장된 문자의 형태 저장
+# 'ncn': 명사
+userDic <- data.frame(term = c("R 프로그래밍", "페이스북", "소셜네트워크", "얼죽아"), tag = 'ncn')
+
+# 신규 단어 사정 추가 함수
+buildDictionary(ext_dic = 'sejong', user_dic = userDic)
+
+## 단어 추출 위한 사용자 정의 함수
+# paste(): 나열된 원소 사이에 공백을 두고 결과값을 출력
+# extractNoun(): 명사를 추출
+# collapse = "": 찾은 단어 사이 () 넣기
+paste(extractNoun("...", collapse = " "))
+
+## 단어 추출을 위한 사용자 정의 함수 정의하기
+# 사용자 정의 함수 작성
+# 문자형 변환 -> 명사 단어 추출 -> " "로 데이터 연결하여 하나의 문자열로 출력
+exNouns <- function(x){
+  paste(extractNoun(as.character(x)), collapse = " ")
+}
+
+# exNouns 함수 이용 단어 추출
+facebook_nouns <- sapply(facebook_data, exNouns)
+
+## 추출된 단어 대상 전처리
+# 말뭉치 생성
+# VectorSource(): vector 형으로 변환
+myCorpus <- Corpus(VectorSource(facebook_nouns))
+
+# 데이터 전처리
+# tm_map(): Corpus로 처리된 데이터를 받아서 필터링
+# 문장부호 제거
+myCorpusPrepro <- tm_map(myCorpus, removePunctuation)
+
+# 수치 제거
+myCorpusPrepro <- tm_map(myCorpusPrepro, removeNumbers)
+
+# 영문자 소문자로 변경
+myCorpusPrepro <- tm_map(myCorpusPrepro, removetolower)
+
+# 불용어 제거
+myCorpusPrepro <- tm_map(myCorpusPrepro, removeWords, stopwords('english'))
+
+# 전처리 결과 확인
+inspect(myCorpusPrepro[1])
+
+## 단어 선별
+# 단어 2음절 ~ 8음절 사이 단어 선택하기
+# 한글 1음절 => 2byte에 저장
+# TermDocumentMatrix(): 분석에 필요한 단어 선별하고 단어/문서 행렬 생성
+myCorpusPrepro_term <- TermDocumentMatrix(myCorpusPrepro, control = list(wordLengths = c(4, 16)))
+
+# matrix 자료구조를 data.frame 자료 구조로 변경
+myTerm_df <- as.data.frame(as.matrix(myCorpusPrepro_term))
+dim(myTerm_df)
+
+## 단어 출현 빈도수 구하기
+# 빈도수 높은 순서대로 내림차순 정렬
+wordResult <- sort(rowSums(myTerm_df), decreaing = T)
+wordResult[1:10]
+
+## 불필요한 용어 제거 시작
+# 문장부호 제거
+myCorpusPrepro <- tm_map(myCorpus, removePunctuation)
+
+# 수치 제거
+myCorpusPrepro <- tm_map(myCorpusPrepro, removeNumbers)
+
+# 영문자 소문자로 변경
+myCorpusPrepro <- tm_map(myCorpusPrepro, removetolower)
+
+# 불용어 제거
+myCorpusPrepro <- tm_map(myCorpusPrepro, removeWords, stopwords('english'))
+
+# 불용어 선택해 제거
+myStopwords <- c(stopwords('english'), "사용", "하기")
+myCorpusPrepro <- tm_map(myCorpusPrepro, removeWords, myStopwords)
+
+# 단어 선별
+myCorpusPrepro_term <- TermDocumentMatrix(myCorpusPrepro, control = list(wordLengths = c(4, 16)))
+
+# matrix 자료구조를 data.frame 자료 구조로 변경
+myTerm_df <- as.data.frame(as.matrix(myCorpusPrepro_term))
+dim(myTerm_df)
+
+# 빈도수 높은 순서대로 내림차순 정렬
+wordResult <- sort(rowSums(myTerm_df), decreaing = T)
+wordResult[1:10]
+
+## 단어 구름 시각화
+# 디자인 적용전
+# 단어 이름 추출
+myName <- names(wordResult)
+# 단어 구름 시각화
+wordcloud(myName, wordResult)
+
+# 단어 구름에 디자인 적용
+# 단어 이름과 빈도수로 data.frame 생성
+word.df <- data.frame(word = myName, freq = wordResult)
+
+# 단어 색상과 글꼴 지정
+# 12가지 색상 팔레트
+pal <- brewer.pal(12, "Paired")
+windowsFonts(malgun = windowsFont("맑은 고딕"))
+brewer.pal(색상의 수)
+
+# 단어 구름 시각화
+# 별도의 창을 띄우는 함수
+x11()
+wordcloud(word.df$word, word.df$freq, scale = c(5, 1), min.freq = 3, random.order = F, rot.per = .1, colors = pal, family = "malgun")
+# 가장 큰 크기를 가운데 고정
+random.order = F
+
+### 노래 가사 텍스트 마이닝
+## 데이터 불러오기
+txt <- readLines("data/hiphop.txt")
+
+## 특수문자 제거
+# str_replace_all(변수, 변경 전 문자, 변경 후 문자): 문자 변경
+# \\W: 특수 문자
+txt1 <- str_replace_all(txt, "\\W", " ")
+
+## 명사 추출
+nouns <- extractNoun(txt1)
+
+## 명사 list를 문자열 벡터로 변환, 단어별 빈도표 생성
+wordcount <- table(unlist(nouns))
+head(wordcount); tail(wordcount)
+
+## 데이터프레임으로 변환
+df_word <- as.data.frame(wordcount, stringsAsFactors = F)
+
+## 변수명 수정
+names(df_word) <- c('word', 'freq')
+
+## 상위 20개 내림차순으로 추출
+df_word <- filter(df_word, nchar(word) >= 2)
+top_20 <- df_word %>% arrange(desc(freq)) %>% head(20)
+
+## 시각화
+pal <- brewer.pal(8, "Dark2")
+set.seed(1234)
+# rot.per: 단어의 회전각
+# scale: 텍스트들의 비율 및 크기
+wordcloud(word = df_word$word, freq = df_word$freq, min.freq = 2, max.words = 200, random.order = F, rot.per = .1, scale = c(4, 0.3), colors = pal)
+
+#### 연관어 분석
+
+## 텍스트 로딩
+marketing <- file("data/marketing.txt", encoding = "UTF-8")
+marketing2 <- readLines(marketing)
+
+## 줄 단위 단어 추출
+# Map(함수, 변수): 변수에 함수를 적용
+lword <- Map(extractNoun, marketing2)
+# 빈 block 필터링
+lword <- unique(lword)
+str(lword)
+
+## 단어 필터링 함수 정의
+# 길이가 2개 이상 4개 이하 사이의 문자 길이로 구성된 단어
+filter1 <- function(x){
+  nchar(x) >= 2 && nchar(x) <= 4 && is.hangul(x)
+}
+filter2 <- function(x){
+  Filter(filter1, x)
+}
+
+## 줄 단위로 추출된 단어 전처리
+# 단어 길이 1이하 또는 5이상인 단어 제거
+lword <- sapply(lword, filter2)
+
+## 트랜잭션 생성
+libary(arules)
+
+wordtran <- as(lword, "transactions")
+
+## 교차평 작성
+# crossTable(): 교차테이블 함수
+# 유사 단어들이 함께 있는 형태로 출력
+wordtable <- crossTable(wordtran)
+
+## 단어 간 연관 규칙 산출
+# support: 지지도 = A와 B가 동시에 일어난 횟수 / 전체 거래 횟수
+# conf: 신뢰도 = A와 B가 동시에 일어난 횟수 / A가 일어난 횟수
+transrules <- apriori(wordtran, parameter = list(support = 0.25, conf = 0.05))
+
+## 연관 규칙 생성 결과
+inspect(transrules)
+
+## 연관어 시각화
+# 자료 구조 변경
+# 연관규칙 레이블을 " "로 분리
+rules <- labels(transrules, ruleSep = " ")
+
+# 문자열로 묶인 연관 단어를 리스트 구조로 변경
+rules <- sapply(rules, strsplit, " ", USE.NAMES = F)
+
+# 행 단위로 묶어서 matrix로 반환
+# do.call(함수, list): 함수의 인수에 리스트의 각각 요소를 제공 -> 함수를 한번만 호출
+# <-> lapply(): 각각 리스트 요소에 인수로 받은 함수를 적용 -> 함수를 여러번 호출
+rulemat <- do.call("rbind", rules)
+
+## 연관어 시각화를 위한 패키지
+library(igraph)
+
+# edgelist 보기
+# 연관 단어를 정점(vertex) 형태의 목록 제공
+# c(1:11) = "{}" 제외
+relueg <- graph.edgelist(rulemat[c(12:59), ], directed = F)
+
+# edgelist 시각화
+plot.igraph(relueg)
+
+# edgelist 시각화2
+plot.igraph(relueg, vertex.label = V(relueg)$name, vertex.label.cex = 1.2, vertex.label.color = 'black', vertex.size = 20, vertex.color = 'green', vertex.frame.color = 'blue')
+
+- 시계열 분석
+
+## 정상성 시계열
+# : 어떤 시계열자료의 변화 패턴이 평균값을 중심으로 일정한 변동폭을 갖는 시계열
+# = 시간의 추이와 관계없이 평균과 분산이 일정
+# -> 대부분의 시계열 자료는 다루기 어려운 비정상성 시계열자료이기 때문에 분석하기 쉬운 정상성 시계열 자료로 변환
+
+# 평균이 일정 = 모든 시점에 대해 일정한 평균을 가짐
+# -> 평균이 일정하지 않은 시계열은 차분(difference)을 통해 정상화
+# 차분: 현시점 자료에서 이전 시점 자료를 빼는 것
+# 일반차분: 바로 전 시점의 자료를 빼는 것
+# 계절차분: 여러 시점 전의 자료를 빼는 것(주로 계절성을 갖는 자료를 정상화하는데 사용)
+
+# 분산도 시점에 의존하지 않음
+# -> 분산이 일정하지 않은 시계열은 변환(transformation)을 통해 정상화
+
+# 공분산도 시차에만 의존하지 않음
+
+## 비정상성 시계열
+# -> 시간의 추이에 따라서 점진적으로 증가하는 추세
+# -> 분산이 일정하지 않은 경우
+
+## 시계열 분석 특징
+# 시간을 설명변수로 시계열을 반응변수로 사용
+# 과거와 현재의 현상을 파악하고 이를 통해서 미래 추정
+# 시간 축을 기준으로 계절성이 있는 자료를 데이터셋으로 사용
+# 선형성, 정규성, 등분산성 가정 만족
+# 유의수준 판단 기준이 존재하는 추론통계 방식
+# -> 모집단을 대표하는 샘플 데이터를 통해 전체를 추정
+
+## 시계열 분석 적용 범위
+# 기존 사실에 대한 결과 규명: 주별, 월별, 분기별, 년도별 분석을 통해 고객의 구매 패턴 분석
+# 시계열 자료 특성 규명: 시계열에 영향을 주는 일반적인 요소(추세, 계절, 순환, 불규칙)를 통해해서 분석
+# 가까운 미래에 대한 시나리오 규명: 탄소배출 억제를 성공했을 때와 실패했을 때 지구 온난화는 얼마나 심각해질 것인가
+# 변수와 변수의 관계 규명: 경기선행지수와 종합주가지수의 관계를 분석함
+# 변수 제어 결과 규명: 입력 변수의 제어를 통해서 미래의 예측 결과를 통제할 수 있음
+
+## 시계열 데이터 특성
+# 추세 변동(장기 변동요인)
+# 순환 변동(중장기 변동요인)
+# 계절 변동(단기 변동요인)
+# 불규칙 변동(설명할 수 없는 요인)
+
+## 시계열 분석 절차
+# 정상성 시계열로 변환
+# -> 평균 정상화: 차분
+# -> 분산 정상화: 로그 -> 차분
+# 모형 생성
+# -> 정상성을 가진 시계열 모형: 자귀회귀모형(AR), 이동평균모형(MA), 자귀회귀이동평균모형(ARMA)
+# -> 비정상성을 가진 시계열 모형: 자귀회귀누적이동평균모형(ARIMA)
+
+## 시계열 확인 예제
+# 데이셋 로딩
+data("AirPassengers")
+
+# 시각화 후 정상성을 확인
+x11()
+par(mfrow = c(1, 2))
+ts.plot(AirPassengers)
+# 차분, 변환 적용해 비정상성 시계열을 정상성 시계열 자료로 변환
+log <- diff(log(AirPassengers))
+plot(log)
+
+## 시계열 시각화 예제
+# 단일 시계열 자료 시각화
+# 데이터셋 로딩
+data("WWWusage")
+
+# 추세선 시각화
+# 추세: 어떤 현상이 일정한 방향으로 나아가는 경향
+x11()
+ts.plot(WWWusage, type = "l", col = "red")
+
+# 다중 시계열 자료 시각화
+data("EuStockMarkets")
+
+EuStock <- data.frame(EuStockMarkets)
+
+# 단일 시계열 데이터 추세선
+x11()
+plot(EuStock$DAX[1:1000], type = "l", col = "red")
+
+# 다중 시계열 데이터 추세선
+plot.ts(cbind(EuStock$DAX[1:1000], EuStock$SMI[1:1000]), main = "주가지수 추세선")
+
+## 시계열 요소 분해 시각화 예제
+data <- c(45,56, 45, 43, 69, 75, 58, 59, 66, 64, 62, 65, 55,49, 67, 55, 71,78, 71, 65, 69, 43, 70, 75)
+
+# 시계열 자료 생성
+# 시작: 2016년 1월, 주기: 12
+tsdata <- ts(data, start = c(2016, 1), frequency)
+
+# 추세선 확인
+par(mfrow = c(1, 1))
+ts.plot(tsdata)
+
+## 시계열 분해
+# stl(): 계졀요소, 추세, 잔차 등 모두 제공
+# periodic: 주기
+plot(stl(tsdata, "periodic"))
+
+# 시게열 분해와 변동 요인 제거
+# decompose(): 시계열 분해
+m <- decompose(tsdata)
+# 변수 확인
+attributes(m)
+# 기본 데이터셋, 추세요인, 계절요인, 불규칙 요인이 포함된 그래프
+plot(m)
+
+# 계절 요인을 제거한 그래프
+plot(tsdata - m$seasonal)
+
+# 추세요인과 불규칙요인 제거
+# 추세요인 제거 그래프
+plot(tsdata - m$trend)
+# 불규칙 요인만 출력
+plot(tsdata - m$seasonal - m$trend)
+
+## 자기 상관 함수 / 부분 자기 상관 함수
+# 자기상관성: 자기 상관 계수가 유의미한가를 나타내는 특성
+# 자기상관계수: 시계열 자료에서 시차(lag)를 일정하게 주는 경우 얻어지는 상관 계수
+# -> 시계열 변수의 시간에 따른 자기 상관 관계
+# -> 상관이 특정 시간에 대한 변수간의 상관관계라면 자기상관은 시간의 변화에 따른 변수 간의 상관관계 변화가 주 관심사 
+# 어떤 시계열 데이터가 일정한 패턴을 보임 = 자기 상관이 있음
+# -> 시간에 따라 변수의 값이 자기상관성을 가지고 변화하므로 무작위가 아닌 일정한 패턴을 보여준다고 할 수 있음
+# 자기 상관 활용 방안 => 데이터의 무작위성 파악
+# -> 자기상관 데이터가 -에 가까울 수록 무작위성이 있는 시계열 데이터로 판단할 수 있음
+# -> 0보다 큰 값을 가질수록 자기상관을 강하게 가진다고 할 수 있음
+
+# 자기 상관 계수 예제
+input <- c(3180, 3000, 3200, 3100, 3300, 3200, 3400, 3550, 3200, 3400, 3300, 3700)
+
+tsdata <- ts(input, start = c(2015, 2), frequency = 12)
+
+# 자기 상관 함수 시각화
+acf(na.omit(tsdata), main = "자기상관함수", col = "red")
+# -> 첫번째 값은 자기 자신과의 관계이므로 1이 나올 수 밖에 없음
+# -> 파란섬(임계치)안에 들어오면 자기상관계에 의해서 데이터셋 자체는 자기 상관성과 관련해서 자기상관성이 없음을 보여줌
+
+# 부분 자기 상관 함수 시각화
+pacf(na.omit(tsdata), main = "부분자기상관함수", col = "red")
+# -> 파란색 안에 들어오면 자기상관성이 없음
+# -> 시계열 데이터 시간의 의존성 여부가 무작위성을 띄느냐 띄지 않느냐를 자기상관함수로 판단할 수 있음
+# -> 무작위성을 띈다는 것은 random(무작위성이 있다)을 의미하고 파란선(임계치)을 넘어가는 것을 의미함
+
+## 추세 패턴 찾기 시각화
+# 추세 패턴: 시계열 자료가 증가 또는 감소하는 경향이 있는지 알아보고, 증가나 감소의 경향이 선형인지 비선형인지를 찾는 과정
+input <- c(3180, 3000, 3200, 3100, 3300, 3200, 3400, 3550, 3200, 3400, 3300, 3700)
+
+tsdata <- ts(input, start = c(2015, 2), frequency = 12)
+
+# 추세선 시각화
+plot(tsdata, type = "l", col = "red")
+
+# 자기 상관 함수 시각화
+acf(na.omit(tsdata), main = "자기상관함수", col = "red")
+
+# 차분 시각화
+plot(diff(tsdata, differences = 1))
+
+## 평활법
+# : 수학/통계적 방법의 분석이 아닌 시각화를 통한 직관적 방법의 데이터 분석 방법
+# -> 해석에 있어서 차이점이 발생, 주관적인 개입이 발생할 수 있음
+# -> 단기 예측용, 일변량 데이터
+# -> 시계열 자료의 체계적인 자료의 흐름을 파악하기 위해서 과거 자료의 불규칙적인 변동을 제거하는 방법
+
+# 이동 평균(Moving Average, MA): 시계열 자료를 대상으로 일정한 기간의 자료를 평균으로 계산하고 이동 시킨 추세를 파악하여 추세를 예측하는 분석 기법
+# 지수 평활법: 전체 데이터의 평균을 계산하고 전체 평균에 가장 최근의 값을 기준으로 일정 가정치를 부여해가면서 추적해가는 분석 기법(최근 데이터의 비중이 높음)
+# 이동평균 vs 지수평활
+# 이동평균 -> 모든 관측치에 동일한 가중치를 부여하여 이동평균법은 최근 관측치나 오래된 관측치나 동일한 가중치를 사용하므로 정보를 동일하게 이용하는 단점 존재, 과거 추세 패턴을 인지함
+# 지수평활 -> 최근 관측치에 가중치, 멀어질수록 지수적으로 가중치 값 감소시키는 방법인 미래 예측에 사용
+
+# 평활 예제
+library(TTR)
+plot(tsdata, main = "원 시계열 자료")
+plot(SMA(tsdata, n = 1), main = "1년 단위 이동평균법으로 평활")
+plot(SMA(tsdata, n = 2), main = "2년 단위 이동평균법으로 평활")
+plot(SMA(tsdata, n = 3), main = "3년 단위 이동평균법으로 평활")
+
+## ARIMA 모형 시계열 예측
+# ARIMA: 과거의 관측값과 오차를 사용해서 현재의 시계열 값을 설명하는 ARMA 모델을 일반화한 것
+# -> ARMA 모델이 안정적 시계열에만 적용가능한 것에 비해 분석 대상이 약간은 비안정적 시계열의 특징을 보여도 적용이 가능하다는 의미
+# 형식: ARIMA(p, d, q)
+# -> p: AR모형 차수, d: 차분 차수, q: MA모형 차수
+# -> d = 0 이면 ARMA(p, q)모형이며 정상성을 만족함
+# -> q = 0 이면 IAR(p, d)모형이며 d번 차분하면 AR(p)모형을 따름
+# -> p = 0 이면 IMA(d, q)모형이며 d번 차분하면 MA(q)모형을 따름
+
+# ARIMA 분석 예제
+input <- c(3180, 3000, 3200, 3100, 3300, 3200, 3400, 3550, 3200, 3400, 3300, 3700)
+
+tsdata <- ts(input, start = c(2015, 2), frequency = 12)
+
+plot(tsdata, type = "l", col = 'red')
+
+# 정상성 시계열로 변환
+par(mfrow = c(1, 2))
+ts.plot(tsdata)
+diff <- diff(tsdata)
+plot(diff)
+
+# 모형 식별과 추정
+library(forecast)
+arima <- auto.arima(tsdata)
+arima
+# AIC/BIC: 이론적 예측력을 나타내는 지표 -> 값이 적은 모형 선택
+
+# 예측을 위한 모형 생성
+model <- arima(tsdata, order = c(1, 1, 0))
+model
+
+# 모형 진단(타당성 검정)
+# -> 잔차가 백색 작음(white noise) 검정(모형의 잔차가 불규칙적이고 독립적)
+
+# 자기상관함수에 의한 모형 진단
+tsdiag(model)
+# 모두 파란선(임계치)안에 들어있음
+# -> 자기 상관관계가 없음
+# -> 규칙성이 없음(불규칙성)
+# p-value 값이 0이상으로 분포
+# -> ARIMA 모형은 매우 양호한 시계열 모형
+# => 모형 적합
+
+# Box-Ljung에 의한 잔차항 모형 진단(잔차 값을 통한 모형)
+Box.test(model$residuals, lag = 1, type = "Lung")
+# -> 모형의 잔차를 이용하여 카이제곱검정 방법으로 시계열 모형이 통계적으로 적절한지를 검정하는 방법
+# -> p-value가 0.05 이상이면 모형이 통계적으로 적절하다고 볼 수 있음
+
+# 미래 예측(업무 적용)
+fore <- forecast(model)
+# 예측 시각화
+# 향후 24개월 예측치 시각화
+par(mfrow = c(1, 2))
+plot(fore)
+
+# 향후 6개월 예측치 시각화
+model2 <- forecast(model, h = 6)
+plot(model2)
+
+## 정상성 시계열의 계절형
+tsdata <- AirPassengers
+
+# 시계열 요소 분해 시각화
+ts_feature <- stl(tsdata, s.window = "periodic")
+plot(ts_feature)
+
+# 정상성 시계열 변환
+par(mfrow = c(1, 2))
+ts.plot(tsdata)
+diff <- diff(tsdata)
+plot(diff)
+
+# 모형 식별과 추정
+ts_model2 <- auto.arima(tsdata)
+ts_model2
+# 결과: ARIMA(2, 1, 1)(0, 1, 0)[12]
+
+# 모형 생성
+model <- arima(tsdata, c(2, 1, 1), seasonal = list(order = c(0, 1, 0)))
+
+# 모형 진단
+# 자기상관함수에 의한 모형 진단
+tsdiag(model)
+
+# Box-Ljung에 의한 잔차항 모형 진단
+Box.test(model$residuals, lag = 1, type = "Ljung")
+
+# 미래 예측
+par(mfrow = c(1, 2))
+fore <- forecast(model, h = 24)
+plot(fore)
+fore2 <- forecast(model, h = 6)
+plot(fore2)
+
+## ggplot을 활용한 계절성 시계열 분석 1
+library(ggplot2)
+
+# autoplot(): 자동으로 그래프를 생성해주는 함수
+autoplot(euretail)  + ylab("소매 지수") + xlab("연도")
+# 약간의 계절성을 보임
+# -> 계절성 차분을 해 시각화
+
+# diff(lag = n): 계절성 차분, n = 4: 분기 / n = 12: 월별 ...
+# ggtsdiplay(): 시계열 시각화와 acf, pacf 그래프 시각화
+euretail %>% diff(lag = 4) %>% ggtsdisplay()
+# 정상성을 나타내는 것 같지 않아 한번 더 차분
+euretail %>% diff(lag = 4) %>% diff() %>% ggtsdisplay()
+# 계절성 차분 1회, 비-계절성 차분 1회
+# ACF와 PACF에서 시차 1의 유의미하게 뾰족한 막대가 보임
+# -> 비-계절성 MA(1), AR(1) 성분을 암시
+# ACF와 PACF에서 시차 4의 유의미하게 뾰족한 막대가 보임
+# -> 계절성 MA(1), AR(1) 성분을 암시
+
+# 모델 생성
+# => ARIMA(1, 1, 0)(1, 1, 0)[4]
+# => ARIMA(0, 1, 1)(0, 1, 1)[4]
+# 생성한 ARIMA 모델 적합 후 잔차 시각화
+euretail %>% Arima(order = c(0, 1, 1), seasonal = c(0, 1, 1)) %>% residuals() %>% ggtsdisplay()
+# ACF와 PACF 둘 다 시차 2에서 유의미한 뾰족한 막대가 나타남
+# -> 몇몇 추가적인 비-계절성 항이 모델에 추가되어야 한다는 것을 나타냄
+# -> ARIMA(0, 1, 3)(0, 1, 1)[4], ARIMA(0, 1, 2)(0, 1, 1)[4], ... 모델 적합 후 AICc 값 확인, 제일 적은 모델로 선택
+fit3 <- Arima(euretail, order = c(0, 1, 3), seasonal = c(0, 1, 1))
+# 모델 잔차 시각화
+checkresiduals(fit3)
+# 융-박스 테스트
+Box.test(fit3$residuals, lag = 4, type = "Ljung")
+# 잔차에 자기상관값이 남아있지 않은 것을 보여줌
+
+# 모델 예측
+fit3 %>% forecast(h = 12) %>% autoplot() + ggtitle("ARIMA(0, 1, 3)(0, 1, 1)으로 얻은 예측값")
+
+# auto.arima()로 한번에 확인
+auto.arima(euretail)
+# 결과: ARIMA(0, 1, 3)(0, 1, 1)[4]
+
+## ggplot을 활용한 계절성 시계열 분석 2
+lh02 <- log(h02)
+cbind("H02 판매량" = h02, "로그 H02 판매량" = lh02) %>% autoplot(facets = TRUE) + xlab("연도") + ylab("")
+# 원본 데이터의 분산이 조금 증가하기 때문에 로그를 취해 분산을 안정화
+# 데이터에 계절성이 강하게 나타남
+# -> 계절성 차분
+
+lh02 %>% diff(lag = 12) %>% ggtsdisplay(xlab = "연도", main = "계절성 차분을 구한 H02 처방전 데이터")
+# PACF를 보니 시차 12와 시차 24에 뾰족한 막대가 있고 ACF를 보니 다른 계절성 시차에서는 나타나지 않음
+# -> 계절성 AR(2) 항을 암시
+# 비-계절성 시차에서는 PACF를 보면 유의미한 뾰족한 막대 3개가 있고 ACF에서 나타나는 패턴(뾰족한 막대 9개)은 어떠한 단순한 모델을 가리키지 않음
+# -> 비-계절성 AR(3) 항을 암시
+
+# 모델 생성
+# => ARIMA(3, 0, 0)(2, 1, 0)[12]
+# => 여러 가지 변형을 주어서 여러 모델을 생성 후 비교
+fit <- Arima(h02, order = c(3, 0, 1), seasonal = c(0, 1, 2), lambda = 0)
+checkresiduals(fit, lag = 36)
+
+Box.test(fit$residuals, lag = 12, type = "Ljung")
+# 모델은 융-박스 검정을 통과하지 못함
+# -> 모델을 예측에 사용할 수 있지만 보정된 잔차 때문에 예측구간이 정확하지 않을수도 있음
+# auto.arima()을 돌리면 ARIMA(2, 1, 1)(0, 1, 2)[12] 모델을 얻음
+# -> 여전치 시차 36에 대해 융-박스 검정을 통과하지 못함
+# -> 때때로 모든 검정을 통과하는 모델을 찾지 못할수도 있음
+
+# 예측 시각화
+h02 %>% Arima(order = c(3, 0, 1), seasonal = c(0, 1, 2), lambda = 0) %>% forecast() %>% 
+  autoplot() + ylab("H02 판매량") + xlab("연도") + ggtitle("ARIMA(3, 0, 1)(0, 1, 2)로 얻은 예측값")
+
+ 
+- 교차분석
+# : 범주형 자료의 두 개 이상 변수들 사이의 "관련성"을 아아보기 위한 분석
+
+## 교차 분석 특징
+# 결합분포를 나타내는 교차분할표 작성
+# 변수 상호간의 관련성 여부를 분석하는 방법
+# 빈도분석의 특성별 차이를 분석하기 위해 수행하는 분석 방법
+# 빈도분석결과에 대한 보충자료를 제시하는데 효과적
+# 빈도분석과 함께 고급 통계 분석의 기초 정보를 제공
+
+## 고려사항
+# 교차 분석에 사용되는 변수는 값이 10미만인 범주형 변수
+# 비율척도인 경우는 코딩변경(리코딩)을 통해서 범주형 자료로 변환하여 적용 가능
+# -> ex) 나이 10~19세: 1 / 20~29세: 2 / 30~39세: 3 ...
+data <- read.csv("data.csv", header = T)
+
+# 변수 리코딩
+# x, y는 범주형 변수이어야 함
+x <- data$level2
+y <- data$pass2
+# data$level값 -> 1, 2, 1, 2, 1, 1, 1, NA -> 고졸, 대졸, 고졸, 대졸 ... 로 변경(data$level2)
+# data$pass값 -> 2, 2, 1, 1, 2, 1, 1, NA -> 실패, 실패, 합격, 합격, ... 로 변경(data$pass2)
+
+# 데이터프레임 생성
+result <- data.frame(Level = x, Pass = y)
+
+# 검증 목표: 부모님의 최종학력이 자식에 영향을 미치는가?
+# 빈도 확인
+table(result)
+
+# 교차분할표 생성을 위한 패키지
+library(gmodels)
+
+# 교차 분할표 생성
+CrossTable(x, y)
+
+# 교차테이블에 카이검정 적용
+CrossTable(x, y, chisq = T)
+# 귀무가설 = x와 y변수 사이 관련성이 없다 = 부모의 학력수준과 자녀의 대학진학이 관련성이 없다
+# 유의수준: 0.05
+# p = p-value
+# Chi^2 = 카이제곱값
+# d.f = 자유도
+# -> 자유도가 클수록 정규분포에 가까워짐
+
+# 유의수준 0.05에서 자유도가 2인 경우 기각역: x2 >= 5.99
+# -> 자유도가 2인 경우 X2값이 5.99 이상이면 귀무가설 기각(카이제곱 분포표 참조)
+# -> 카이제곱 값이 5.99 이하이고 유의수준이 0.05이상으로 분석되어 귀무가설을 기각할 수 없다
+# -> 따라서 부모의 학력수준과 자녀의 대학진학 변인 간의 관련성은 없는 것으로 분석됨
+
+- 카이제곱 검정
+# : 관찰된 빈도가 기대되는 빈도와 의미있게 다른지의 여부를 검증하기 위해 사용되는 검증 방법
+# -> 자료가 빈도로 주어졌을 때 특히 명목척도 자료의 분석에 이용됨
+# -> 교차분석으로 얻어진 교차 분할표를 대상으로 유의확률을 적용하여 변수 간의 독립성 및 관련성 여부 등을 검정하는 분석 방법
+
+# 일원카이제곱검정 -> 교차분할표 이용 안함(단일 변수)
+# - 적합성 검정: 실제 표본이 내가 생각하는 분포와 같은가 다른가
+# -> 관찰도수가 기대도수와 일치하는지를 검정
+# 이원카이제곱검정 -> 교차분할표 이용
+# - 동질성 검증: '변인의 분포가 이항분포나 정규분포와 동일하다'라는 가설을 설정
+# -> 어떤 모집단의 표본이 그 모집단을 대표하고 있는지를 검증하는 데 사용
+# - 독립성 검증: 변인이 두 개 이상일 때 사용됨 
+# -> 기대빈도는 '두 변인이 서로 상관이 없고 독립적'이라고 기대하는 것을 의미하며 관찰빈도와의 차이를 통해 기대빈도의 진위여부를 확인
+
+## 일원카이제곱검정
+## 적합성 검정
+# 귀무가설: 기대치와 관찰치는 차이가 없다(관련성 X): p >= a(유의수준)
+# 대립가설: 기대치와 관찰치는 차이가 있다(관련성 O): p < a
+# 귀무가설이 증명하기 쉬움 -> 일반적으로 귀무가설 사용
+# 유의수준에 대한 임계치 값을 정의해야함(ex)사회과학 -> 0.05, 생명분야 -> 0.01)
+
+# 주사위의 게임 적합성 예제
+# 귀무가설: 주사위는 게임에 적합하다
+# 60회 주사위를 던져서 나온 관측도수/기대도수
+# 주사위수: 1 2 3 4 5 6
+# 기대도수: 10 10 10 10 10 10 (이론상 균등)
+# 관측도수: 4 6 17 16 8 9
+library(states)
+chisq.test(c(4, 6, 17, 16, 8, 9))
+# p-value = 0.01439
+# -> p-value가 유의수준 0.05 이하이므로 귀무가설 기각, 대립가설 채택
+# -> 주사위는 게임에 적합하지 않다(특정 눈금이 많이 나올 수 있다)
+
+## 선호도 검정
+# 귀무가설: 기대치와 관찰치는 차이가 없다
+# 대립가설: 기대치와 관찰치는 차이가 있다
+
+# 스포츠 음료에 대한 선호도 차이 예제
+# 귀무가설: 스포츠음료의 선호도에 차이가 없다
+chisq.test(x$관측도수)
+# p-value = 0.0003999
+# -> 귀무가설 기각, 대립가설 채택
+# -> 스포츠음료의 선호도에 차이가 있다
+
+## 이원카이제곱검정
+## 독립성 검정
+# : 동일 집단의 두 변인을 대상으로 관련성이 있는가 없는가를 검정
+
+# 부모의 학력 수준과 자녀의 대학 진학 여부 독립성 검정 예제
+# 귀무가설: 부모의 학력 수준과 자녀의 대학 진학 여부는 관련성이 없다
+CrossTable(x, y, chisq = T)
+# p-value = 0.25
+# -> 귀무가설 채택
+# -> 부모의 학력 수준과 자녀의 대학 진학 여부는 관련성이 없다
+
+## 동질성 검정
+# : 두 집단의 분포가 동일한가 동일하지 않은가를 검정(동일한 분포를 가지는 모집단에서 추출된 것인지)
+
+# 교육방법에 따른 만족도 차이 동질성 검정 예제
+# 귀무가설: 교육방법에 따라 만족도에 차이가 없다
+
+# 데이터 확인
+table(data$method)
+table(data$survey)
+
+# 결측치 제거
+data <- subset(data, !is.na(survey), c(method, survey))
+
+# 두 데이터 모두 정수형(1, 2, 3..) 데이터
+# -> 보기 쉽게 범주형으로 변환
+data$method2[data$method == 1] <- "방법1"
+data$method2[data$method == 2] <- "방법2"
+data$method2[data$method == 3] <- "방법3"
+
+data$survey2[data$survey == 1] <- "매우만족"
+data$survey2[data$survey == 2] <- "만족"
+data$survey2[data$survey == 3] <- "보통"
+data$survey2[data$survey == 4] <- "불만족"
+data$survey2[data$survey == 5] <- "매우불만족"
+
+# 교차분할표 작성
+table(data$method2, data$survey2)
+# 교차분할표 생성
+CrossTable(data$method2, data$survey2, chisq = T)
+# p-value = 0.5864574
+# -> 귀무가설 채택
+# -> 교육방법에 따라 만족도에 차이가 없다
+
+## 동질성 검정
+# : 모수(모집단) 특성치에 대한 추론 검정
+chisq.test(data$method2, data$survey2)
+# -> 교차분할표 생성하여 나온 결과와 동일
+# -> 교육방법에 따라 만족도에 차이가 없다
+
+- 요인분석
+# : 여러개의 서로 관련이 있는 변수들로 측정된 자료에서 그 변수들을 설명할 수 있는 새로운 공통변수를 파악하는 통계적 분석방법
+# -> 유사성을 띈 데이터의 축약을 목적으로 하는 분석방법
+
+## 요인분석 특징
+# 다수의 변수들을 대상으로 변수들 간의 관계 분석
+# 공통 차원으로 축약하는 통계 기법(차원 축소)
+# -> 유사성을 가진 데이터들을 하나로 묶음
+
+## 요인분석 종류
+# 탐색적 요인분석: 요인분석을 할 때 사전에 어떤 변수들끼리 묶어야 한다는 전제를 두지 않고 분석하는 방법(개입 X)
+# -> 변수 압축이 목적(주성분 분석, 주요인 분석, 최대우도요인분석..)
+# 확인적 요인분석: 요인분석을 할 때 사전에 묶여질 것으로 기대되는 항목끼리 묶여지는지를 분석하는 방법(개입 O)
+# -> 어떤 가설이나 모델의 검증이 목적
+
+## 요인분석의 방법
+# 변수간의 상관행렬로부터 공통요인을 추출
+# 도출된 공통요인을 이용해서 변수간의 상관관계를 설명
+# 요인부하량은 +- 0.3 이상이면 유의하다고 
+
+## 요인의 수와 유의성 판단 기준
+# 상관 계수 행렬 R의 고유값이 1이상인 경우 채택
+# 요인의 유의성은 수학적 근거보다는 통상적으로 개체수 n >= 50인 경우 절댓값 기준으로
+# 유인부하값 > 0.3: 유의함
+# 유인부하값 > 0.4: 좀 더 유의함
+# 유인부하값 > 0.5: 아주 유의함
+
+## 요인분석의 목적
+# 자료의 요약: 변인을 몇 개의 공통된 변인으로 묶음(주성분 분석과 비슷) -> 같은 개념을 측정하는 변수들이 동일한 요인으로 묶이는지 확인
+# 변인 구조 파악: 변인들의 상호관계 파악
+# 불필요한 변인 제거: 중요도가 떨어진 변수 제거
+# 측정도구 타당성 검증: 변인들이 동일한 요인으로 묶이는지 여부를 확인 -> 회귀분석이나 판별분석의 설명벼눗 선택
+
+## 전제조건
+# 등간척도/비율척도, 정규분포, 관찰치 상호독립적/분산 동일
+# 하위요인으로 구성되는 데이터셋
+# 표본의 크기는 최소 50개 이상이 바람직
+# 변수들 간의 상관관계가 매우 낮다면(보통 +-0.3 이하) 요인 분석에 적합하지 않음
+# 변수간 높은 상관관계
+# 최초 요인 추출 단계에서 얻은 고유치를 스크리 차트로 표시했을 때 한 군데 이상 꺾이는 곳이 있어야 함
+# 모상관 행렬이 단위 행렬이라는 가설이 기각되어야 함
+
+## 결과 활용 방안
+# 서로 밀접하게 관련된 변수들을 합치거나 중복된 변수를 제거하여 변수를 축소
+# 변수들 간의 연관성 또는 공통점 탐색
+# 요인점수 계산으로 상관분석, 회귀분석의 설명변수로 이용
+
+## 공통요인으로 변수 정제 예제
+# 데이터셋 생성
+s1 <- c(1, 2, 1, 2, 3, 4, 2, 3, 4, 5)
+s2 <- c(1, 3, 1, 2, 3, 4, 2, 4, 3, 4)
+s3 <- c(2, 3, 2, 3, 2, 3, 5, 3, 4, 2)
+s4 <- c(2, 4, 2, 3, 2, 3, 5, 3, 4, 1)
+s5 <- c(4, 5, 4, 5, 2, 1, 5, 2, 4, 3)
+s6 <- c(4, 3, 4, 4, 2, 1, 5, 2, 4, 2)
+
+name <- 1:10
+subject <- data.frame(s1, s2, s3, s4, s5, s6)
+
+# 변수의 주요 성분분석
+pc <- prcomp(subject)
+summary(pc)
+# 분산 비율 시각화
+plot(pc)
+
+# 고유값으로 요인 수 분석
+en <- eigen(cor(subject))
+names(en)
+# 고유값 확인
+en$values
+# 고유값을 이용한 시각화
+plot(en$values, typ = "o")
+# Index n까지 급한 변화를 가지는데 n개의 요인으로 remodeling하면 최소의 오차를 가져가면서 성분에 대한 것을 가져갈 수 있을 것
+
+# 변수 간의 상관관계 분석과 요인 분석
+cor(subject)
+# 상관도가 높은 그룹끼리 합치는 것이 좋을 것
+
+## 요인분석: 요인회전법 적용
+# 주성분분석 가정에 의해 2개의 요인으로 분석
+result <- factanal(subject, factors = 2, rotation = "varimax")
+result
+# p-value = 0.0232
+# -> p-value < 0.05 이므로 귀무가설 기각
+# -> 2개로 결합하는 것은 적합하지 않다 -> 많은 성분들이 손실함
+
+# 고유값으로 가정한 3개 요인으로 분석
+# rotation: 회전방법 지정("varimax", "promax", "none")
+# scores: 요인점수 계산 방법
+result <- factanal(subject, factors = 3, rotation = "varimax", scores = "regression")
+result
+# 적절할 때는 유의확률 값을 추출하지 않음
+# 결과 해석
+# uniquenesses: 0.5 이하면 유효(독립변수로 사용가능)
+# Loadings: 각 변수간의 관계도, 6개 -> 3개로 축소가능
+# -> 유사도가 가장 높은 값을 가지는 변수들끼리 Factor로 결합
+# ss loadings: 각 변수가 가지는 가중치
+# -> 가장 높은 값을 가지는 Factor가 가장 유사성이 높음
+# Proportion Var: 분산
+# Cumulative Var: 누적
+
+# 요인 적재량 보기
+names(result)
+result$loadings
+
+# 다양한 방법으로 요인적재량 보기
+# Loadings가 cutoff 이상인 것만 추출
+print(result, digits = 2, cutoff = 0.5)
+# 모든 Loadings 추출
+print(result$loadings, cutoff = 0)
+
+## 요인점수
+# 관측치의 동작을 살펴보는데 사용되며 상관분석이나 회귀분석의 독립변수로 사용
+# 각 변수와 요인 간의 관계를 통해서 구해진 점수
+
+## 요인점수를 이용한 요인적재량 시각화
+# Factor1, Factor2 요인지표 시각화
+plot(result$scores[, c(1:2)], main = "Factor1과 Factor2 요인점수 행렬")
+text(result$scores[, 1], result$scores[, 2], labels = name, cex = 0.7, pos = 3, col = "blue")
+
+# Factor1, Factor2 요인지표 시각화 + 요인적재량 plotting
+points(result$loadings[, c(1:2)], pch = 19, col = "red")
+text(result$loadings[, 1], result$loadings[, 2], labels = rownames(result$loadings), cex = 0.8, pos = 3, col = "red")
+
+# Factor1, Factor3 요인지표 시각화
+plot(result$scores[, c(1, 3)], main = "Factor1과 Factor3 요인점수 행렬")
+text(result$scores[, 1], result$scores[, 3], labels = name, cex = 0.7, pos = 3, col = "blue")
+
+# Factor1, Factor3 요인지표 시각화 + 요인적재량 plotting
+points(result$loadings[, c(1, 3)], pch = 19, col = "red")
+text(result$loadings[, 1], result$loadings[, 3], labels = rownames(result$loadings), cex = 0.8, pos = 3, col = "red")
+
+## 3차원 산점도로 요인적재량 시각화
+library(scatterplot3d)
+Factor1 <- result$scores[, 1]
+Factor2 <- result$scores[, 2]
+Factor3 <- result$scores[, 3]
+# scatterplot3d(밑변, 오른쪽변, 왼쪽변, type = "p"): 3차원 기본 산점도 표시
+d3 <- scatterplot3d(Factor1, Factor2, Factor3)
+
+# 요인 적재량 표시
+loadings1 <- result$loadings[, 1]
+loadings2 <- result$loadings[, 2]
+loadings3 <- result$loadings[, 3]
+d3$points3d(loadings1, loadings2, loadings3, bg = 'red', pch = 21, cex = 2, type = 'h')
+
+## 요인별 변수 묶기
+# 요인별 과목변수 이용 데이터프레임 생성
+app <- data.frame(subject$s5, subject$s6)
+soc <- data.frame(subject$s3, subject$s4)
+net <- data.frame(subject$s1, subject$s2)
+
+# 산술평균 계산 - 3개의 파생변수 생성(가독성과 설득력이 높음)
+app_science <- round( (app$subject.s5 + app$subject.s6) / ncol(app), 2 )
+soc_science <- round( (app$subject.s3 + app$subject.s4) / ncol(soc), 2 )
+net_science <- round( (app$subject.s1 + app$subject.s2) / ncol(net), 2 )
+
+# 상관관계 분석 - 요인분석을 통해서 만들어진 파생변수는 상관분석이나 회귀분석에서 독립변수로 사용할 수 있음
+subject_factor_df <- data.frame(app_science, soc_science, net_science)
+cor(subject_factor_df)
+
+## 잘못 분류된 요인 제거로 변수 정제
+# 데이터셋 로딩
+# spss tool 포맷 파일 읽어오기
+library(memisc)
+data.spss <- as.data.set(spss.system.file('drinking_water.sav', , encoded = "utf-8"))
+drinking_water_df <- as.data.frame(drinking_water)
+# Q1~4: 제품 친밀도
+# Q5~7: 제품 적절성
+# Q8~11: 제품 만족도
+
+# 요인수를 3개로 지정하여 요인분석 수행
+result2 <- factanal(drinking_water_df, factors = 3, rotation = "varimax", scores = "regression")
+print(result2, cutoff = 0.5)
+# Factor2 -> Q1~3
+# Factor3 -> Q4~7
+# Factor1 -> Q8~11
+# Q4의 값이 파악한 바와 알고리즘으로 도출된 것이 다를 때 이러한 요인의 변수값은 제거해서 처리해서 하는 것이 정확한 값을 피드백 받을 수 있음
+
+## 요인별 변수 묶기
+dw_df <- drinking_water_df[-4]
+cor(dw_df)
+# Q1~3: 제품 친밀도
+# Q5~7: 제품 적절성
+# Q8~11: 제품 만족도
+
+# 요인에 속하는 입력변수별 데이터프레임 구성
+# 제품 만족도 저장 데이터프레임
+s <- data.frame(dw_df$Q8, dw_df$Q9, dw_df$Q10, dw_df$Q11)
+# 제품 친밀도 저장 데이터프레임
+c <- data.frame(dw_df$Q1, dw_df$Q2, dw_df$Q3)
+# 제품 적절성 저장 데이터프레임
+p <- data.frame(dw_df$Q5, dw_df$Q6, dw_df$Q7)
+
+# 요인별 산술평균 계산
+satisfaction <- round( (s$dw_df.Q8 + s$dw_df.Q9 + s$dw_df.Q10 + s$dw_df.Q11) / ncols(s), 2)
+closeness <- round( (s$dw_df.Q1 + s$dw_df.Q2 + s$dw_df.Q3) / ncols(c), 2)
+pertinence <- round( (s$dw_df.Q5 + s$dw_df.Q6 + s$dw_df.Q7) / ncols(p), 2)
+
+# 상관관계 분석
+drinking_water_factor_df <- data.frame(satisfaction, closeness, pertinence)
+colnames(drinking_water_factor_df) <- c("제품만족도", "제품친밀도", "제품적절성")
+cor(drinking_water_factor_df)
+
+
+- 앙상블 모델
+## 앙상블 기법
+# : 보팅, 배깅, 부스팅, 스태킹
+
+## 배깅 예제
+library(adabag)
+data(iris)
+
+# mfinal: 반복 복원 추출횟수
+iris.bagging <- bagging(Species ~ ., data = iris, mfinal = 10)
+iris.bagging$importance
+
+# 도식화
+plot(iris.bagging$trees[[10]])
+text(iris.bagging$trees[[10]])
+
+# 모델 예측 정확도 측정
+pred <- predict(iris.bagging, newdata = iris)
+table(pred$class, iris[, 5])
+
+## 부스팅 예제
+library(adabag)
+data(iris)
+
+iris.adaboost <- boosting(Species ~ ., data = iris, boos = TRUE, mfinal = 10)
+iris.adaboost$importance
+
+# 도식화
+plot(iris.adaboost$trees[[10]])
+text(iris.adaboost$trees[[10]])
+
+# 모델 예측 정확도 측정
+pred <- predict(iris.adaboost, newdata = iris)
+table(pred$class, iris[, 5])
+
+- ggplot 보충
+
+ggplot() + geom_... 
+  + theme(legend.position = "position") - 범례 위치 조정("top", "bottom", c(x, y), "none":제거)
+  + labs(fill = "범례 제목") - 범례 제목 변경
+  + scale_fill_manual(values = c("항목 이름" = "색깔", ...)) - 색깔 임의 변경
+  + geom_bar(position = "dodge") - 분리된 다중 막대그래프
+
+- SVM(Support Vector Machine)
+
+libray(e1071)
+
+# subset: 그룹
+# na.action: 결측치 처리 방법
+# scale: 데이터 표준화 여부
+svm_fit <- svm(formula, data, subset, na.action, scale)
+
+# type: SVM 수행방법
+# -> "C-classification", "nu-classification", "one-classification", "eps-regression", "nu-regression"
+# kernel: 사용할 커널
+# -> "linear", "polynomial", "radial basis", "sigmoid"
+svm_fit2 <- svm(x, y, type, kernel, class.weights)
+
+train <- sample(1:150, 100)
+svm_fit <- svm(Species ~ ., data = iris, subset = train, type = "C-classification")
+
+svm_pred <- predict(svm_fit, newdata = test)
+
+# 파라미터 최적화
+best_svm <- tune.svm(y ~ ., data = train, gamma = c(0.5, 0.1, 0.01, 1), cost = c(0.1, 2, 4))
+best_svm
+plot(best_svm)
+# 색이 찐한 곳이 최적
+
+- KNN
+
+library(class)
+
+# cl: 클래스(종속변수) 벡터
+knn_model <- knn(train, test, cl, k)
+# 결과는 예측한 클래스(모델 정보 X)
+
+confusionMatrix(knn_model, test$target)
+
+- ROC, AUC 한 번에 출력하는 패키지
+
+library(Epi)
+# par(oma = c(1, 1, 1, 1), mar = c(1, 3, 3, 1))
+ROC(test = train_result, stat = train$target, plot = "ROC", AUC = T, main = "학습 데이터 ROC")
+ROC(test = test_result, stat = test$target, plot = "ROC", AUC = T, main = "학습 데이터 ROC")
+
+- K-fold 교차검증
+
+library(caret)
+
+# createFolds(y, k, list, returnTrain)
+# y: 타겟 데이터(벡터)
+# k: fold 개수 설정
+# list: TRUE이면 k개 분할 집합을 기준으로 리스트 결과 반환, FALSE이면 각 인덱스에 대해 k개 분할 집합 번호를 부여하여 벡터형으로 반환
+# returnTrain: TRUE이면 K개의 Test데이터만 반환(복원추출), FALSE이면 서로 겹치지 않는 K개 분한 데이터 반환(비복원추출)
+
+data(iris)
+k_fold_result <- createFolds(iris$Species, k = 5, list = T, returnTrain = F)
+k_fold_result$Fold1 
+# K개수만큼 리스트 원소가 있음 -> Fold1, Fold2, Fold3, ...
+# 결과는 인덱스 번호
+
+# Fold1을 검증셋, Fold1을 제외한 나머지를 훈련셋 지정
+kfold_train = data[-k_fold_result$Fold1, ]
+kfold_valid = data[k_fold_result$Fold1, ]
+# K = 5이면 이 과정을 5번 돌아가면서 반복 후 각 폴드의 검증셋 정확도 수치 평균
+
+- 데이터 병합
+
+# inner 조인
+merge(df1, df2, by = "col1")
+inner_join(df1, df2, by = "col1")
+
+# full 조인
+merge(df1, df2, by = "col1", all = T)
+full_join(df1, df2, by = "col1")
+
+# right 조인
+merge(df1, df2, by = "col1", all.y = T)
+right_join(df1, df2, by = "col1")
+
+# left 조인
+merge(df1, df2, by = "col1", all.x = T)
+left_join(df1, df2, by = "col1")
+
+- 상관분석
+
+# 상관계수
+cor(x, y)
+
+# 상관분석
+# 귀무가설: 두 변수간의 상관관계는 통계적으로 유의하지 않다
+cor.test(x, y)
+
+- 잔차분석
+
+library(lmtest)
+
+# 독립성 가정 만족 확인 확인
+# 귀무가설: 회귀모델이 독립성 가정을 만족하지 않는다.
+dwtest(lm_fit)
+
+# 정규성 가정 만족 여부 확인
+# 귀무가설: 데이터가 정규분포를 따르지 않는다.
+shapiro.test(resid(lm_fit))
+
+# 등분산성과 정규성 가정 만족 여부 확인
+par(mfrow = c(2, 2))
+plot(lm_fit)
+
+# 1. 잔차vs예측값 그래프: 그래프의 기울기인 빨간선이 직선인지 확인
+#    -> 직선이 아니면 잔차의 등분산성 가정이 만족하지 못함
+# 2. Q-Q plot: 그래프의 대각선에 점들이 모여았는지 확인
+#    -> 모여있지 않은 점들이 많으면 데이터가 정규성을 만족한다고 보기 힘듦
+# 3. Sacle-Location: 빨간선의 기울기가 0에 가까운지 확인
+#    -> 기울기가 변하는 구간이 있으면 해당 구간에서는 표준화 잔차가 큼을 의미함 -> 회귀 직선이 예측값을 잘 적합하지 못함 / 해당 점이 이상치일 가능성 존재
+# 4. 잔차vs레버리지: 빨간 점선 바깥에 있는 점들 확인
+#    -> 무시할 수 없을 정도로 예측치를 벗어난 관측값(회귀직선에 영향을 크게 미치는 점들)
+
+- 결측치의 수치형 변수를 중앙값으로, 범주형 변수를 최빈값으로 대체하는 함수
+
+library(DMwR)
+df <- centralImputation(df)
+
+- 군집별 특성 파악
+
+## 군집분석 후 데이터프레임에 예측한 군집을 추가한 뒤 진행
+# 범주형 변수
+xtabs(df$clust ~ df$col1)
+# 변수의 분포도 확인
+
+xtabs(~ df$clust + df$col1)
+# 군집별 변수의 분포도
+
+# 수치형 변수
+xtabs(col2 ~ clust, df, mean)
+# 군집별 변수 평균
+
+xtabs(col2 ~ col3, df, mean)
+# 변수3별 변수2의 평균
+
+- 텍스트 데이터를 사전에 추가
+
+# 텍스트 데이터 전체를 사전에 추가
+buildDictionary(ext_dic = "woorimalsam", user_dic = data.frame(readLines("text.txt"), "ncn"), replace_usr_dic = T)
+
+# 단어를 사전에 추가
+buildDictionary(ext_dic = "woorimalsam", user_dic = data.frame(c("word"), "ncn"), replace_usr_dic = T)
+
+- reshape2 패키지
+
+library(reshape2)
+
+# melt 함수를 쓰면 id식별자열, variable열, value열 형태로 나타남
+# -> 측정변수(variable)별 측정값(value)를 편리하게 계산할 수 있음
+# na.rm = T: NA값이 포함된 행 삭제
+df_melt = melt(df, id.vars = c("col1", "col2"), na.rm = T)
+
+# cast 함수를 쓰면 다시 여러 칼럼을 가진 데이터프레임 형태로 변환
+# 식별자별 특정 변수의 특정치들에 대한 통계량 계산도 가능
+# melt함수를 적용한 데이터를 다시 원본으로 조합
+df_cast = cast(df_melt, col1 + col2 ~ ...)
+
+# melt함수를 적용한 데이터에서 칼럼1과 칼럼2 기준으로 나머지 변수들의 평균값 측정
+df_cast = cast(df_melt, col1 + col2 ~ variable, mean)

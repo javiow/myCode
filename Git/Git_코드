@@ -1,0 +1,56 @@
+- Git 코드
+
+	* 깃허브 사용방법 참고사이트
+	1. 설치
+	-> https://coding-factory.tistory.com/245
+
+	2. 사용방법
+	-> https://homeproject.tistory.com/9 (CMD)
+	-> https://bnzn2426.tistory.com/54 (Bash)
+	  * Please tell me who you are 에러
+	  git config --global user.name "사용이름"
+	  git config --global user.email "사용이메일"
+	  -> git cmd창에 입력
+
+	-> https://greeksharifa.github.io/github/2018/06/29/github-usage-02-create-project/
+
+	- 깃허브 명령어
+
+	<Git Bash>
+
+	$ git init : 현재 디렉토리에서 버전 관리를 시작
+	$ git vim "파일 명(꼭 당장 README.md가 아니여도 됨)" : 첫 번째 커밋이 필요하므로 커밋할 첫 번째 파일 생성
+	$ git add "파일 명" : 생성한 파일 스테이지에 올리기
+	$ git commit -m "커밋할 메세지" : 커밋 
+	$ git remote add origin 원격 저장소 주소 : 자신의 로컬 저장소를 원격 저장소로 연결시키겠다는 명령어 
+	$ git branch -M main: 메인 브렌치 설정
+	$ git push -u origin master : origin(원격 저장소)의 master 브랜치에 로컬 저장소의 최신 commit들을 push(업로드) 해주는 명gi령어
+	(-u 옵션은 push하는 기본 브랜치를 origin master로 지정하겠다는 의미로 최초에 한 번만 사용하면 된다. 앞으로 그냥 $ git push 해주면 됨)
+
+	추가 참고사이트: https://gbsb.tistory.com/10
+
+
+	<Git cmd>
+
+	* git 명령은 공유된 프로젝트에서만 사용가능
+	git status: 커밋이 가능한 파일과 불가능한 파일 출력
+	git add *: 전체 파일 add
+	gid add 해당파일: 해당 파일 add
+	git commit -m "메세지": 커밋 메세지를 적고 커밋
+	git remote add origin 자기주소(깃허브): 로컬저장소와 깃허브 원격저장소 연결
+	git remote -v: 연결확인
+	git push: 커밋된 파일 원격저장소에 저장  
+
+	- git 원격저장소로 파일을 올리는 과정
+
+	  1. git bash or git cmd 실행
+	  2. cd (해당 파일이 저장된 경로)
+	  	 * 경로에 공백 포함하면 안됌, 경로 사이에 "\" 대신 "/"로 변경
+	  3. git status (상태 확인)
+	  4. git add (해당파일)
+	  5. git status
+	  6. git commit -m (보낼 메세지)
+	  7. git push
+
+	* 붙여넣기 단축키: Shift + Ctrl + Ins
+

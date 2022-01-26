@@ -1,0 +1,1658 @@
+  - My Study
+
+    - df.sort_values(by='...', ascending=False)
+      : 데이터 프레임 or 시리즈 정렬(내림차순)
+
+    - plt.xticks(rotation = 45)
+      : x축 레이블 45도 기울이기
+
+    - plt.title("...", color="...")
+      : 타이틀 색상 지정
+
+    - plt.style.use('ggplot')
+      : ggplot 스타일 사용
+
+    - plt.legend(loc='best')
+      : 범례가 자동적으로 위치
+
+    - df.plot(kind='..', color='..', alpha=.., title='..')
+      : 데이터프레임에서 plot 그리기
+
+    - ggplot 사용하기
+
+    from ggplot import *
+
+    plt = ggplot(aes(x=.., y=..), data=..) + geom_.. + ...
+    print(plt)
+
+    - pd.to_datetime(df.column)
+      : 날짜 데이터로 변환
+
+    - 모든 변수 삭제
+    all = [var for var in globals() if var[0] != "_"]
+	for var in all:
+    	del globals()[var]
+
+    - 프로즌셋(frozenset) 다른 데이터로 변환
+
+    sets=[frozenset({'a', 'c,'}), frozenset({'h,', 'a,'})]
+	print([list(x) for x in sets])
+
+	- df.groupby(column1)[column2].agg(**{'most_common':lambda x : x.mode()}): column1별 column2의 최빈값
+
+	- df.groupby(column).tail(n): column별 하위 n개
+
+	- df.groupby(column1)[column2].nunique(): column1별 column2의 중복을 제거한 갯수
+
+	- pd.to_datetime(df.groupby(column1)[column2].max()) 
+	  - pd.to_datetime(df.groupby(column1)[column2].min())
+	  : column1별 column2의 날짜 차이
+
+	- df[column].dt.days: datetime열의 int 변환
+
+	- 연관분석(mlxtend)
+
+		from mlxtend.preprocessing import TransactionEncoder
+		from mlxtend.frequent_patterns import apriori, association_rules
+
+		# 데이터프레임 -> 리스트로 변환
+		df_tmp = df[['order_id','item_name']]
+		df_tmp_arr = [[]for i in range(1835)]
+		num = 0
+		for i in df_tmp['item_name'] :
+		    df_tmp_arr[df_tmp['order_id'][num]].append(i)
+		    num+=1
+
+	    df_tmp_arr.pop(0)
+		num=0
+		for i in df_tmp_arr :
+		    df_tmp_arr[num] = list(set(df_tmp_arr[num]))
+		    num+=1
+		df_tmp_arr
+
+		# 모든 데이터에 대해 각 리스트가 존재하면 True, 없으면 False
+		te = TransactionEncoder()
+		te_ary = te.fit(df_tmp_arr).transform(df_tmp_arr)
+		df = pd.DataFrame(te_ary, columns=te.columns_)
+
+		frequent_itemsets = apriori(df, min_support=0.05, use_colnames=True)
+		frequent_itemsets
+
+		association_rules(frequent_itemsets, metric="lift", min_threshold=1)
+
+	- df.groupby(column).column.agg(' '.join)
+	  : 특정 열을 그룹화해 한 문자열 리스트형태로 연결
+
+	- 1. 상자그림 작성하기 : 가로 방향
+
+	sns.boxplot(x = "total_bill",  data = tips)
+	plt.show()
+
+	- 2. 상자그림 작성하기 : 세로 방향
+
+	sns.boxplot(x = "total_bill", orient = "v", data = tips)
+	plt.show()
+
+	- 3. 집단별 상자그림 작성하기 : 일변량 질적 자료
+
+	sns.boxplot(x = "day", y = "total_bill", data = tips)
+	plt.show()
+
+	- 4. 집단별 상자그림 작성하기 : 이변량 질적 자료
+
+	sns.boxplot(x = "day", y = "total_bill",  hue = "smoker", data = tips)
+	plt.show()
+
+	- 5. factorplot 추가하기(col 속성 -> facet_grid)
+	sns.factorplot(x="sex", y="total_bill", hue="smoker", col="time", data=tips, kind="box", size=4, aspect=0.7)
+	plt.show()
+
+	- df[df[column].apply(lambda x : set(x).issubset(list))]
+	  : 리스트를 포함한 데이터프레임에서 가지고 있는 리스트의 부분집합인 데이터 추출
+
+	- df.drop(df[df의 조건절].index, inplace=True)
+	  : 조건에 만족하는 행 삭제
+
+	- np.ravel()
+	  : 1차원 배열로 변경
+
+	- np.argmax()
+	  : 가장 큰 값의 인덱스
+
+	- np.argmin()
+	  : 가장 작은 값의 인덱스
+
+	- np.where(조건절)
+	  : 조건절을 만족하는 값의 인덱스
+
+	- sns.distplot(pd.Series)
+	  : 수치형 변수의 분포도 출력
+
+	- df[~df[column].isin(list)]
+	  : 조건을 만족하지 않는 값 추출
+
+	- 두개의 막대그래프 그리기
+
+	bar_width = 0.35
+	alpha = 0.5
+
+	p1 = plt.bar(index, tips_sum_by_day_male, 
+	             bar_width, 
+	             color='b', 
+	             alpha=alpha,
+	             label='Male')
+
+	p2 = plt.bar(index + bar_width, tips_sum_by_day_female, 
+	             bar_width, 
+	             color='r', 
+	             alpha=alpha,
+	             label='Female')
+
+	- plt.axhline(y, xmin, xmax, color, linestyle, linewidth)
+	  : 수평선 그리기(x 생략 가능)
+
+	- plt.axvline(x, ymin, ymax, color, linestyle, linewidth)
+	  : 수직선 그리기(y 생략 가능)
+
+	- df[[column1, column2]].apply(" ".join, axis = 1)
+	  : 두 문자열 열 합치기 
+
+	- df.groupby().reset_index()
+	  : 그룹 통계를 낸 결과를 데이터프레임으로 변경
+
+	- plt.legend(fontsize = n)
+	  : 범례 글꼴 크기 변경
+	    (범례를 지정하려면 각 plot 속성에 label=".." 입력)
+
+	- sns.distplot(df[column], bins = 20, hist=True, rug=False, kde = False)
+	  : 분포 없이 막대그래프만 그리기
+
+	- sns.barplot(palette = "Reds_d"/"Blues_d")
+	  : 바그래프에 점점 짙어지는 빨강/파랑색 입히기
+
+	- 메모리가 많은 객체 삭제
+	
+	import gc
+	del 객체
+	gc.collect()
+
+	- F-검정(분산분석/ANOVA검정) 후 사후검정 처리
+
+	from scipy import stats
+
+	# 일원분산분석
+	F_statistic, pVal = stats.f_oneway(group1, group2, group3)
+
+	print('데이터의 일원분산분석 결과 : F={0:.1f}, p={1:.5f}'.format(F_statistic, pVal))
+	if pVal < 0.05:
+	    print('P-value 값이 충분히 작음으로 인해 그룹의 평균값이 통계적으로 유의미하게 차이납니다.')
+
+	# 사후검정
+	from statsmodels.stats.multicomp import pairwise_tukeyhsd
+
+	posthoc = pairwise_tukeyhsd(df['value'], df['clust'], alpha=0.05)
+	print(posthoc)
+
+	# 집단 분산 시각화
+	fig = posthoc.plot_simultaneous()
+
+	- data[column].apply(lambda x : True if x in 'string' else False)
+	  : 열에 문자열이 포함하면 True 아니면 False 출력
+
+	- 가상환경 설치 및 활성화/비활성화(여러 라이브러리 충돌 방지)
+
+	  - 가상환경 리스트 확인
+	  conda env list
+
+	  - 가상환경 설치
+	  conda create -n 가상환경이름
+	  conda create -n 가상환경이름 python anaconda (기본 라이브러리 설치)
+
+	  - 가상환경 활성화
+	  conda activate 가상환경이름
+
+	  - 가상환경 비활성화
+	  conda deactivate 가상환경이름
+
+	  - 가상환경 삭제
+	  conda env remove -n 가상환경이름
+
+	  - 가상환경에 라이브러리 설치
+	  conda activate 가상환경이름
+	  pip install 라이브러리
+
+	- Simpletransformer - BERT 사용 예시(in Kaggle)
+	  * 다른 노트북에서 사용하려면 GPU 사용이 가능하고 
+	    Pytorch, CUDA가 설치되있어야함
+
+	  # simpletransformers 다운로드
+	  !pip install simpletransformers
+
+	  # 필요한 모듈 불러오기
+	  import os, re, string
+	  import random
+
+	  import numpy as np
+	  import pandas as pd
+	  import sklearn
+
+	  import torch
+
+	  from simpletransformers.classification import ClassificationModel
+	  from sklearn.model_selection import train_test_split
+	  from sklearn.model_selection import KFold
+
+	  # 랜덤시드 설정
+	  seed = 1337
+
+	  random.seed(seed)
+	  np.random.seed(seed)
+	  torch.manual_seed(seed)
+	  torch.cuda.manual_seed(seed)
+	  torch.backends.cudnn.deterministic = True
+
+	  # 학습데이터는 텍스트, 타겟값으로 구성
+	  train_data = pd.read_csv('/kaggle/input/nlp-getting-started/train.csv')
+	  train_data = train_data[['text', 'target']]
+
+	  # BERT 모델의 학습파라미터들 확인해보기
+	  # https://github.com/ThilinaRajapakse/simpletransformers/#current-pretrained-models 
+	  bert_uncased = ClassificationModel('bert', 'bert-large-uncased') 
+
+	  # Print out all the default arguments for reference
+	  bert_uncased.args
+
+	  # 학습 파라미터 설정
+	  custom_args = {'fp16': False, # not using mixed precision 
+               'train_batch_size': 4, # default is 8
+               'gradient_accumulation_steps': 2,
+               'do_lower_case': True,
+               'learning_rate': 1e-05, # using lower learning rate
+               'overwrite_output_dir': True, # important for CV
+               'num_train_epochs': 2} # default is 1
+
+	  # 교차검증
+	  n=5
+	  kf = KFold(n_splits=n, random_state=seed, shuffle=True)
+	  results = []
+
+	  for train_index, val_index in kf.split(train_data):
+	      train_df = train_data.iloc[train_index]
+	      val_df = train_data.iloc[val_index]
+	    
+	      model = ClassificationModel('bert', 'bert-base-uncased', args=custom_args) 
+	      model.train_model(train_df)
+	      result, model_outputs, wrong_predictions = model.eval_model(val_df, acc=sklearn.metrics.accuracy_score)
+	      print(result['acc'])
+	      results.append(result['acc'])
+
+	  # 교차검증 결과 확인
+	  for i, result in enumerate(results, 1):
+	  	print(f"Fold-{i}: {result}")
+	    
+	  print(f"{n}-fold CV accuracy result: Mean: {np.mean(results)} Standard deviation:{np.std(results)}")
+
+	  # 모델 학습
+	  model = ClassificationModel('bert', 'bert-base-uncased', args=custom_args) 
+	  model.train_model(train_data)
+
+	  # 학습된 모델로 예측
+	  test_data = pd.read_csv('/kaggle/input/nlp-getting-started/test.csv')
+	  predictions, raw_outputs = model.predict(test_data['text'])
+
+	- agg 함수 적용한 결과 열 이름 하나로 통일하기
+
+	df2 = df1.groupby([columns]).agg({col1:[func1], col2:[func2]})
+	df2.columns = [col_name1, col_name2]
+	df2.reset_index(inplace=True)
+
+	- df.groupby([column]).transform('function')
+	  : groupby한 결과 데이터프레임 열로 바로 추가하기
+
+	- product 함수(카테시안 곱: 두 개 이상의 리스트의 모든 조합을 구할 때 사용)
+	  from itertools import product
+
+	  _list = ["012", "abc", "!@#"]
+	  pd = list(product(*_list))
+
+	  # [('0', 'a', '!'), ('0', 'a', '@'), ('0', 'b', '!'), ('0', 'b', '@'), ('1', 'a', '!'), ('1', 'a', '@'), ('1', 'b', '!'), ('1', 'b', '@')]
+
+	  * generator이기 때문에 list()로 캐스팅하여 다른 곳에 저장 해두지 않으면 한 번의 루핑 이후 사라지게 됨
+
+	- 넘파이 배열을 세로, 가로로 결합
+
+	  - np.hstack((a, b))
+	    : 가로로(옆으로) 결합, 행 수가 일치해야함
+
+	  - np.vstack((a, b))
+	    : 세로로(위아래로) 결합, 열 수가 일치해야함
+
+	- df.apply(function, axis = 1)
+	  : 데이터프레임의 행별로 function 적용
+
+	- df.apply(function, axis = 0)
+	  : 데이터프레임의 열별로 function 적용
+
+	- 데이터프레임/시리즈에 순위를 메기는 함수 rank()
+
+	DataFrame.rank(self, 
+		axis = 0, # 기본값 0(index)으로, index 축을 기준으로 랭크가 계산됩니다. 
+    		method = 'average', # 동점을 가진 데이터들의 순위를 매기는 방법입니다.
+    		numeric_only = None, # True로 설정된 경우 숫자 열만 순위를 매깁니다. 
+    		na_option = 'keep', # NaN 값 순위를 매기는 방법입니다.
+    		ascending = True, # 오름차순, 내림차순 정렬인지 정합니다.
+    		pct = False) # 반환 된 순위를 백분위 수 형식으로 표시할지 여부입니다.
+
+	average(평균): 그룹의 평균 순위 부여 (예: 두 명이 공동 1등이라면 둘 다 1.5등으로 처리)
+	min(최솟값): 그룹에서 가장 낮은 순위 부여 (예: 두 명이 공동 1등이라면 둘 다 1등으로 처리)
+	max(최댓값): 그룹에서 가장 낮은 순위 부여 (예: 두 명이 공동 1등이라면 둘 다 2등으로 처리)
+	first(첫 번째): 그룹에서 표시되는 순서대로 순위 부여 (예: 두 명이 공동 1등이라면 순서가 빠른 사람을 1등으로 처리)
+	dense(밀도): min과 동일함. 다만 순위는 항상 1씩 증가
+
+	rank 함수는 기본적으로 오름차순 정렬을 합니다. ascending=False를 입력하면 내림차순 정렬
+
+	keep(유지): 기본 값으로 NaN의 순위에 NaN을 부여
+	top(가장 높은 순위): 그룹에서 가장 높은 순위 부여
+	bottom(가장 낮은 순위): 그룹에서 가장 높은 순위 부여
+
+	# Example
+	df['column'].rank(method = 'min', ascending = False, na_option = 'top')
+
+	- df.groupby(['column']).size()
+	  : 그룹별 크기 구하기
+
+  - 배열에서 n개 조합 찾기
+  from itertools import combinations
+  list = combinations(array, n)
+
+  - 리스트에서 값 개수 세기
+  from collections import Counter
+  c = Counter(list)
+
+  list.count(value)
+
+  - 넘파이 배열에서 값 삭제
+  np.delete(array, index)
+
+  - 문자열 공백 채우기
+  str.rjust(n, a): 문자열을 오른쪽으로 정렬 후 공백을 a로 채움 (n: 문자열 지정 개수)
+  str.ljust(n, a): 문자열을 왼쪽으로 정렬 후 공백을 a로 채움 (n: 문자열 지정 개수)
+  str.zfill(n): 왼쪽 공백을 a로 채움
+
+  - 10진수를 2진수로 변환
+  bin(a)
+
+  - n진수로 표현된 문자열을 10진수로 바꾸기
+  int(str, n)
+  ex) int('11', 2) => 3
+
+  - 딕셔너리 값으로 정렬
+  sorted(dic, key = lambda x : dic[x])
+
+  - 정규표현식
+
+	# ^:	이 패턴으로 시작해야 함                                     	^abc : abc로 시작해야 함 (abcd, abc12 등)
+	# $:	이 패턴으로 종료되어야 함	                                    xyz$ : xyz로 종료되어야 함 (123xyz, strxyz 등)
+	# [문자들]:	문자들 중에 하나이어야 함. 가능한 문자들의 집합을 정의함.	[Pp]ython : "Python" 혹은 "python"
+	# [^문자들]:	[문자들]의 반대로 피해야할 문자들의 집합을 정의함.	      [^aeiou] : 소문자 모음이 아닌 문자들
+	# |:	두 패턴 중 하나이어야 함 (OR 기능)	                            a | b : a 또는 b 이어야 함
+	# ?:	앞 패턴이 없거나 하나이어야 함 (Optional 패턴을 정의할 때 사용)	\d? : 숫자가 하나 있거나 없어야 함
+	# +:	앞 패턴이 하나 이상이어야 함	                                  \d+ : 숫자가 하나 이상이어야 함
+	# *:	앞 패턴이 0개 이상이어야 함	                                  \d* : 숫자가 없거나 하나 이상이어야 함
+	# 패턴{n}: 앞 패턴이 n번 반복해서 나타나는 경우                     	\d{3} : 숫자가 3개 있어야 함
+	# 패턴{n, m}:	앞 패턴이 최소 n번, 최대 m 번 반복해서 나타나는 경우 (n 또는 m 은 생략 가능)	\d{3,5} : 숫자가 3개, 4개 혹은 5개 있어야 함
+	# \d:	숫자 0 ~ 9	                                                  \d\d\d : 0 ~ 9 범위의 숫자가 3개를 의미 (123, 000 등)
+	# \w:	문자를 의미	                                                \w\w\w : 문자가 3개를 의미 (xyz, ABC 등)
+	# \s:	화이트 스페이스를 의미하는데, [\t\n\r\f] 와 동일	              \s\s : 화이트 스페이스 문자 2개 의미 (\r\n, \t\t 등)
+	# .:	뉴라인(\n) 을 제외한 모든 문자를 의미	                        .{3} : 문자 3개 (F15, 0x0 등)
+
+  - 플로틀리 초기 설정
+
+  # plotly 라이브러리 불러오기 및 기본 설정
+	import plotly as py
+	import plotly.graph_objects as go
+	import plotly.express as px
+	import plotly.offline as pyo
+	from plotly.subplots import make_subplots
+
+	# 주피터 노트북에서 시각화 표시
+	import plotly.io as pio
+	pio.renderers.default = "notebook_connected"
+
+	# 플로틀리 온라인 설정
+	from chart_studio.plotly import plot, iplot
+	import chart_studio
+	chart_studio.tools.set_credentials_file(username='javiow', api_key='...')
+
+	# 폰트 설정
+	layout_font = {'font':dict(size=18,color='#60606e',family='Franklin Gothic' )}
+
+	# 산점도 그리기
+	trace1 = go.Scatter(x=df1['A'], y=df1['B'], mode='markers')
+	data = [trace1]	
+	pyo.iplot(data)
+
+
+  - all(), any()
+  # any(): 하나라도 True이면 True
+  # all(): 모두 True여야 True
+  any([False, False, True]) # => True
+  all([True, True, False]) # => False
+
+  # 데이터프레임에서 리스트객체를 요소로 가지고 있는 열에서 짝수인 열만 추출
+  df[df.y.apply(lambda x : all(True if val % 2 == 0 else False for val in x))]
+
+  - list comprehension 의 if else문
+  [ True if x == 0 else False for x in list_ ]
+
+  - Dict comprehension
+  { val:key for val, key in id_item.items()}
+
+  # 문자열 리스트와 문자열 개수를 결합해 Dict 객체로 생성
+  { key:val for key, val in zip(list_of_string, list(map(len, list_of_string))) }
+ 	 
+
+	- 넘파이 배열 분할
+	# 수직 축으로 분할(= 가로로 분할)
+	np.vsplit(arr, n)
+	np.split(arr, n, axis = 0)
+
+	# 수평 축으로 분할(= 세로로 분할)
+	np.hsplit(arr, n)
+	np.split(arr, n, axis = 1)
+
+	# 균등 분할(분할된 요소 개수가 비슷하게)
+	# n개의 균등한 배열로 분할
+	np.array_split(arr, n)
+	# n개의 균등한 요소를 가지는 배열로 분할
+	np.array_split(arr, len(arr) // n)
+
+	- 넘파이 배열을 데이터프레임으로 변환
+	df = pd.DataFrame(arr, index = row_index_list, columns = colname_list)
+
+	- 큰 데이터프레임을 n개 행을 가지는 데이터프레임 리스트로 만들기
+	[pd.DataFrame(dataframe, columns = ["index", "name", "age"]).set_index("index") for dataframe in np.array_split(np.array(pd.concat([pd.Series(df.index), df], axis = 1)), len(df) // n)]
+
+	- 특정한 열을 인덱스로 변환
+	df.set_index('col_name')
+
+	- 새로운 열을 인덱스로 삽입
+	df.reindex(new_index_list)
+
+	- 곱집합 만들기
+	from itertools import product
+	# A = set(['x', 'y'])
+	# B = set([1, 2, 3, 4])
+	set(list(product(A, B)))
+
+	# AB => A, B 집합으로 다시 해제
+	set( (x, y)[0] for (x, y) in AB ), set( (x, y)[1] for (x, y) in AB )
+
+	- 정규패턴식 이용해 문자열 분할
+	re.split(pattern, str)
+
+	# 결과가 공백('')이 포함될 경우
+	result = list(map(lambda x: x.strip(), result))
+	result = list(filter(lambda x: x != '', result))
+
+	- 리스트를 문자열로 합치기
+	''.join(list_)
+
+	- 특수문자들을 이스케이프(\) 문자로 치환
+	re.escape(str)
+
+	- zip() 함수로 n-gram 만들기
+
+	list(zip(*[ list_of_token[i:] for i in range(n) ]))
+
+	- *, ** (별표)
+	*: list나 tuple을 풀어주는 것
+	**: dictionary를 풀어주는 것
+
+	# 함수화
+
+	def dummy_ngram(list_of_token, n):
+		# implement function 
+		return list(zip(*[ list_of_token[i:] for i in range(n) ]))
+
+	- 팩토리얼 재귀함수
+
+	def factorial(n):
+		if n == 1:      # n이 1일 때
+		  return 1    # 1을 반환하고 재귀호출을 끝냄
+		return n * factorial(n - 1)
+
+	def f(n):
+		return 1 if n == 0 else n * f(n - 1)
+
+	- 문자열 가운데 정렬
+
+	# n개의 문자열을 출력하는데 빈 공간을 #로 채움
+	string.center(n, '#')
+
+	- 데이터프레임 중복 확인하기
+	df.duplicated(['col1'])
+
+	- ggplot 한글 깨짐 해결하기
+	from plotnine import *
+	import matplotlib.font_manager as fm
+
+	font_path = "C:/Windows/Fonts/NGULIM.TTF"
+	fontprop = fm.FontProperties(fname=font_path, size=16)
+
+	# 기존의 ggplot 문법에 폰트 설정해주는 theme 함수 추가
+	ggplot(data=...) + ... + theme(text=element_text(fontproperties=fontprop))
+
+	- ggplot 형식 선 그래프 그리기
+	from plotnine import *
+
+	fig = plt.figure()
+
+	ggplot(flights, aes(x='year', y='passengers', group='month', color='month')) \
+	+ geom_line() \
+	+ ggtitle('Time Series Graph of Flight')
+
+	- 그래프에 영역 채우기
+	
+	# x축과 그래프 사이 영역 채우기
+	# plt.fill_between(x_arr, y_arr, alpha)
+	plt.fill_between(x[1:3], y[1:3], alpha = 0.5)
+	# (x[1], y[1]), (x[2], y[2]), (x[1], 0), (x[2], 0) 영역을 채움
+
+	# y축과 그래프 사이 영역 채우기
+	# plt.fill_betweenx(y_arr, x_arr, alpha)
+	plt.fill_betweenx(y[1:3], x[1:3], alpha = 0.5)
+	# (y[1], x[1]), (y[2], x[2]), (y[1], 0), (y[2], 0) 영역을 채움
+	
+	# 그래프와 그래프 사이 영역 채우기
+	# plt.fill_between(x_arr, y1_arr, y2_arr, alpha)
+	plt.fill_between(x[1:3], y1[1:3], y2[1:3], color = 'lightgray', alpha = 0.5)
+	# (x[1], y1[1]), (x[1], y2[1]), (x[2], y1[2]), (x[2], y2[2]) 사이 영역을 채움
+
+	# 지정된 영역 채우기
+	# plt.fill(x_arr, y_arr, alpha)
+	plt.fill([1.9, 1.9, 3.1, 3.1], [1, 4, 6, 3], color = 'lightgray', alpha = 0.5)
+
+	- 문자열 분할
+	str.split() # 공백으로 분할
+
+	- 딕셔너리의 키에 해당하는 값을 가져오고 없으면 0 반환
+	dict.get(key, 0)
+
+	- 문자열 리스트에서 해당 문자열의 인덱스를 가져오기
+	str_list.index(str)
+
+	- 딕셔너리 다중 정렬
+	# 딕셔너리에서 값을 먼저 내림차순 정렬 후 키로 오름차순 정렬
+	# 반대로 하려면 reverse = True 옵션 추가
+	sorted(dict.items(), key = lambda item : [-item[1], item[0]])
+
+	- 숫자형 문자인지 아닌지 판단
+	str.isdigit()
+
+	- 문자열 길이가 a 또는 b인지
+	len(str) in (a, b)
+
+	- 넘파이 결측치 확인
+	np.isnan(data)
+
+	- 데이터프레임 행/열별 합계
+	# 행별 합계
+	pd.sum(axis = 1)	
+
+	# 열별 합계
+	pd.sum(axis = 0)
+	pd.sum()
+
+	- 객체, 모델 저장(pickle)
+
+	import pickle 
+	# 모델,객체 저장
+	with open('model_210519.pickle','wb') as fw:
+	    pickle.dump(model, fw)
+	 	 
+	# 모델,객체 불러오기
+	with open('model_210519.pickle', 'rb') as f: 
+	    model = pickle.load(f)
+
+	- 이중 축 그리기
+
+	## 방법1
+	fig, ax1 = plt.subplots()
+	ax1.plot(x, y1, color='green')
+
+	ax2 = ax1.twinx()
+	ax2.plot(x, y2, color='deeppink')
+
+	## 방법2
+	fig = plt.figure(figsize=(6,6)) ## 캔버스 생성
+	fig.set_facecolor('white')
+	ax1 = fig.add_subplot() ## axes 생성
+	 
+	color1 = 'b'
+	ax1.plot(x, y2, color=color1)
+	ax1.set_xlabel('x')
+	ax1.set_ylabel('Line', color=color1)
+	ax1.tick_params(axis='y', labelcolor=color1)
+	 
+	color2 = 'r'
+	ax2 = ax1.twinx()
+	ax2.plot(x, y1, color=color2)
+	ax2.set_ylabel('Cos', color=color2)
+	ax2.tick_params(axis='y', labelcolor=color2)
+ 
+	plt.show()
+
+	- 변수타입 확인
+	isinstance(object, type)
+	# ex) isinstance(var1, str)
+
+	- 형태를 알고있는 함수의 파라미터값 구하기
+
+	from scipy.optimize import curve_fit
+
+	# 구하고싶은 함수 형태
+	def func(x, a, b):
+		return a*x + b
+	def func(x, a, b, c):
+		return a*(x-b)**2 + c
+
+	# popt: 변수 파라미터값
+	# -> a, b
+	# pcov: 파라미터 분산
+	popt, pcov = curve_fit(func, x, yn)
+	popt, pcov = curve_fit(func, [1, 2, 3], [7, 8, 9])
+
+	# p0: 파라미터 초깃값 설정
+	# bounds: 파라미터 범위 지정 -> ([a_min, b_min], [a_max, b_max])
+	popt, pcov = curve_fit(func, x, yn, p0, bounds)
+	popt, pcov = curve_fit(func, [1, 2, 3], [8.9, 48.4, 22.1], p0 = [5, 10], bounds = ([0, 5], [10, 20]))
+	
+	- rolling()
+
+	# n개의 데이터씩 묶어줌
+	DataFrame.rolling(n)
+	Series.rolling(n)
+
+	# 연산 가능
+	DataFrame.rolling(n).sum()
+	Series.rolling(n).mean()
+
+	# for문에서도 사용 가능
+	for data in DataFrame.rolling(48):
+		...
+
+	- 결측치 보간 (interpolate)
+
+	# 시계열데이터의 값에 선형으로 비례하는 방식으로 결측값 보간
+	# 선형 보간
+	Series.interpolate()
+
+	# 시계열 날짜 index를 기준으로 결측값 보간
+	# 인덱스가 datetime
+	# 날짜를 고려해서 선형 보간
+	Series.interpolate(method = "time")
+
+	# DataFrame 값에 선형으로 비례하는 방식으로 결측값 보간
+	DataFrame.interpolate(method = "values")
+
+	# 결측값 보간 개수 제한하기
+	DataFrame.interpolate(method = "values", limit = 1)
+	# 아래에서 위 방향으로 지정된 갯수만큼 보간
+	DataFrame.interpolate(method = "values", limit = 1, limit_direction = 'backward')
+
+  - 순서가 있는 데이터 분할 (temporal train test split)
+
+  from sklearn.model_selection import temporal_trai n_test_split
+
+  # 순서가 있는 데이터 -> 뒤에서 n개를 test set으로 설정
+  y_train, y_test, x_train, x_test = temporal_train_test_split(y = y, X = x, test_size = n)
+
+  - 학습 진행률 표시 (tqdm)
+
+  from tqdm import tqdm
+
+  for i in tqdm(range(1, 100)):
+  	...
+
+  - 여러 개의 기계학습 모델을 사용하여 선형 회귀 (mlens)
+
+	from math import sqrt
+	from sklearn.datasets import make_regression
+	from sklearn.model_selection import train_test_split
+	from sklearn.metrics import mean_squared_error
+	from sklearn.linear_model import LinearRegression
+	from sklearn.linear_model import ElasticNet
+	from sklearn.neighbors import KNeighborsRegressor
+	from sklearn.tree import DecisionTreeRegressor
+	from sklearn.svm import SVR
+	from sklearn.ensemble import AdaBoostRegressor
+	from sklearn.ensemble import BaggingRegressor
+	from sklearn.ensemble import RandomForestRegressor
+	from sklearn.ensemble import ExtraTreesRegressor
+	from mlens.ensemble import SuperLearner
+
+	#     create a list of base-models
+	def get_models():
+		models = list()
+		models.append(LinearRegression())
+		models.append(ElasticNet())
+		models.append(SVR(gamma='scale'))
+		models.append(DecisionTreeRegressor())
+		models.append(KNeighborsRegressor())
+		models.append(AdaBoostRegressor())
+		models.append(BaggingRegressor(n_estimators=10))
+		models.append(RandomForestRegressor(n_estimators=10))
+		models.append(ExtraTreesRegressor(n_estimators=10))
+		return models
+
+	#     cost function for base models
+	def rmse(yreal, yhat):
+		return sqrt(mean_squared_error(yreal, yhat))
+
+	#     create the superlearner
+	def get_super_learner(X):
+		ensemble = SuperLearner(scorer=rmse, folds=10, shuffle=True, sample_size=len(X))
+		#     add base models
+		models = get_models()
+		ensemble.add(models)
+		#     add the meta model
+		ensemble.add_meta(LinearRegression())
+		return ensemble
+
+	#     create the inputs and outputs
+	X, y = make_regression(n_samples=1000, n_features=100, noise=0.5)
+	#     split
+	X, X_val, y, y_val = train_test_split(X, y, test_size=0.50)
+	print('Train', X.shape, y.shape, 'Test', X_val.shape, y_val.shape)
+	#      create the superlearner
+	ensemble = get_super_learner(X)
+	#     fit the superlearner
+	ensemble.fit(X, y)
+	#     summarize base learners
+	print(ensemble.data)
+	#     evaluate meta model
+	yhat = ensemble.predict(X_val)
+	print('Super Learner: RMSE %.3f' % (rmse(y_val, yhat)))
+
+	- 서포트 벡터 머신/회귀 (SVM/SVR)
+
+	from sklearn.svm import SVR, SVM
+
+	# 주요 파라미터:kernel, epsilon, C
+	# kernel = 'linear', 'poly', 'rbf'(default), 'precomputed', 'sigmoid'
+	# epsilon: 결정 경계 마진 (default = 0.1)
+	# C: 정규화 파라미터 (default = 1)
+	svr = SVR()
+	svr.fit(x_train, y_train)
+	svr_pred = svr.predict(x_test)
+
+	- 객체 존재 여부 확인
+
+	# 지역변수
+	if 'x' in locals():
+		...
+	else:
+		...
+
+	# 전역변수
+	if 'x' in globals():
+		...
+	else:
+		...
+
+	- 3차원 시각화
+
+	from mpl_toolkits.mplot3d import Axes3D
+	import matplotlib.pyplot as plt
+	import numpy as np
+
+	fig = plt.figure(figsize=(12, 12))
+	ax = fig.add_subplot(111, projection='3d')
+	ax.scatter(xs, ys, zs, c = np.array(category), marker='o', s=15, cmap='Blues')
+	ax.set_xlabel("x_colname")
+	ax.set_ylabel("y_colname")
+	ax.set_zlabel("z_colname")
+	ax.view_init(30, 50)
+
+	- 데이터 차분 (판다스)
+	df['col'].diff()
+
+
+	- 데이터 차원 중 1차원인 것을 제거
+	np.squeeze(ndarray)
+	tf.squeeze(ndarray)
+
+  - parser 사용
+
+  import argparse
+
+  parser = argparse.ArgumentParser(description = '사용법 테스트 중')
+  parser.add_argument('--mode', type = str, required = True, help = 'Select kpp_sf model\'s mode')
+  parser.add_argument('--dataInfo', required = False, default = 'input/dataInfo.json', help = 'json file which has information about data')
+
+  args = parser.parse_args()
+  print(args.mode)
+  print(args.dataInfo)
+
+  - json 파일 저장/불러오기
+
+	import json
+
+	# json 파일 저장하기 (딕셔너리 형태에서)
+	# 한글이 유니코드로 저장되는 에러 => ensure_ascii = False 로 해결
+  with open('data.json','w') as f:
+    json.dump(dict, f, ensure_ascii = False)  
+
+  # json 파일 불러오기
+  # 한글 깨짐 현상 => encoding = 'UTF8'으로 해결
+  with open(data, 'r', encoding = 'UTF8') as json_file:
+		json_file = json.load(json_file)
+
+	- 디렉토리(폴더) 생성
+
+	import os
+
+	# 저장할 경로에 폴더가 없으면 생성
+	if not os.path.exists(save_dir):
+		os.makedirs(save_dir)
+
+	- 파일/폴더 존재 여부 확인
+
+	import os
+
+	# 파일 존재 여부
+	os.path.isfile("filename")
+	# 존재하면 True, 하지않으면 False 출력
+
+	# 폴더 존재 여부
+	os.path.isdir("dirname")
+	# 존재하면 True, 하지않으면 False 출력
+
+	- 특정 패턴의 파일 찾기
+
+	import glob
+
+	# *: 임의의 모든 문자열
+	# ?: 한자리 문자
+	# [seq]: []안에 있는 seq문자 어떠한 것
+	# [!seq]: []안에 있는 seq문자를 제외한 어떠한 것
+	output = glob.glob("C:/Python3/???")
+	output = glob.glob("dir/*.txt")
+
+	for file in glob.glob("dir/*.py"):
+		print(file)
+
+	# 모든 하위 디렉토리까지 탐색
+	output = glob.glob('dir/**', recursive=True)
+
+	- 두 날짜 사이의 날짜 생성
+
+	import pandas as pd
+
+	start_date = pd.to_datetime('2019-01-01') ## 시작 날짜
+	end_date = pd.to_datetime('2020-12-31') ## 마지막 날짜
+ 
+	dates = pd.date_range(start_date,end_date, freq='D') ## 일단위로 생성
+	# freq = 'H' / 'D' / 'M' / 'Y'
+	dates = pd.date_range(start_date,end_date, freq='3M') ## 3개월 단위로 생성
+
+  - GPU 정보와 GPU 사용 가능 여부 확인
+
+  # 방법 1 : torch version
+	import torch
+	print(torch.cuda.is_available())
+	print(torch.cuda.device_count())
+	print(torch.cuda.get_device_name(torch.cuda.current_device()))
+
+	# 방법 1-2 : torch version 2
+	from torch import cuda
+	assert cuda.is_available()
+	assert cuda.device_count() > 0
+	print(cuda.get_device_name(cuda.current_device()))
+
+	# 방법 2 : tensorflow version
+	import tensorflow as tf
+	tf.__version__
+
+	## 방법 2-1 : 모든 사용 가능한 GPU List 보기
+	from tensorflow.python.client import device_lib
+	print(device_lib.list_local_devices())
+
+	# 방법 2-2
+	tf.config.list_physical_devices('GPU')
+
+	# 방법 2-3
+	tf.config.experimental.list_physical_devices('GPU')
+
+	# 방법 2-4
+	tf.debugging.set_log_device_placement(True)
+	a = tf.constant([[1.0, 2.0, 3.0], [4.0, 5.0, 6.0]])
+	b = tf.constant([[1.0, 2.0], [3.0, 4.0], [5.0, 6.0]])
+	c = tf.matmul(a, b)
+	print(c)
+
+	# 방법 3 : confirm Keras sees the GPU
+	from keras import backend
+	assert len(backend.tensorflow_backend._get_available_gpus()) > 0
+
+	# 주로 사용하는 코드 1
+	import tensorflow as tf
+	from tensorflow.python.client import device_lib
+
+	device_lib.list_local_devices()
+	tf.config.list_physical_devices('GPU')
+
+	# 주로 사용하는 코드 2 : 인식한 GPU 개수 출력
+	import tensorflow as tf
+	print("Num GPUs Available: ", len(tf.config.experimental.list_physical_devices('GPU')))
+
+  - 자동으로 코드 정리해주는 라이브러리
+
+  ## linux bash shell
+  autopep8 -i my_file.py
+
+  - 파일/폴더 삭제
+
+  import os
+
+  # 파일 삭제
+  os.remove('../file.txt')
+
+  # 폴더 삭제
+  os.rmdir('../folder/')
+
+  - 객체/파일 저장(joblib)
+
+  # 객체/파일 저장
+  from sklearn.externals import joblib
+  joblib.dump(model, 'model/model.pkl')
+
+  # 객체/파일 불러오기
+  from sklearn.externals import joblib
+  model = joblib.load('model/model.pkl')
+
+  - 데이터 재구조화(melt)
+
+  # id_vars = 식별자 or 범주형 변수 등
+  # id_vars를 제외한 열이 값으로 변경됨
+  pd.melt(data, id_vars)
+
+  # var_name: 열 -> 값으로 변경된 열 이름 설정
+  pd.melt(data, id_vars, var_name, value_name)
+
+  - pyplot x축 이름 수정하기
+
+   plt.xticks(data.index, label_list)
+
+  - x의 y승 (실수형 포함)
+
+  import math
+
+  math.pow(x, y)
+
+  - 쉘 실행
+
+  import subprocess
+
+  # shell=True 옵션을 지정해주어야 쉘에서 실행됨
+  subprocess.call('ls -l', shell=True)
+
+  - 그룹화 후 여러함수 적용(groupby, agg)
+
+  df.groupby(['col1'])['col2'].agg(['min', 'max', 'sum'])
+
+
+  - 플로틀리 시각화 방법
+
+  1. px
+
+  fig = px.line(data, x, y)
+  fig.show()
+
+  2. go
+
+  	2-(1) add_trace
+
+  	fig = go.Figure()
+  	fig.add_trace(go.Scatter(x, y))
+  	fig.show()
+
+  	2-(2) go.Figure
+
+  	data1 = go.Scatter(x, y, name)
+  	layout = go.Layout(width)
+  	fig = go.Figure(data=[data1], layout=layout)
+  	fig.show()
+
+  - 플로틀리 alpha값 설정
+
+  go.Scatter(x, y, opacity = 0.5)
+
+  - 플로틀리 그래프 온라인 저장
+
+  fig = go.Figure()
+  fig.add_trace(go.Scatter(x, y))
+  plot(fig, filename='filename', auto_open=True)
+
+  - 플로틀리 subplot(여러 그래프) 그리기
+
+  fig = make_subplots(rows, cols, subplot_titles=('title1', 'title2'))
+  fig.add_trace(go.Scatter(x, y), row, col)
+
+  - 플로틀리 부제목(subtitle) 설정
+
+  fig.update_layout(title='Title<br>SubTitle')
+
+  - 플로틀리 캔들 차트
+
+  # 기본 차트
+  candle = go.CandleStick(
+  	x, open, high, low, close, increasing_line_color, decresing_line_color
+  )
+
+  # 거래량 추가
+  fig = make_subplots(rows, cols, shared_xaxes=True)
+	candle = go.CandleStick(
+  	x, open, high, low, close, increasing_line_color, decresing_line_color
+  )  
+  sum_bar = go.Bar(x, y, name)
+
+  fig.add_trace(candle, row, col)
+  fig.add_trace(sum_bar, row, col)
+
+  fig.update_layout(
+  	title,
+  	yaxis_title,
+  	yaxis2_title,
+  	xaxis2_title
+  	xaxis1_rangeslider_visible = False
+  )
+
+  # 이동평균선 추가
+  ma3 = go.Satter(x, y, line={'color':'black', 'width':0.8}, name='MA3')
+
+  candle = go.CandleStick(
+  	x, open, high, low, close, increasing_line_color, decresing_line_color
+  )
+
+  fig = go.Figure(data=[candle, ma3])
+
+  - datetime 활용 데이터 기간 간단 추출
+
+  # 특정 날짜부터 데이터 추출
+  # 인덱스가 datetime 타입이어야 함
+  df['value']['2020-12':]
+  df['value']['2020':]
+
+  - 리스트 원소 n번 반복하여 새로운 리스트 만들기
+
+  from itertools import chain, repeat
+
+  list(chain.from_iterable((repeat(number, n) for (number, n) in zip(numbers, n_list))))
+  list(chain.from_iterable((repeat(number, n) for (number, n) in zip([1, 2, 3], [3, 5, 7]))))
+  # [1, 1, 1, 2, 2, 2, 2, 2, 3, 3, 3, 3, 3, 3, 3]
+
+  - pyplot 깔끔한 스타일 사용
+
+  plt.style.use('fivethirtyeight')
+
+  - 문자열 딕셔너리 -> 딕셔너리형으로 변환
+
+  import ast
+  ast.literal_eval(json_string)
+
+  - 여러 열에 함수 적용하기 (pandas)
+
+  def func(df):
+  	return df[0] + df[1]
+
+  df['new'] = df.apply(func, axis=1)
+
+  - 열에 특정 문자열이 포함되있는 데이터만 추출(pandas)
+
+  df[df['col'].str.contains('str')]
+
+  # 대소문자 구분 X
+  df[df['col'].str.contains('str', case=False)]
+
+  - 판다스 지수표현 없이 출력
+
+  import pandas as pd
+
+  pd.options.display.float_format = '{:.2f}'.format
+
+  - 레이블 인코딩
+
+  from sklearn.preprocessing import LabelEncoder
+
+  encoder = LabelEncoder()
+  encoder.fit(df['col'])
+
+  # 인코딩한 카테고리 출력
+  print(encoder.classes_)
+
+  # 카테고리형 데이터 레이블 인코딩
+  new_col = encoder.transform(df['col'])
+
+  # 인코딩된 레이블 -> 카테고리 데이터 역변환
+  encoder.inverse_transform(df['col'])
+
+  - 판다스 샘플 추출
+
+  # 지정된 갯수만 추출
+  df.sample(n=n)
+
+  # 지정된 비율로 추출
+  df.sample(freq=p)
+
+  # 랜덤 seed 지정
+  df.sample(n, random_state)
+
+  - 컬러 팔레트 목록
+
+  'Accent', 'Accent_r', 'Blues', 'Blues_r', 'BrBG', 'BrBG_r', 'BuGn', 'BuGn_r', 
+  'BuPu', 'BuPu_r', 'CMRmap', 'CMRmap_r', 'Dark2', 'Dark2_r', 'GnBu', 'GnBu_r', 
+  'Greens', 'Greens_r', 'Greys', 'Greys_r', 'OrRd', 'OrRd_r', 'Oranges', 
+  'Oranges_r', 'PRGn', 'PRGn_r', 'Paired', 'Paired_r', 'Pastel1', 'Pastel1_r', 
+  'Pastel2', 'Pastel2_r', 'PiYG', 'PiYG_r', 'PuBu', 'PuBuGn', 'PuBuGn_r', 
+  'PuBu_r', 'PuOr', 'PuOr_r', 'PuRd', 'PuRd_r', 'Purples', 'Purples_r', 'RdBu', 
+  'RdBu_r', 'RdGy', 'RdGy_r', 'RdPu', 'RdPu_r', 'RdYlBu', 'RdYlBu_r', 'RdYlGn', 
+  'RdYlGn_r', 'Reds', 'Reds_r', 'Set1', 'Set1_r', 'Set2', 'Set2_r', 'Set3', 
+  'Set3_r', 'Spectral', 'Spectral_r', 'Wistia', 'Wistia_r', 'YlGn', 'YlGnBu', 
+  'YlGnBu_r', 'YlGn_r', 'YlOrBr', 'YlOrBr_r', 'YlOrRd', 'YlOrRd_r', 'afmhot', 
+  'afmhot_r', 'autumn', 'autumn_r', 'binary', 'binary_r', 'bone', 'bone_r', 
+  'brg', 'brg_r', 'bwr', 'bwr_r', 'cividis', 'cividis_r', 'cool', 'cool_r', 
+  'coolwarm', 'coolwarm_r', 'copper', 'copper_r', 'crest', 'crest_r', 
+  'cubehelix', 'cubehelix_r', 'flag', 'flag_r', 'flare', 'flare_r', 'gist_earth', 
+  'gist_earth_r', 'gist_gray', 'gist_gray_r', 'gist_heat', 'gist_heat_r', 
+  'gist_ncar', 'gist_ncar_r', 'gist_rainbow', 'gist_rainbow_r', 'gist_stern', 
+  'gist_stern_r', 'gist_yarg', 'gist_yarg_r', 'gnuplot', 'gnuplot2', 'gnuplot2_r', 
+  'gnuplot_r', 'gray', 'gray_r', 'hot', 'hot_r', 'hsv', 'hsv_r', 'icefire', 
+  'icefire_r', 'inferno', 'inferno_r', 'jet', 'jet_r', 'magma', 'magma_r', 
+  'mako', 'mako_r', 'nipy_spectral', 'nipy_spectral_r', 'ocean', 'ocean_r', 
+  'pink', 'pink_r', 'plasma', 'plasma_r', 'prism', 'prism_r', 'rainbow', 
+  'rainbow_r', 'rocket', 'rocket_r', 'seismic', 'seismic_r', 'spring', 
+  'spring_r', 'summer', 'summer_r', 'tab10', 'tab10_r', 'tab20', 'tab20_r', 
+  'tab20b', 'tab20b_r', 'tab20c', 'tab20c_r', 'terrain', 'terrain_r', 'turbo', 
+  'turbo_r', 'twilight', 'twilight_r', 'twilight_shifted', 'twilight_shifted_r', 
+  'viridis', 'viridis_r', 'vlag', 'vlag_r', 'winter', 'winter_r'
+
+  - wandb(weights and biases) 실험관리 적용
+
+  !pip install wandb -q
+  import wandb
+
+  # wandb 로그인
+  # 출력에 사이트 접속 후 토큰 키 값 복사 => 콘솔창에 붙여넣기
+  wandb.login()
+
+  # 초기화 (실험관리 시작)
+  wandb.init(
+  	project="wandb test",
+  	config={
+  		'estimators':99999,
+  		'learning_rate':0.01
+  	}
+  )
+
+  # 하이퍼 파라미터 지정
+  config = wandb.config
+  params = {'estimators':config.estimators, 'learning_rate':config.learning_rate}
+
+  # 모델 학습 및 예측
+  model = XGBRegressor(params**)
+  model.fit(x_train, y_train)
+  y_pred = model.predict(x_test)
+  accuracy = accuracy_func(y_test, y_pred)
+
+  # 정확도 로깅
+  wandb.log({'accuracy':accuracy})
+  wandb.finish()
+
+  - wandb sweep 하이퍼 파라미터 튜닝 적용
+
+  import wandb
+
+  # wandb 로그인
+  wandb.login()
+
+  # 하이퍼 파라미터 튜닝할 파라미터 지정
+  sweep_config = {
+  	# method: random or grid
+    'method':'grid',
+    'parameters':{
+        'max_depth': {
+            'values':[4, 6, 8, 10]
+        },
+        'min_child_weight':{
+            'values':[1, 3, 5]
+        }
+    }
+  }
+
+  # sweep id 정보 입력
+  sweep_id = wandb.sweep(project='fashioncaster-exper-hpo', sweep=sweep_config)
+
+  # train하는 함수 작성
+  def train():
+
+    config_defaults = {
+	    'estimators':99999,
+	    'learning_rate':0.01,
+	    'seed':2201
+    }
+
+    wandb.init(
+        project="wandb sweep",
+        config=config_defaults,
+        magic=True
+    )
+    # sweep 하는 동안에는 default 파라미터가 덮어쓰기됨
+    config = wandb.config
+
+    # 하이퍼 파라미터 지정
+    config = wandb.config
+    params = {
+    	'estimators':config.estimators, 
+    	'learning_rate':config.learning_rate
+    }
+
+    # 모델 학습 및 예측
+    model = XGBRegressor(params**)
+    model.fit(x_train, y_train)
+    y_pred = model.predict(x_test)
+    accuracy = accuracy_func(y_test, y_pred)
+
+    # 정확도 로깅
+    wandb.log({'accuracy':accuracy})
+
+  # wandb agent으로 하이퍼 파라미터 튜닝 실행
+  wandb.agent(sweep_id, function=train)
+
+  - What-If Tool(WIT) 적용(XGBoost)
+
+  from witwidget.notebook.visualization import WitConfigBuilder
+  from witwidget.notebook.visualization import WitWidget
+  import tensorflow as tf
+
+  # 변수 정보 생성
+  def create_feature_spec(df, columns=None):
+    feature_spec = {}
+    if columns == None:
+        columns = df.columns.values.tolist()
+    for f in columns:
+        if df[f].dtype is np.dtype(np.int64):
+            feature_spec[f] = tf.io.FixedLenFeature(shape=(), dtype=tf.int64)
+        elif df[f].dtype is np.dtype(np.float64):
+            feature_spec[f] = tf.io.FixedLenFeature(shape=(), dtype=tf.float32)
+        else:
+            feature_spec[f] = tf.io.FixedLenFeature(shape=(), dtype=tf.string)
+    return feature_spec
+
+  feature_spec = create_feature_spec(train)
+
+  # WitConfigBuiler(data, column)
+  # data: 테스트 데이터를 넘파이형 리스트 변형해서 입력
+  # column: 데이터의 열 이름을 리스트 형식으로 입력
+  # .set_estimator_and_feature_spec(model, feature_spec): 학습한 모델과 변수 정보 입력
+  # .set_target_feature('colName'): 목표변수 열 이름 지정
+  # .set_model_type('regression'): 회귀 문제일 경우 지정
+  # .set_label_vocab(['value1', 'value2']): 이진 분류라 할 때 각 카테고리명 지정
+  config_builder = WitConfigBuilder(np.array(test).tolist(), test.columns.to_list()).set_estimator_and_feature_spec(model, feature_spec=feature_spec).set_target_feature('tot_count').set_model_type('regression')
+
+  WitWidget(config_builder, height=800)
+
+  - 난수 추출 (random)
+
+  from random import *
+
+  # n부터 m사이의 임의의 정수
+  x = randint(n, m)
+  # 0부터 1사이의 임의의 실수
+  x = random()
+  # a부터 b사이의 임의의 실수
+  x = uniform(a, b)
+  # n부터 m사이의 임의의 짝수
+  x = randrange(n, m, 2)
+  # 0부터 n사이의 임의의 정수
+  x = randrange(n)
+
+  - 딕셔너리 섞기
+
+  import random
+
+  d = {1:2, 3:4, 5:6, 7:8}
+  keys = list(d.keys())
+  random.shuffle(keys)
+  shuffled_dict = dict([(key, d[key]) for key in keys])
+
+  
+
+
+-----------------------------------------------------------------------------
+  - My Util/Function
+
+    - 주피터 노트북 Cell 확장
+    from IPython.core.display import display, HTML
+	display(HTML("<style>.container {width:100% !important;}</style>"))
+
+	- 주피터 노트북 테마 및 글꼴 변경
+
+	# 아나콘다 프롬프트 실행
+	pip install jupyterthemes
+
+	# 테마 목록
+	jt -l
+
+	# 어두운 테마 적용하기
+	jt -t onedork -T -N -kl -f hack -fs 9 -tfs 9 -nfs 11 -ofs 8
+
+    - 데이터프레임 출력 확장
+
+    # 최대 출력 행 수 설정
+	pd.set_option('display.max_rows', 50)
+	# 최대 출력 열 수 설정
+	pd.set_option('display.max_columns', 100)
+	# 표시할 가로의 길이
+	pd.set_option('display.width', 1000)
+
+    - 수치형인 독립변수 히스토그램, 박스플롯 그리기 함수
+
+    def make_hist_boxplot(data, column):
+    
+    	print(data[column].describe())
+	    plt.rcParams['figure.figsize'] = [10, 8]
+	    flg = plt.figure()
+	    ax = flg.add_subplot(1, 2, 1)
+	    plt.hist(data[column])
+	    ax.set_title("{} histogram".format(column), color = 'white')
+
+	    ax = flg.add_subplot(1, 2, 2)
+	    plt.boxplot(data[column])
+	    ax.set_title("{} boxplot".format(column), color = 'white')
+	    plt.show()
+
+	- 범주형인 독립변수 바 그래프 그리기(빈도수도 같이 표시)
+
+	def make_bar(data, column, max_print = 10):
+	    column_n = data[column].value_counts()
+
+	    if len(column_n) <= max_print:
+	        print(column_n)
+	        plt.bar(column_n.index, column_n.values)
+	        for i, v in enumerate(column_n.index):
+	            plt.text(v, column_n.values[i], column_n.values[i],
+	                     fontsize = 11,
+	                     color='black',
+	                     horizontalalignment='center',
+	                     verticalalignment='bottom')
+	        plt.title("{} graph".format(column))
+	        plt.show()
+	    else:
+	        column_n_sorted = column_n.sort_values(ascending=False).head(max_print)
+	        print(column_n_sorted)
+	        plt.bar(column_n_sorted.index, column_n_sorted.values)
+	        for i, v in enumerate(column_n_sorted.index):
+	            plt.text(v, column_n_sorted.values[i], column_n_sorted.values[i],
+	                     fontsize = 11,
+	                     color='black',
+	                     horizontalalignment='center',
+	                     verticalalignment='bottom')
+	        plt.xticks(rotation=20)
+	        plt.title("{} graph".format(column))
+	        plt.show()
+
+
+	- 데이터프레임에 년도, 월, 요일 추가
+
+	def date_split(data, date_column):
+    
+	    data[date_column] = data[date_column].astype(str)
+	    data[date_column] = pd.to_datetime(data[date_column])
+	    data['Year'] = data[date_column].apply(lambda x : x.year)
+	    data['Month'] = data[date_column].apply(lambda x : x.month)
+	    data['WeekDay'] = data[date_column].apply(lambda x : x.weekday)
+	    
+	    return data
+
+	- 데이터프레임의 그룹화되어 있는 변수 시계열 그래프 그리기
+
+	def make_ts_plot(data, group_col, value_col, date_col = 'date'):
+
+		plt.figure(figsize=(15, 20))
+		for i, item in enumerate(list(set(data[group_col]))):
+		    n = len(set(data[group_col]))
+		    df = data[data[group_col] == item]
+		    plt.subplot(n, 1, i+1)
+		    plt.plot(df[date_col], df[value_col])
+		    plt.ylabel(item, color = 'white')
+		    plt.yticks(color = 'white')
+		    plt.xticks(color = 'white')
+
+	- 기준열에서 상위 p%를 제외한 데이터프레임 생성
+	
+	def make_quantile_df(data, column, p = 0.05):
+	    data.sort_values(by = [column], ascending = False, inplace = True)
+	    n = len(data)
+	    percent = 1 - p
+	    data = data.tail(round(n * percent))
+	    return data
+
+	- 시계열 변수 생성
+
+	# 예시
+	def lag_feature(df, lags, col):
+	    tmp = df[['date_block_num','shop_id','item_id',col]]
+	    for i in lags:
+	        shifted = tmp.copy()
+	        shifted.columns = ['date_block_num','shop_id','item_id', col+'_lag_'+str(i)]
+	        shifted['date_block_num'] += i
+	        df = pd.merge(df, shifted, on=['date_block_num','shop_id','item_id'], how='left')
+	    return df
+
+	- 문자열 범주형 변수 숫자형으로 변경
+
+	def fact_to_num(data, col):
+	    for index, item in enumerate(list(set(data[col]))):
+	        data.loc[data[col] == item, col] = index
+        data[col].astype(int)
+	    return data
+
+	- XGBoost 변수 중요도 그래프로 나타내기
+
+	from xgboost import plot_importance
+
+	def plot_features(model, figsize):    
+	    fig, ax = plt.subplots(1,1,figsize=figsize)
+	    return plot_importance(booster=model, ax=ax)
+
+	- 대용량 데이터를 읽을때 메모리를 절약하는 함수
+
+	def reduce_mem_usage(df):
+	    """ iterate through all the columns of a dataframe and modify the data type
+	        to reduce memory usage.        
+	    """
+	    start_mem = df.memory_usage().sum() / 1024**2
+	    print('Memory usage of dataframe is {:.2f} MB'.format(start_mem))
+	    
+	    for col in df.columns:
+	        col_type = df[col].dtype
+	        
+	        if col_type != object:
+	            c_min = df[col].min()
+	            c_max = df[col].max()
+	            if str(col_type)[:3] == 'int':
+	                if c_min > np.iinfo(np.int8).min and c_max < np.iinfo(np.int8).max:
+	                    df[col] = df[col].astype(np.int8)
+	                elif c_min > np.iinfo(np.int16).min and c_max < np.iinfo(np.int16).max:
+	                    df[col] = df[col].astype(np.int16)
+	                elif c_min > np.iinfo(np.int32).min and c_max < np.iinfo(np.int32).max:
+	                    df[col] = df[col].astype(np.int32)
+	                elif c_min > np.iinfo(np.int64).min and c_max < np.iinfo(np.int64).max:
+	                    df[col] = df[col].astype(np.int64)  
+	            else:
+	                if c_min > np.finfo(np.float16).min and c_max < np.finfo(np.float16).max:
+	                    df[col] = df[col].astype(np.float16)
+	                elif c_min > np.finfo(np.float32).min and c_max < np.finfo(np.float32).max:
+	                    df[col] = df[col].astype(np.float32)
+	                else:
+	                    df[col] = df[col].astype(np.float64)
+	        else:
+	            df[col] = df[col].astype('category')
+
+	    end_mem = df.memory_usage().sum() / 1024**2
+	    print('Memory usage after optimization is: {:.2f} MB'.format(end_mem))
+	    print('Decreased by {:.1f}%'.format(100 * (start_mem - end_mem) / start_mem))
+	    
+	    return df
+
+
+	def import_data(file):
+	    """create a dataframe and optimize its memory usage"""
+	    df = pd.read_csv(file, parse_dates=True, keep_date_col=True)
+	    df = reduce_mem_usage(df)
+	    return df
+
+	# For example
+	print('-' * 80)
+	print('train')
+	train = import_data('../input/application_train.csv')
+
+	- 시각화에 한글 폰트 적용
+
+	def apply_font():
+    
+    import matplotlib.font_manager as fm
+    
+    # 폰트 경로
+    font_path = "C:/Windows/Fonts/NGULIM.TTF"
+    # 폰트 설정
+    fontprop = fm.FontProperties(fname=font_path, size=16)
+    plt.rc('font', family=fontprop.get_name())
+
+  - API 활용 데이터 얻어오기
+
+	import urllib
+	import urllib.request
+	import json
+	import xmltodict
+
+	from tqdm import tqdm
+
+	# api 활용데이터 받아오는 함수
+	def api_request_get():
+
+	    # 인증받은 키(Decoding)
+	    key = '...'
+	    # API 요청 주소
+	    url = 'http://apis.data.go.kr/B552584/UlfptcaAlarmInqireSvc/getUlfptcaAlarmInfo'
+	    # URL에 보낼 파라미터값 설정
+	    queryParams = '?' + urllib.parse.urlencode(
+	        {
+	            urllib.parse.quote_plus('serviceKey') : key, 
+	            urllib.parse.quote_plus('') : , 
+	            urllib.parse.quote_plus('') : , 
+	            urllib.parse.quote_plus('') : , 
+	            urllib.parse.quote_plus('') : 
+	        }
+	    )
+
+	    # api로부터 데이터 받기
+	    response = urllib.request.urlopen(url + queryParams).read()
+	    # xml데이터를 dictionary로 변환
+	    dict_type = xmltodict.parse(response)
+	    return dict_type['response']['body']['items']
+
+
+  - SARIMAX 적합
+
+  def timeseries_eval(data, value_col, season_val, eval_date):
+
+  	### data: 데이터프레임
+  	### value_col: 데이터에서 목표변수 이름
+  	### season_val: 계절성(3, 6, 12 등)
+  	### eval_date: 검증 시작 날짜('2020-01', '2021-05-10' 등)
+
+
+  	# GridSearch
+    p = d = q = range(0, 2)
+
+    pdq = list(itertools.product(p, d, q))
+    seasonal_pdq = [ (x[0], x[1], x[2], season_val) for x in pdq]
+
+    select_candi = 10000000
+    param_candi = (0, 0, 0)
+    param_seasonal_candi = (0, 0, 0)
+
+    count = 0
+    end_count = len(pdq)
+
+    for param in pdq:
+        for param_seasonal in seasonal_pdq:
+            try:
+                mod = sm.tsa.statespace.SARIMAX(
+                    data[value_col],
+                    order=param,
+                    seasonal_order=param_seasonal,
+                    enforce_stationarity=False,
+                    enforce_invertibility=False
+                )
+
+                results = mod.fit()
+                count += 1
+                if count <= 5:
+                    print('ARIMA{}x{}{} - AIC:{}'.format(param, param_seasonal, season_val, results.aic))
+
+                if results.aic < select_candi:
+                    select_candi = results.aic
+                    param_candi = param
+                    param_seasonal_candi = param_seasonal
+            except:
+                continue
+
+    # 최적화한 p, d, q, seasonal 값으로 모델 학습
+    mod = sm.tsa.statespace.SARIMAX(
+        data[value_col],
+        # 추가 독립변수
+        # exog=data[value2_col],
+        order=param_candi,
+        seasonal_order=param_seasonal_candi,
+        enforce_invertibility=False,
+        enforce_stationarity=False
+    )
+
+    # 결과 저장
+    results = mod.fit()
+    model = results
+    print('### model fitting complete ###')
+
+    pred = model.get_prediction(
+            start=pd.to_datetime(eval_date),
+            dynamic=False
+        )
+        
+    pred_ci = pred.conf_int()
+
+    ax = valid_data.plot( label='observed', figsize=(12, 8) )
+
+    # 예측
+    pred.predicted_mean.plot(
+        ax=ax,
+        label='Forecast',
+        alpha=.7
+    )
+
+    ax.fill_between(
+        pred_ci.index,
+        pred_ci['lower {}'.format(value_col)],
+        pred_ci['upper {}'.format(value_col)],
+        color='k',
+        alpha=.2
+    )
+
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Total Counts')
+    plt.legend(loc=1)
+    plt.show()
+

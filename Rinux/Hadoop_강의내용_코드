@@ -1,0 +1,1992 @@
+<Hadoop 강의 내용>
+
+  - Linux 기초(19주차/21.01.13)
+
+  Hadoop -> Linux에서만 돌아감(Java로 만들어진 플랫폼)
+  HDFS(하둡 분산파일 시스템)
+   : Master -> Slave에게 작업할당
+
+  Windows10(Host) -> VirtualBox(가상환경 프로그램) -> Linux 구축
+
+  Hadoop을 구축하는데 최소한 두 대이상의 컴퓨터가 필요(Master, Slave)
+   
+  메모리 최소 8GB 필요 -> Master(2), Slave(1), Host(5)
+
+  Java, Python, R -> Hadoop 연동가능
+
+  - 설치 파일
+
+	Linux계열 - CentOS 다운로드 경로
+	  - http://ftp.kaist.ac.kr/CentOS/7.9.2009/isos/x86_64/
+	    -> CentOS-7-x86-64-DVD-2009.iso 다운로드
+
+  	VirtualBox(가상환경)
+  	  - Google -> VirtualBox 검색 -> Downloads -> Older Builder -> 5.2 버전
+  	    -> Window Host 다운로드
+
+  - 리눅스 기본 명령어
+
+	su root: root계정으로 로그인(관리자)
+
+	exit: 로그아웃
+
+	reboot: 리부팅(관리자 계정만 사용가능)
+
+	ifconfig: ip 확인
+
+	gedit: 메모장 오픈
+
+	ls: 현재 디렉토리의 모든 파일 리스트 출력
+
+	gcc 파일명: .c파일 컴파일(c언어 파일 확장자 -> .c)
+
+	./파일명: 컴파일된 파일 실행
+
+	python: 파이썬 실행(파이썬 파일 확장자 -> .py)
+
+	exit(): 종료
+
+	ctrl + l -> 명령 삭제
+	shift + space -> 한/영 변환
+
+	man 명령: 명령에 대한 manual
+
+	ls -a,--all: 모든 파일 출력(숨겨진 파일까지)
+
+	ls -l: 파일 종류, 유형 출력
+
+	ls -il: 파일 노드 번호 포함하고 출력
+
+	pwd: 현재 워킹 디렉토리 확인
+
+	.bash_profile -> 환경설정 파일
+
+	cat 파일명: 파일 확인
+
+	* 리눅스 path 구분자 -> ":" (윈도우는 "\")
+
+	* tap -> 자동완성
+
+	cd 폴더명: 폴더로 이동
+
+	cd ~: home으로 이동
+	cd /: root로 이동
+
+	chmod nnn 파일명: 파일에 대한 접근 권한 변경
+
+	ls -R: 하위 디렉토리에 있는 목록도 확인
+
+  - Java 환경설정
+
+  	왼쪽 위 프로그램 -> FireFox 실행 -> www.oracle.com -> JAVA -> JDK 8RE
+  	  -> Linux x64 Compression.. 다운로드(저장)
+	  -> home에 압축풀기
+
+	Java JDK 설치 후 jdk 폴더의 아무 파일 오른쪽 클릭 -> 속성 -> path 복사
+
+	폴더 오른쪽 위 -> --- 클릭 -> 숨긴 파일 보이기: 숨겨진 파일 모두 보이기
+
+	.bash_profile 오른쪽 클릭 -> 텍스트 편집기로 열기 -> 
+	 export JAVA_HOME="JAVA경로"
+
+	 PATH=$PATH.../bin":$JAVA_HOME/bin"
+	 => 입력
+
+	-> 재부팅 or 터미널에서 source .bash_profile 입력
+	   -> 재부팅안하고 터미널에 입력시 입력한 터미널 외에 다른 터미널에서는 적용 X
+
+	터미널 -> javac 파일명.java: 자바 파일 컴파일
+	       -> java 자바파일.class: 자바 클래스 파일 실행
+
+  - 원격 제어프로그램
+
+  	Putty -> Google 검색 후 다운로드
+
+  ● 파일 및 디렉토리 관련 명령
+
+  1. pwd => 현재 작업 디렉토리를 확인하는 명령
+
+     [root@server ~]# pwd
+     /root
+
+     ※ ~ 은 로그인 계정의 홈디렉토리를 표시하기 위한 특수기호
+
+  2. ls => 디렉토리 하위 목록을 확인하는 명령  
+
+     - 유사 명령 => dir
+
+     형식) ]# ls [옵션] 디렉토리  => 원하는 디렉토리 하위 목록을 확인
+
+                           => 디렉토리가 생략되면 현재 디렉토리 하위 목록을 확인
+
+     ex) ]# ls    =>  현재 디렉토리 하위 목록을 확인(파일명만 확인)
+
+         ]# ls -l   =>  -l : 파일의 목록을 자세하게 확인
+         -rw-r--r--  1  root  root  35241  2월 6 06:42   install.log
+        (1)   (2)   (3) (4)    (5)   (6)       (7)            (8)
+           
+        (1) - 1자리 => 파일의 종류를 표시
+
+              d  =>  디렉토리
+              -  =>  파일
+              l  =>  링크파일
+              b  =>  블럭장치파일
+              c  =>  문자장치파일
+
+        (2) - 9자리 => 파일의 권한을 표시 
+		   r: read, w:write, x
+		   앞 3자리 -> 현재 로그인한 사용자 권한
+		   중간 3자리 -> 사용자의 그룹 권한
+		   마지막 3자리 -> Guest 권한
+		   -> 이진수의 합으로 봄
+		        ex) rwx: 7 , rw-: 6, r--:4, --x: 1
+
+        (3) - 파일의 연결 갯수를 표시
+
+        (4) - 소유자 : 파일에 대한 소유권을 가지고 있는 계정
+
+        (5) - 소유그룹 : 파일에 대한 특정권한을 가지고 있는 계정의 모임
+
+        (6) - 파일의 크기(byte)
+	  -> 폴더의 기본 크기는 4096
+
+        (7) - 파일의 변경 날짜
+
+        (8) - 파일의 이름
+
+         ]# ls -al   => -a : 숨겨진 파일 확인
+
+         ※ 숨겨진 파일은 파일의 이름이 .으로 시작된다. 
+
+         ]# ls -il   => -i : 파일의 inode 번호를 확인         
+
+         ]# ls -Rl   => -R : 하위 디렉토리에 존재하는 목록도 확인
+
+         ]# ls -l /var   => /var 디렉토리의 목록 확인
+
+         ]# ls -l /etc/*conf   => /etc 디렉토리에 존재하는 목록 중 conf로 끝나는 목록만 확인
+
+           ※ 메타문자 : 검색시에 사용되는 특수문자
+
+                * => 전체    ? => 문자 하나
+        
+      ※ 리눅스 디렉토리 구조 => 계층적 디렉토리 구조
+
+         /   ┬ boot : 부팅 관련 파일(vmlinuz - 커널) => 파티션(최대 200M)
+             ├ bin : Linux 명령 파일 
+             ├ sbin : Linux 명령 파일(관리자만 사용 가능) 
+             ├ dev : 장치파일
+             ├ etc : 리눅스 환경설정 파일
+             ├ home : 일반계정의 홈디렉토리가 존재   => 파티션(정책에 따른 최대용량)
+             ├ root : 관리자의 홈디렉토리
+             ├ lib : 필수 라이브러리 파일         		                                 
+             ├ opt : 옵션 라이브러리 파일    =>  파티션(최대 500M)
+             ├ usr : 응용 프로그램(패키지)이 설치된 디렉토리   => 파티션(정책에 따른 최대용량)
+             │ └ local : 소스방식의 응용 프로그램이 설치된 디렉토리   =>  파티션(정책에 따른 용량)
+             ├ mnt : 저장 장치파일을 mount 하기 위한 디렉토리
+             ├ proc : 리눅스 정보를 저장하고 있는 파일이 존재하는 가상의 디렉토리
+             ├ tmp : 입출력에 관련된 임시파일이 저장되는 디렉토리   =>  파티션(최대 5G)
+             └ var : 메일 및 로그파일등을 저장하는 디렉토리  =>  파티션(정책에 따른 최대용량)
+
+  3. cd  => 현재 작업 디렉토리를 변경하는 명령
+
+    ]# pwd
+    /root 
+
+    ]# cd ..    =>  상위 디렉토리로 이동
+    
+    ]# pwd
+    /
+
+    ]# cd home   => 하위 디렉토리로 이동
+
+    ]# pwd
+    /home
+
+    ]# cd ../usr    => 상위디렉토리로 이동 후 하위디렉토리로 이동
+
+   ※ 상대경로 디렉토리 표시 방법 => 현재 디렉토리를 기준으로 디렉토리를 표현
+
+    ]# cd /var   => /디렉토리 하위에 있는 var 디렉토리로 이동
+
+    ]# pwd
+    /var
+
+   ※ 절대경로 디렉토리 표시 방법 => / 디렉토리를 기준으로 디렉토리를 표현
+
+    ]# cd    또는   ]# cd ~     =>  로그인 계정의 홈디렉토리로 이동
+
+    ]# cd /et*     =>  메타문자를 이용한 디렉토리 이동도 가능
+
+    ※ 자동 완성 기능 => 디렉토리명 또는 파일명을 자동으로 완성하여 주는 기능 - [Tab]키를 이용
+
+       ]# cd /u[tab]/loc[tab]
+
+    ※ history 기능 => 실행된 명령을 저장하여 재사용하기 위한 기능
+
+       - 방향키(↑ 또는 ↓)를 누르면 기존의 명령을 사용할 수 있다.
+
+       - history 명령 : 현재까지 사용한 명령 목록을 출력
+
+         ]# history
+         번호     명령
+         ...
+
+         ]# !번호   => 해당 번호의 명령이 실행
+
+  4. mkdir  =>  디렉토리를 생성하는 명령
+
+    ]# cd     =>  홈디렉토리로 이동
+
+    ]# mkdir aaa    =>   현재 작업디렉토리 하위에 aaa 디렉토리가 생성
+
+      ※ ]# mkdir /aaa   => / 디렉토리 하위에 aaa 디렉토리가 생성
+
+    ]# mkdir bbb ccc ddd    => 여러 개의 디렉토리를 동시에 생성
+
+    ]# mkdir -p a1/a2/a3    => 하위 디렉토리를 연속으로 생성
+
+  5. rmdir  => 디렉토리를 삭제하는 명령
+
+    ]# rmdir aaa
+
+    ]# rmdir bbb ccc ddd
+
+    ]# rmdir a1   =>  a1 디렉토리 하위에 목록이 존재하므로 삭제가 되지 않는다. 
+
+    ※ 삭제하고자 하는 디렉토리에 파일이 하나라도 존재하면 삭제되지 않는다.
+
+    ]# rmdir -p a1/a2/a3
+
+  6. touch  =>  파일을 생성하는 명령
+
+    ]# touch aaa.txt    =>   aaa.txt 파일이 생성(파일의 내용은 존재하지 않는다.)
+
+    ※ 파일명 => 대소문자를 구분하며 확장자는 특별한 의미를 가지지 않는다.
+
+  7. cat  =>  파일의 내용을 확인하는 명령
+
+    - 유사한 명령 : more 또는 less  => 페이지 단위로 파일의 내용을 읽어들인다.    
+
+                   head 또는 tail  => 원하는 줄수만큼 확인 기능
+
+    ]# cat install.log    =>  [Shift]+[PageUp]  또는 [Shift]+[PageDown] 을 이용하여 위 또는 아래 부분의 내용을 확인
+
+    ]# more install.log 
+    ]# less install.log
+        -> 탈출명령: q
+
+    ]# head -n 10 install.log
+
+    ]# tail -n 10 install.log
+
+   ※ 리눅스에서 사용되는 특수기호
+
+     1) |  =>  명령1 | 명령2  : 명령1의 결과로 명령2를 실행
+
+       ]# ls -l /etc | less
+
+     2) >  또는 <   =>  명령 > 파일명 : 명령의 결과를 파일에 저장
+
+       => 데이타의 이동을 표시하는 기호  ex) ]# yes > /dev/null 
+
+       ]# ls -l /etc/*conf > conf.txt   => conf.txt 파일이 없으면 파일이 생성(파일이 존재하면 OverWrite 된다.)
+
+       ]# ls -l   =>  conf.txt 파일 확인
+
+       ]# cat conf.txt        
+
+       => cat 명령을 이용한 파일 생성 방법 => 간단한 내용을 가진 파일을 생성
+
+       ]# cat > hello.txt
+       Hi~~~
+       Hello~~~
+       ^D    =>  [ctrl]+D 
+
+       ]# cat hello.txt
+       Hi~~~
+       Hello~~~
+
+       ]# cat >> hello.txt   =>  >> : append(추가)
+       Bye
+       ^D
+
+       ]# cat hello.txt
+       Hi~~~
+       Hello~~~ 
+       Bye
+
+     3) ;   =>   명령1;명령2  - 명령을 순차적으로 실행하기 위한 기호
+ 
+       ]# pwd;ls 
+
+   ※ 리눅스 콘솔에서 사용하는 단축키
+
+     [ctrl] + C   =>  명령 취소
+
+     [ctrl] + Z   =>  명령 중지
+
+     [ctrl] + D   =>  종료(로그아웃 또는 입력 종료를 하고자 할때 사용)
+
+     [ctrl] + L   =>  화면 초기화(clear 명령과 동일) 또는 vi 편집기 사용시 메세지를 삭제하는 기능
+
+  8. rm  => 파일을 삭제하는 명령
+
+    ]# rm conf.txt   =>  삭제유무를 확인
+
+    ]# rm -f aaa.txt  => 무조건 삭제
+     
+    ]# mkdir -p a1/a2/a3
+
+    ]# rm -r a1   => a1 디렉토리 및 하위 목록들 전체를 삭제(삭제 유무를 확인)
+
+    ]# rm -rf a1   => a1 디렉토리 및 하위 목록들 전체를 무조건 삭제
+
+    ※ 일반적으로 rm 명령은 -rf 옵션을 사용하여 파일 또는 디렉토리 삭제를 한다.
+
+  9. cp  => 파일을 복사하는 명령
+
+    형식) ]# cp 원본파일 대상디렉토리   
+
+    ]# cat > aaa.txt
+    Hello
+    ^D
+
+    ]# cp aaa.txt /home   => 현재 디렉토리의 aaa.txt 파일을 /home 밑에 복사    
+
+    ]# ls -l /home   =>  aaa.txt 확인
+
+    ]# cp aaa.txt /home/bbb.txt   => 현재 디렉토리의 aaa.txt 파일을 /home 밑에 bbb.txt로 이름을 변경하여 복사    
+
+    ]# ls -l /home   =>  aaa.txt 및 bbb.txt 확인    
+
+    ]# cp /home/bbb.txt .  => /home/bbb.txt 파일을 현재 디렉토리에 복사
+ 
+    ]# cp aaa.txt ccc.txt  => 현재 디렉토리의 aaa.txt를 이름을 변경하여 ccc.txt로 복사
+
+    ]# cp -R /home .   => 디렉토리 복사 : /home 디렉토리 및 하위 목록 전체를 현재 디렉토리에 복사
+
+  10. mv  => 파일 또는 디렉토리를 이동하는 명령
+
+    ]# mv ccc.txt /home  => ccc.txt 파일을 /home 디렉토리로 이동
+
+    ]# mv home /mnt  => 현재 디렉토리 하위에 있는 home 디렉토리를 /mnt 디렉토리로 이동
+
+    ]# mv /home/aaa.txt . => aaa.txt를 현재 디렉토리로 가져옴
+
+    ]# mv aaa.txt hi.txt  => 파일(디렉토리)의 이름을 변경
+
+-----------------------------------------------------------------------------
+
+  - Linux 기초(19주차/21.01.14)
+
+    - 기본 명령
+
+    	11. ln  => hard 링크파일 및 symbolic 링크파일을 생성하는 명령
+
+    1) hard 링크 => cp와 유사하지만 inode 번호도 같은 동일한 파일을 생성할 때 사용
+
+      ]# cat aaa.txt
+      Hello
+
+      ]# cp aaa.txt bbb.txt   => 복사
+
+      ]# ln aaa.txt ccc.txt   => hard 링크
+
+      ]# ls -l   => aaa.txt, bbb.txt, ccc.txt 파일의 크기가 같으며 같은 내용을 저장하고 있다.
+ 
+      ]# cat >> aaa.txt  => 내용 추가
+      Good Bye
+      ^D 
+
+      ]# cat bbb.txt   => aaa.txt와 다른 내용을 저장하고 있다. : aaa.txt와 bbb.txt는 별개의 파일이다. 
+      Hello  
+
+      ]# cat ccc.txt  => aaa.txt와 동일한 내용을 저장하고 있다. : aaa.txt와 bbb.txt는 동일한 파일이다.
+      Hello  
+      Good Bye
+
+      ]# ls -il   => aaa.txt와 bbb.txt는 inode 번호가 틀리지만 aaa.txt와 ccc.txt는 inode 번호가 같다.
+
+      ※ hard 링크는 자주 데이타가 변경되는 파일(환경설정파일)을 백업할 경우 사용되는 명령
+
+   2) Symbolic 링크 => 윈도우의 바로가기 아이콘 동일한 기능을 가지고 있는 파일을 생성
+
+     ]# ln -s /etc/sysconfig/network-scripts/ifcfg-eth0 eth0
+
+        => /etc/sysconfig/network-scripts/ifcfg-eth0 파일에 대한 Symbolic 링크파일인 eth0파일을 생성
+ 
+        => 파일의 종류는 "l"로 표시되며 파일명은 "링크파일명 -> 원본파일명" 형식으로 표시된다.
+
+     ※ Symbolic 링크파일은 원본이 없을 경우 아무런 소용이 없다.
+   
+     ]# ln -s /usr/local local   => 디렉토리도 링크 시킬 수 있다.
+
+     ※ 원본을 지정할 때 절대경로를 사용  
+
+     ※ 링크디렉토리에 접근하여 pwd 명령을 사용하면 local로 표시된다. 
+
+  
+● 필수 기본 명령
+
+  1. 검색 명령
+
+    1) grep => 파일에서 원하는 단어를 검색하여 단어가 포함된 행을 출력하는 명령   
+
+      형식) ]# grep 단어 파일명
+
+            => grep 명령 대신 egrep 명령을 사용해도 된다.
+
+       ex) ]# grep root /etc/passwd  => /etc/passwd 파일에서 root 단어가 있는 행을 출력
+
+           ]# cat > aaa.txt
+           abcdef		 
+           ABCDEF
+           abcDEF
+           XyZ
+           ^D
+  
+           ]# grep bcd aaa.txt   => 대소문자 구분
+           abcdef		 
+ 
+           ]# grep -i bcd aaa.txt   => -i : 대소문자 구분이 없이 검색
+           abcdef		 
+           ABCDEF
+           abcDEF
+
+           ]# grep -in xyz aaa.txt  => -n : 행번호를 출력
+           4:XyZ
+
+           ]# grep -n ^ab aaa.txt  => ab로 시작되는 단어 검색
+           1:abcdef      
+           3:abcDEF
+
+           ]# grep -n EF$ aaa.txt   => EF로 끝나는 단어 검색
+           2:ABCDEF
+           3:abcDEF
+
+           ]# grep -n [a-z] aaa.txt  =>  영문자 소문자가 포함 있는 단어 검색
+           1:abcdef		 
+           3:abcDEF
+           4:XyZ
+
+           ]# grep -n [^a-z] aaa.txt  =>  영문자 대문자가 포함 있는 단어 검색 (대괄호 안에 있는 꺽쇠는 '반대'를 의미함)
+           2:ABCDEF		 
+           3:abcDEF
+           4:XyZ
+
+           ]# grep -n ^[a-z] aaa.txt  =>  영문자 소문자로 시작되는 단어 검색 (대괄호 바깥에 있는 꺽쇠는 '시작'을 의미함)
+           1:abcdef		 
+           3:abcDEF
+
+           ]# grep -R root /etc   => /etc 디렉토리 및 하위 디렉토리에 존재하는 모든 파일에서 root 단어를 검색하여 출력
+
+           ]# ls -l /etc | grep conf   => /etc 디렉토리 목록에서 conf 단어가 있는 목록만 출력
+
+         ※ grep는 다른 검색 명령과 같이 사용되는 경우가 많다.    
+
+    2) whereis  => 명령을 검색하는 명령
+
+       형식) ]# whereis 명령
+
+       ex) ]# whereis ls
+
+    3) find => 원하는 위치에서 원하는 형식의 파일을 검색
+ 
+      형식) ]# find  검색디렉토리  검색옵션  검색값  검색후처리
+
+      ]# find /etc -name '*conf' -print
+
+         => /etc 디렉토리에서 파일의 이름이 conf로 끝나는 파일을 검색하여 출력
+
+         ※ -print 옵션은 생략 가능
+
+      ]# find /root -type d   =>  파일의 종류가 디렉토리를 검색하여 출력
+
+         ※ -type 옵션은 파일의 종류를 검색 => d : 디렉토리   f : 파일   l : 링크파일
+
+      ]# find /var -type d -name '*mail*'    =>  옵션은 여러 개 사용 가능하다.
+
+      ]# find /etc -type f -user root -perm 640    => 소유자가 root이고 파일권한이 750인 파일을 검색하여 출력
+
+      ]# find /etc -type f -size +10   => 파일의 크기가 10kbyte 이상되는 파일을 검색하여 출력 
+
+      ]# find /etc -type f -ctime 0   => 파일의 정보가 변경(권한 또는 소유자)된지 24시간된 파일 검색  
+
+        ※  atime : 파일을 보거나 디렉토리에 접근한 시간
+
+            mtime : 파일의 내용이 변경된 시간             
+
+      ]# find /home -type f -name '*txt' -exec rm -rf {} \;
+
+          => 파일명이 txt로 끝나는 파일을 검색하여 삭제
+
+  2. 압축 명령
+
+   - 파일 하나만 압축이 가능하다.
+
+   1) compress 명령  => 리눅스에서는 사용하지 않는다. 
+
+     ]# compress 파일명   => 파일이 압축파일(파일명.Z)로 변환  
+
+     ]# uncompress 파일명.Z   => 파일의 압축을 해제
+
+   2) gzip 명령
+
+     ]# gzip 파일명   => 파일이 압축파일(파일명.gz)로 변환  
+
+     ]# gunzip 파일명.gz   => 파일의 압축을 해제
+
+   3) bzip2 명령
+
+     ]# bzip2 파일명   => 파일이 압축파일(파일명.bz2)로 변환  
+
+     ]# bunzip2 파일명.bz2   => 파일의 압축을 해제
+
+   4) xz 명령
+
+     ]# xz 파일명    => 파일이 압축파일(파일명.xz)로 변환   
+
+     ]# unxz 파일명.xz  => 파일의 압축을 해제
+
+  3. 묶음 명령 => 파일들이나 디렉토리를 하나의 파일로 만들어 주는 명령(해제) 
+
+     ]# tar cvf 묶음파일명 대상   =>  대상(파일들 또는 디렉토리)을 파일 하나로 묶어 생성(파일명.tar)한다.
+
+     ]# tar xvf 파일명.tar   =>  명령을 입력한 디렉토리에 파일(디렉토리)이 풀린다.                        
+
+     ※ 원하는 디렉토리에 묶음파일 해제
+
+        ]# tar xvf 파일명.tar -C 해제디렉토리명
+
+     ※ tar는 압축명령과 같이 사용하기 위해 압축옵션을 사용한다.
+
+        ]# tar cvZf 압축파일명 대상   =>  compress를 이용하여 압축파일(파일명.tar.Z)을 생성
+
+        <==>  ]# tar xvZf 파일명.tar.Z     =>  파일명.tar.Z 압축 및 묶음 해제
+
+        ]# tar cvzf 압축파일명 대상   =>  gzip를 이용하여 압축파일(파일명.tar.gz)을 생성
+
+        <==>  ]# tar xvzf 파일명.tar.gz     =>  파일명.tar.gz 압축 및 묶음 해제
+
+        ]# tar cvjf 압축파일명 대상   =>  bzip2를 이용하여 압축파일(파일명.tar.bz2)을 생성
+
+        <==>  ]# tar xvjf 파일명.tar.bz2     =>  파일명.tar.bz2 압축 및 묶음 해제
+
+        ]# tar cvJf 압축파일명 대상   =>  xz를 이용하여 압축파일(파일명.tar.xz)을 생성
+
+        <==>  ]# tar xvJf 파일명.tar.xz     =>  파일명.tar.xz 압축 및 묶음 해제
+
+      ex)  ]# tar cvzf etc.tar.gz /etc
+
+           ]# tar cvjf etc.tar.bz2 /etc
+  
+           ]# ls -l    =>  압축파일 확인
+
+           ]# tar xvzf etc.tar.gz   =>  현재 디렉토리에 압축 해제
+
+           ]# tar xvjf etc.tar.bz2 -C /home   =>  /home 디렉토리에 압축 해제
+
+           ]# tar cvzf etc2.tar.gz /etc --exclude *conf
+
+              => 대상에 제외하고 싶은 파일 또는 디렉토리는 --exclude 옵션을 사용하여 제외 할 수 있다.
+
+      ※ tar 명령을 이용한 시스템 백업
+
+      ]# tar cvzf /root/backup.tar.gz --exclude=/proc --exclude=/lost+found
+       --exclude=/root/backup.tar.gz --exclude=/mnt --exclude=/sys
+       --exclude=/media --exclude=/net /
+
+      또는 ]# cat /dev/sda > /dev/sdb            => 하드디스크의 크기가 반드시 같아야 한다.
+
+
+      ※ tar 명령을 이용한 시스템 복구
+
+      ]# tar xvzf /root/backup.tar.gz -C /
+
+      ]# cd /
+
+      ]# mkdir proc mnt lost+found sys net media
+
+      => 재부팅
+
+  4. 용량 확인 명령
+
+    1) 파일 용량 확인
+
+      ]# ls -l    =>  파일의 용량을 확인할 수 있다.(단위 : byte)
+ 
+    2) 디렉토리 용량 확인
+
+      ]# du /etc   => /etc 디렉토리의 전체 용량 확인(단위 : kbyte)
+
+         ※ 디렉토리가 생략되면 현재 디렉토리의 용량을 확인한다.
+
+      ]# du -h /etc   =>  -h 옵션 : 알기 쉬운 용량 단위를 사용하여 출력
+
+      ]# du -sh /etc   =>  -s 옵션 : 대상 디렉토리의 용량만 출력
+
+    3) 현재 사용중인 저장장치의 용량을 확인 => mount 되어 있는 장치의 용량을 확인
+
+      ]# df   =>   단위 : kbyte
+
+      ]# df -h   =>  알기 쉬운 저장단위를 사용하여 출력
+
+● 문서 편집기
+
+- console(CUI) : vi , emacs 등
+
+ x-window(GUI) : gedit, kedit 등
+
+- vi 문서편집기(Linux-Gnorm의 문서편집기를 사용하지 못할 경우, 원격프로그램의 터미널로 편집)
+
+ 1. vi 편집기 실행 
+
+    ]# vi 파일명
+	
+       => vi 편집기로 화면이 전환되며 맨 마지막행은 상태 또는 메세지를 표시하는 영역
+
+  2. vi 편집기의 3가지 상태(처음엔 직접명령모드)
+
+     1) 직접명령모드 => 키보드를 눌러 명령을 실행하는 상태(기본)
+
+          - 상태영역에 아무런 상태메세지가 없는 경우
+
+     2) 간접명령모드 => 상태영역에 명령을 입력하여 실행하는 경우
+
+          - 상태영역에 :이 표시되며 키보드를 누르면 상태영역에 메세지가 입력되는 경우
+
+     3) 편집모드 => 키보드를 눌러 문서(파일)를 편집하는 경우
+
+          - 상태영역에 "--INSERT--" 또는 "--REPLACE--" 라는 메세지가 있는 경우
+
+  3. 3가지 상태에 대한 변경 방법
+
+                           i                               :
+                       ←-------                      --------→
+        편집모드                     직접명령모드                       간접명령모드
+                       --------→                     ←-------- 
+                         [esc]                      실행 -  명령입력 후 [Enter]      
+                                                      취소 - [esc] 
+
+  4. 직접 및 간접명령모드에서 사용할 수 있는  vi 편집기 명령
+
+      1) 편집모드 전환명령
+
+          - i 또는 [Insert]를 누르면 편집모드("--INSERT--"모드)로 전환
+
+          - [Insert]를 누르면 "--INSERT--" 또는 "--REPLACE--"모드로 전환
+
+          - R : "--REPLACE--" 모드로 전환
+
+      2) 커서 이동명령 
+
+         :숫자     =>  숫자 해당하는 행으로 이동
+
+        ※ 행번호(Line Number) 표시  =>   :set nu  
+
+           행번호(Line Number) 삭제  =>   :set nonu                  
+
+      3) 삭제 명령
+
+         dd   -  커서가 있는 행을 삭제
+
+         ※ 숫자dd  -  숫자만큼 dd 명령이 실행             
+
+      4) 복사 및 붙여넣기
+
+         yy  -  커서가 있는 행을 복사
+
+        ※ 숫자yy  -  숫자만큼 yy 명령이 실행 
+
+         p  또는  P - 붙여넣기
+
+        ※ p - 커서가 존재하는 행의 아래로 붙여넣기
+
+           P - 커서가 존재하는 행의 위로 붙여넣기
+
+      5) 다른 파일의 내용 붙여넣기
+
+        :r 파일명   -  현재 커서가 존재하는 행의 아래로 다른 파일의 내용 붙여넣기
+
+      6) 범위지정 => vi에서는 적용되지 않는다.(vim)
+
+         v를 누르면 "--VISUAL--" 상태로 전환 => 방향키를 눌러 범위를 지정
+
+            =>  범위 지정 후 y(복사), x(잘라내기), d(삭제) 실행
+
+         ※ 마우스로 범위지정 후 마우스 3버튼(2개를 동시에 누름)을 누르면 키보드 커서가 있는 곳에 붙여넣기가 된다.
+
+            => 편집모드 상태에서 실행
+
+      7) 실행 취소	
+
+         u  - Undo
+
+      8) 단어 검색
+
+         :/단어   -  커서가 있는 아래로 단어 검색(대소문자 구분)
+
+         n   -  다음 찾기 => 문서 마지막까지 검색이 끝나면 다시 처음부터 검색
+
+      9) 단어 변경
+
+         :범위s/바꿀문자/치환문자/gc
+
+         ※ 범위 - 변경하고자 하는 행을 표현   형식) 시작행,마지막행 
+
+           ex) :5,10s/MBC/SBS/gc
+
+               :%s/MBC/SBS/gc     => 문서 전체 변경
+
+             ※ 변경 옵션
+
+                 g - 행 전체 적용 => 행에 변경하고하는 문자가 여러 개 있는 경우 모두 적용
+
+                 c - 변경 유무 선택
+
+      10) 저장 및 종료
+
+         :w    -  저장
+
+         :w 파일명   -  다른 이름으로 저장
+
+         :w!    -  강제 저장(읽기전용 파일인 경우) => 관리자 또는 파일 소유자 계정만 가능
+
+         :q   -  종료
+
+         :q!   -  강제 종료(변경된 내용을 저장하지 않고 종료) 
+
+         :wq   -  저장하고 종료
+
+         :wq!  -  강제 저장하고 종료(읽기 전용 파일인 경우)
+
+         ※ 파일 불러오기
+
+            :e 파일명   -  파일 불러오기
+
+            :e! 파일명   - 강제 파일 불러오기(기존 파일을 저장하지 않고 다른 파일을 불러올 경우 사용)
+
+ 4. vi 실행 시 비정상 종료에 의한 파일 손상 복구 방법
+
+    => 비정상 종료인 경우 Swap 파일을 생성하여 손상을 최소화 한다.
+
+     ]# vi aaa.txt
+     aaa
+     bbb
+     ccc                 => 정상적인 방법으로 저장 및 종료
+
+     ]# vi aaa.txt       => 정상적인 파일인 경우 파일의 내용이 출력
+     aaa
+     bbb
+     ccc   
+     ddd                 => 추가되는 부분
+     eee          
+     터미널종료          => 비정상 종료 : 파일의 손상 발생 - swap 파일 발생(.aaa.txt.swp)
+
+     ]# vi aaa.txt       => 손상 파일인 경우 swap 파일의 존재를 출력
+     aaa
+     bbb
+     ccc                 => 종료
+     
+
+     ]# vi -r aaa.txt    =>  Swap 파일을 이용하여 원본파일로 복구
+     aaa
+     bbb
+     ccc   
+     ddd              
+     eee                 => 정상 저장 및 종료      
+
+     => aaa.txt.swp 파일을 삭제하지않으면 aaa.txt 파일을 열때마다 swp파일로 엶
+     ]# rm -rf .aaa.txt.swp     =>  Swap 파일 삭제
+
+    ● 계정 관리
+
+  - 계정 : OS를 사용할 수 있는 허락받은 사용자
+
+   1. useradd  - 계정 생성 명령
+
+     형식) ]# useradd [옵션] 계정명    
+
+       - 동일한 이름의 계정은 생성할 수 없다.
+
+       - 옵션은 기본적으로 제공되는 정보를 사용하지 않고 다른 정보를 사용할 경우 적용
+
+     ex)  ]# useradd kim   => kim 계정 생성
+
+          ]# ls -l  /home   => kim 디렉토리 생성 확인 : kim 계정의 홈디렉토리
+
+             => /home 디렉토리 하위에 계정명과 동일한 이름의 디렉토리가 자동 생성
+
+          ]# groups kim   =>  kim 계정의 그룹 포함 관계를 출력하는 명령
+          kim  :  kim     =>  계정명 : 그룹명   -  kim 계정은 kim 그룹에 포함
+ 
+           =>  계정명과 동일한 이름의 그룹을 생성하여 자동 포함 시킨다.
+ 
+          ]# grep kim /etc/passwd   =>  /etc/passwd 파일에 kim 단어를 포함한 행 출력
+          kim:x:501:501::/home/kim:/bin/bash     =>   계정 생성을 하면 한 줄 추가  
+
+          ※ /etc/passwd : 리눅스 계정의 정보를 저장하고 있는 파일(데이타 속성구분자는 :를 사용한다.)
+
+           (1):(2):(3):(4):(5):(6):(7)  => 한 줄이 계정에 대한 정보를 표현
+
+           1) 계정명
+
+           2) 암호 - 원래 암호는 /etc/passwd 파일에 암호화 되어 저장 되었다.
+
+                     /etc/passwd 파일은 모든 계정이 읽을 수 있다. 
+
+                     => 암호화 되어 있는 정보를 디코더(해독) 프로그램이 개발되어 보안이 위험
+
+                     => shadow 프로그램을 이용하여 암호만 따로 숨겨서 저장(/etc/shadow 파일 - 관리자만 사용 가능)
+
+           3) UID - 계정을 구분하는 고유번호
+
+                0 : 관리자 계정  
+
+                1 ~ 499 : 시스템 계정(시스템을 제어하는 계정) => 로그인 되지 않도록 생성하는 것이 원칙
+
+                500~60000 : 일반 계정
+
+           4) GID   - 그룹을 구분하는 고유번호이며 계정이 포함된 그룹번호가 표시
+
+                  => 계정의 기본그룹(Default Group : 삭제되지 않는 그룹)                
+               
+           5) 설명문(Comment) - 계정에 대한 설명(생략 가능)
+         
+           6) 홈디렉토리 - 계정의 홈디렉토리를 표시
+
+           7) 사용 Shell  - 계정이 로그인하여 사용하는 쉘의 종류를 표시 
+
+           ]# grep kim /etc/shadow   
+           kim:!!:15952:0:99999:7:::    =>  계정 생성을 하면 한 줄 추가
+           
+            =>   계정의 암호 관련 정보를 저장한 파일(관리자만 사용할 수 있다.) 
+
+           ※ /etc/shadow - shadow 프로그램에 의해 계정의 암호 관련 정보를 저장
+
+           (1):(2):(3):(4):(5):(6):(7):(8):  
+
+           1) 계정명
+
+           2) 암호 - 암호 되어 저장  => !로 시작되는 암호는 사용할 수 없는 암호
+              (처음 생성된 계정은 !로 시작되는 암호를 가지고 있다. => 관리자는 반드시 계정 생성 후 암호를 변경해야 된다.)
+
+           3) 암호 변경날짜(일) - Unixtime 형식으로 표현된 날짜(Unixtme 또는 Timestamp - 1970년 1월 1일을 기준으로 사용된 값)             
+
+           4) 암호 최소지속시간(일) - 암호를 변경 후 최소 사용해야 되는 시간               
+
+           5) 암호 최대지속시간(일) - 암호를 변경 후 최대 사용할 수 있는 시간 => 보안상 변경하는 것을 추천
+
+           6) 경고시간(일) - 암호 최대지속시간이 다가올 경우 경고메세지가 출력되도록 지정한 시간
+
+           7) 암호 비활성화(Inactive) 시간(일) - 암호 최대지속시간에 초과된 경우 암호를 변경할 수 있도록 제공하는 유효시간
+
+                => 비활성화 시간도 초과되면 더 이상 암호를 사용할 수 없다.(암호최대지속시간을 변경한 경우 반드시 설정)
+
+           8) 계정 비활성화(Expire) 날짜(년-월-일) - 계정을 사용하지 못하도록 날짜를 지정 
+
+         ]# passwd  kim   =>  계정의 비밀번호를 변경(계정명이 생략되면 현재 로그인 계정) 
+
+             => 비밀번호를 2번 입력(비밀번호 작성규칙 무시)
+
+         ※ 일반계정은 관리자가 알려준 비밀번호로 최초 로그인 후 자신의 비밀번호를 반드시 변경해야 된다.
+
+             ]$ passwd   => 기존 비밀번호 입력 후 새로운 비밀번호 2번 입력(비밀번호 규칙에 위배되면 재입력) 
+
+         ※ 가상콘솔 환경으로 이동
+
+             [ctrl] + [alt] +[f1]~[f6]  =>  6개의 가상콘솔 이동
+
+             [ctrl] + [alt] +[f7]   =>  x-window 복귀 
+
+       - 계정 생성 관련 파일 => useradd 명령시 참조하는 파일
+
+         ]# vi  /etc/login.defs  => 암호 유효기간 및 홈디렉토리 생성 유무등의 기본정보를 저장한 파일   
+         ...
+         PASS_MAX_DAYS   99999        =>  암호 최대지속시간 : 99999 >> 30 변경  
+         PASS_MIN_DAYS   0            =>  암호 최소지속시간
+         PASS_MIN_LEN    5            =>  비밀번호 최소길이(5초과)
+         PASS_WARN_AGE   7            => 비밀번호 변경 관련 경고날짜
+
+         CREATE_HOME     yes     =>  계정 생성시 홈디렉토리 자동 생성 유무
+
+         UMASK      077     =>  계정 홈디렉토리의 기본 생성권한을 조절하기 위한 데이타
+
+         ]# vi  /etc/default/useradd     =>   홈디렉토리 생성 위치 및 사용 쉘등을 지정하는 파일   
+         GROUP = 100            => 계정이 포함될 수 있는 최대 그룹수
+         HOME = /home           => 홈디렉토리 생성 위치 지정
+         INACTIVE = -1          => 암호 최대지속시간 종료 후 암호 변경하도록 제공해 주는 시간(-1 >> 5 : 비밀번호 변경 기간 5일 제공) 
+         EXPIRE =               => 계정 사용 유효기간 지정("년-월-일" 형식)   
+         SHELL = /bin/bash      =>  계정 사용 쉘 지정
+         SKEL = /etc/skel       =>  계정의 홈디렉토리 안에 붙여넣기 될 파일이 존재하는 디렉토리 지정
+         CREATE_MAIL_SPOOL=yes  => 메일 스풀기능 사용 유무 지정 
+
+          ※ ]# useradd -D  명령으로 /etc/default/useradd 변경 가능
+
+         ]# useradd lee
+
+         ]# grep lee /etc/shadow
+         lee:!!:15952:0:30:7:5::
+
+       - useradd 옵션 => 기본 설정파일의 정보를 활용하지 않고 다른 값으로 계정을 생성할 경우 사용
+
+         ex)  ]# useradd -u 1000 kim    =>  -u : UID 지정
+
+              ]# useradd -d /home/kkk  kim   =>  -d : 홈디렉토리 지정          
+
+              ]# useradd -M -s /bin/false  kim   =>  -M : 홈디렉토리 생성 불가   -s : 사용 쉘 지정(/bin/false : 로그인 불가)
+ 
+                 => 시스템 계정 생성 경우
+
+              ]# useradd -g  root  kim    =>  -g  :  계정의 기본그룹을 지정(kim 계정은 root 그룹(기본그룹)에 포함)   
+
+              ]# useradd -G  root  kim    =>  -G : 기본그룹외에 다른 그룹에 추가적인 포함(kim 계정은 kim 그룹(기본그룹) 및 root 그룹에 포함)
+
+              ]# useradd -f 3 -e 2014-12-31 kim    =>  -f : inactive 시간 지정    -e : expire 날짜 지정
+
+   2. usermod   =>  계정의 정보를 변경하는 명령(/etc/passwd 변경)
+
+     형식) ]# usermod 옵션 계정명   
+
+         => 옵션은 useradd  옵션과 동일
+
+     ex) inactive 시간을 10일로 변경
+
+          ]# usermod -f 10 kim
+
+     ※ chage : 계정의 암호 관련 정보를 확인하거나 변경하는 명령(/etc/shadow 변경)
+
+         형식)  ]# chage  옵션  계정명               
+
+          ex) ]# chage -l kim    =>  -l : 암호 관련 정보를 확인
+
+              ]# chage -M 30 kim    =>  -M : 암호 최대지속시간 변경
+
+              ]# chage -I  5  kim     =>   -I(대문자 I) : inactive 시간 변경
+
+              ]# chage -E 2015-12-31 kim   =>  -E : Expire 날짜 변경
+
+              ]# chage -d 2015-11-10 kim   => -d : 암호 변경날짜을 변경(암호 비활성을 활성화) 
+              
+        ※ Linux 시스템 날짜 변경 =>  ]# date MMDDHHmmYYYY          
+
+   3. userdel   =>  계정 삭제 명령
+
+      형식) ]# userdel [-r] 계정명
+
+      ex) ]# userdel  kim    =>  kim 계정만을 삭제
+
+          ]# userdel  -r  lee    =>  lee 계정 및 lee 소유 파일 삭제
+
+          ]# ls -l /home    =>  kim 디렉토리 존재, lee 디렉토리 삭제
+
+       ※ 파일(디렉토리)의 소유자(소유그룹)가 UID(GID)로 표시되는 경우 해당 소유자(소유그룹)가 존재하지 않기 때문 
+
+           => 소유자(소유그룹) 변경
+
+    ● 리눅스 권한 관리
+
+   - 리눅스는 파일에 권한이 부여되어 있다.  =>  파일 권한
+
+   - 파일 권한 확인
+
+     ]# ls -l                    ┌ 소유그룹(그룹명) 
+     drwxr-xr-x   2    root     root     4096  9월  3 04:23 Desktop
+      ---------        ----     ----
+         └ 파일 권한   └ 소유자(계정명)
+
+   - 권한 해석  =>  rwx 권한이 3번 반복(권한이 없는 경우 -로 표시)
+
+    =>      rwxrwxrwx   
+            (1)(2)(3)
+
+       1) 소유자 계정에게 적용되는 파일 권한   
+
+       2) 소유그룹에 포함된 계정에게 적용되는 파일 권한
+
+       3) 소유자 및 소유그룹의 계정이 아닌 나머지 계정에게 적용되는 파일 권한 
+  
+   - 권한 종류
+                             파일                             디렉토리(명령 사용 유무)
+      
+      r(read)         파일 내용 확인 유무         읽기 관련 명령 사용 유무(ls, cat, more, grep,...)
+
+      w(write)        파일 내용 수정 유무         쓰기 관련 명령 사용 유무(mkdir, rm, cp, mv,...)
+
+      x(execute)      파일 내용 실행 유무         접근 권한(cd)
+
+     ※ 파일에는 w 권한을 부여하기 위해 반드시 r 권한을 부여한다.
+
+     ※ 디렉토리는 r 또는 w 권한을 부여하기 위해 반드시 x 권한을 부여한다.  
+
+   - 파일 권한 변경  =>  관리자 또는 파일 소유자만 변경 가능
+
+      형식)  ]# chmod [-R] 변경옵션  파일명(디렉토리명)
+
+      => 변경 옵션
+
+        1) 변경 적용 대상 :   u(소유자권한)  g(소유그룹권한)  
+
+                              o(나머지권한)  a(모든계정권한)
+ 
+        2) 권한 부여 또는 삭제 유무  :   +(권한부여)  -(권한삭제)  =(권한변경)
+
+        3) 권한 종류  :  r(read)  w(write)  x(execute)  => 동시 적용 가능
+
+    ex) ]# mkdir aaa
+
+        ]# ls -l
+        ...
+        drwxr-xr-x   2 root root     4096 10월  3 12:07 aaa
+
+        ]# chmod g+w aaa   =>  aaa 디렉토리의 소유그룹에 w권한 추가
+
+        ]# ls -l
+        ...
+        drwxrwxr-x   2 root root     4096 10월  3 12:07 aaa
+
+        ]# chmod o-rx aaa   =>  aaa 디렉토리의 나머지에 rx권한 삭제
+
+        ]# ls -l
+        ...
+        drwxrwx---   2 root root     4096 10월  3 12:07 aaa
+
+        ]# chmod g=rx,o=r aaa
+ 
+        ]# ls -l
+        ...
+        drwxr-xr--   2 root root     4096 10월  3 12:07 aaa
+
+    ex)  lee 및 park 계정 생성
+
+         lee계정 :  /home/lee]$ cd /home/park     =>  허가 거부(/home/park 디렉토리의 권한 때문)
+
+         ※ /home/park  =>  drwx------ 3 park park  4096 10월  3 12:13 park
+
+           => lee 계정이 /home/park 디렉토리에 접근하기 위해 park 계정이 권한 변경
+               
+         park 계정  :  /home/park]$ chmod  o+x  /home/park  => x권한 부여
+          
+         lee계정 :  /home/lee]$ cd /home/park    =>  가능
+                     
+                   /home/park]$ ls -l     =>  허가 거부(r권한이 없기 때문)  
+
+         park 계정  :  /home/park]$ chmod o+r /home/park  => r권한 부여
+
+         lee계정 :  /home/park]$ ls -l     =>  가능
+
+         ※ 일반계정의 홈디렉토리는 다른 계정들에게 권한을 부여하지 않는것을 권장
+         	
+         ※ 문제점 : 나머지 계정의 권한을 변경한 경우 lee 계정뿐만 아니라 다른 계정도 사용 가능
+         
+            => 그룹을 이용하여 권한 설정을 하는 것이 좋다.
+            
+        park 계정  :  /home/park]$ chmod o-rx /home/park    
+            
+        park 계정  :  /home/park]$ gpasswd -a lee park   => park 그룹에 lee 계정을 추가
+        
+          ※ 관리자에서 park 그룹의 관리자로 park 계정을 임명 => 계정을 기본그룹의 관리자로 임명하는 것이 좋다.
+           
+              ]# gpasswd -A park park
+              
+        park 계정  :  /home/park]$ chmod g+rx /home/park
+        
+        lee 계정   :  /home/lee]$ cd /home/park   => 가능
+
+   - 권한의 8진수 표기법
+
+      =>  r : 4     w : 2      x : 1     - : 0
+
+      ex)   rwxr-xr-x    =>   755
+ 
+            rw-r-----    =>   640
+
+            rwx------    =>   700
+
+            r-x--x--x    =>   511
+
+
+   - 8진수 표기법을 이용한 권한 변경
+
+     형식)  ]#  chmod  변경권한  파일명(디렉토리명)
+
+     ex)    ]# ls -l
+             ...
+             drwxr-xr-x   2 root root     4096 10월  3 12:07 aaa
+
+             ]# chmod 700 aaa
+
+             ]# ls -l
+             ...
+             drwx------   2 root root     4096 10월  3 12:07 aaa              
+
+  문제) wall 명령을 관리자만 사용할 수 있도록 권한을 변경하세요.
+
+  ]# whereis wall
+  wall: /usr/bin/wall /usr/share/man/man1/wall.1.gz
+
+  ]# ls -l /usr/bin/wall
+  -r-xr-sr-x 1 root tty 10484  1월 21  2009 /usr/bin/wall
+
+  ]# chmod 500 /usr/bin/wall
+
+  ]# ls -l /usr/bin/wall
+  -r-x------ 1 root tty 10484  1월 21  2009 /usr/bin/wall
+
+  ● 리눅스 프로그램 설치
+
+  1. Source 설치
+
+    - C언어 소스파일을 다운로드 받아 직접 컴파일하여 프로그램을 사용할 수 있도록 설치
+
+    - 장점 : 어떠한 리눅스에서도 설치 가능
+
+             설치시 환경설정이 가능
+
+    - 단점 : 개발용도구(ex.C언어 컴파일러 : gcc)가 없으면 미설치
+
+             환경설정을 잘못할 경우 미설치 => 설치 레퍼런스 제공
+
+    - Source 설치 방법
+
+      1) Source 파일을 다운로드 받는다.   =>  압축파일
+
+      2) 압축 해제를 한다.  => 디렉토리를 생성 후 설치 작업 : C언어 Source 파일 존재
+
+      3) 환경설정  =>  자동으로 컴파일 되도록 환경파일(Make파일)을 생성하는 작업
+
+         ]# ./configure --옵션   => 옵션을 활용하여 환경설정
+
+          =>  cmake 프로그램을 이용하여 환경설정 하기도 한다.
+
+      4) 컴파일 => 환경설정에 맞게 자동으로 컴파일 된다.
+
+         ]# make
+
+      5) 설치  =>  컴파일하여 발생된 binary 파일을 환경설정에 의해 지정된 디렉토리에 설치
+
+         ]# make install
+
+       ※ make 또는 make install 명령 실행 에러 발생 => 환경설정을 잘못한 경우
+
+          - 컴파일 초기화 명령 실행 후 환경설정부터 다시 시작
+
+          ]# make clean   => 컴파일 할 때 발생된 binary 파일을 삭제
+
+    - 프로그램이 설치된 디렉토리를 삭제하면 프로그램이 삭제
+
+    ex) ntfs-3g 프로그램(ntfs 파일시스템을 rw 가능하도록 mount 할 수 있는 프로그램) 설치
+
+      ]# cd /usr/local     
+
+         => 소스프로그램 설치하는 디렉토리
+
+      ]# wget http://tuxera.com/opensource/ntfs-3g_ntfsprogs-2014.2.15.tgz	
+
+	※ wget 명령 : 인터넷 자원(URL주소)를 다운로드 받는 명령
+
+      ]# tar xvzf ntfs-3g_ntfsprogs-2014.2.15.tgz  
+
+        =>  압축 해제하면 소스파일이 존재하는 디렉토리 생성
+
+      ]# cd ntfs-3g_ntfsprogs-2014.2.15
+
+      ]# ./configure    =>  "configure"파일 실행(환경설정 : 옵션은 기본값을 사용)
+
+      ]# make           =>  컴파일
+
+      ]# make install   =>  설치
+
+      ]# ntfs-3g        =>  실행  
+
+  2. Binary 설치
+
+    - Source 버전으로 설치된 프로그램의 디렉토리을 압축해 놓은 파일을 이용해 설치
+
+      => 압축만 해제하면 사용 가능
+
+    - 리눅스에 따라 실행되지 않을 수도 있다.
+
+  3. Package 설치 
+
+    - RedHat 계열의 리눅스는 RPM(RedHat Program Manager)을 이용하여 프로그램 설치 및 삭제등을 관리
+
+    - 장점 : 설치 및 삭제등의 관리 쉽다.
+
+    - 단점 : 프로그램의 의존성 문제로 인한 설치, 삭제에 어려움이 발생
+  
+    - rpm 명령을 이용하여 설치 또는 삭제, 확인 가능하며 설치시 일반적으로 /usr 디렉토리에 설치
+
+      => 설치경로는 따로 존재하지 않으며 필요한 디렉토리 자동으로 복사된다.
+
+     ]# rpm -ivh  RPM파일      =>  설치(기존 패키지가 존재할 경우 설치 오류 발생)
+
+       ※ RPM 파일 : RPM에 의해 관리 가능한 파일(~.rpm)
+
+     ]# rpm -Uvh  RPM파일      =>  업그레이드 설치(기존 패키지가 존재할 경우 업그레이드하며 없는 경우 설치)
+   
+     ]# rpm -qa                =>  RPM에 의해 설치된 패키지 목록 확인
+
+     ]# rpm -qa | grep 단어    => 단어가 들어있는 패키지 목록 확인
+
+     ]# rpm -e  패키지명     =>  패키지 삭제
+
+    ※ 의존성문제를 무시하고 설치 또는 삭제
+
+      ]# rpm -ivh --nodeps --force RPM파일
+
+        =>  --nodeps : 의존성 무시    --force : 라이브러리 사용 충돌 무시
+
+      ]# rpm -e --nodeps 패키지명  
+
+     ex) ]# rpm -qa | grep httpd    =>  웹서버 패키지 설치 확인
+         httpd-manual-2.2.3-22.el5
+         httpd-2.2.3-22.el5
+
+         ]# rpm -e httpd   =>  패키지 삭제 : 의존성에 의한 오류 발생
+
+     ex) xrally 프로그램 =>  x-window에서 실행되는 게임 
+
+        ]# rpm -Uvh xrally-1.1-1.i586.rpm    =>  설치
+
+        ]# xrally     =>  실행 
+
+        ]# rpm -qa | grep xrally      =>  설치 확인
+
+        ]# rpm -e xrally     =>  삭제 
+
+
+● yum(Yellowdog Updater Modifited)
+
+  - rpm에 의해 패키지 관리를 할 경우 프로그램 의존성이 가장 큰 단점이 된다.
+
+  - rpm의 단점을 보완하기 위해 사용하는 프로그램이 yum 이다.
+
+    => yum을 이용하면 의존성 문제가 발생하는 부분을 자동으로 처리
+
+  - yum : 리눅스 패키지 서버를 이용하여 필요한 프로그램을 설치하거나 삭제 또는 업데이트  
+
+    ※ 레드햇리눅스는 라이센스가 있어야 패키지 서버를 사용할 수 있다.
+
+  - 패키지 서버 정보를 저장하고 있는 파일
+
+    ]# cd /etc/yum.repos.d
+
+    ]# ls -l    =>  파일이 패키지서버 정보를 가지고 있다.    
+
+ ※ 설치 CD를 패키지 서버로 사용  =>  CD가 반드시 mount 되어 있어야 된다.
+    
+    ]# vi /etc/yum.repos.d/rhel-dvd.repo
+     [rhel-dvd]
+     name=Red Hat Enterprise Linux $releasever - $basearch - DVD
+     baseurl=file:///mnt/cdrom/Server
+     gpgcheck=0
+      
+    ]# yum clean all     =>  yum 패키지서버 정보를 초기화
+
+  ※ OEL5.x에 대한 repo 파일 다운로드
+
+    ]# wget -P /etc/yum.repos.d http://public-yum.oracle.com/public-yum-el5.repo
+
+  - yum 명령
+
+   ]# yum list    =>   패키지 서버의 패키지 목록 확인
+
+   ]# yum install 패키지명    =>  해당 패키지 설치(패키지가 설치된 경우 버전을 확인하어 업데이트)
+
+     ※ 의존성 문제가 있는 패키지도 같이 설치
+
+   ]# yum -y install 패키지명    =>  -y : 무조건 실행
+
+   ]# yum localinstalll RPM파일  =>  RPM 파일을 이용하여 설치
+
+   ]# yum check-update   => 현재 시스템의 업그레이드 가능한 패키지 목록 확인
+
+   ]# yum update    =>  업그레이드 가능한 패키지를 모두 업데이트 (* 시스템의 모든 프로그램이 업데이트)
+
+   ]# yum update 패키지명   =>  원하는 패키지만 업데이트
+
+   ]# yum remove 패키지명   =>  패키지 삭제
+ 
+  ex)  ]# rpm -qa | grep bind    =>  프로그램 설치유무 확인  
+  
+       ]# yum -y install bind    =>  bind 프로그램 설치 
+
+       ]# rpm -qa | grep bind    =>  설치 확인
+
+       ]# yum -y remove bind     =>  bind 프로그램 삭제
+
+       ]# rpm -qa | grep bind    =>  삭제 확인 
+       
+   ※ 데미안 또는 우분투 리눅스등에서는 dpkg(deb 파일), apt-get  명령을 사용하여 프로그램 설치
+
+
+   	FTP: 컴퓨터간 파일 전송을 가능하게 하는 프로그램 
+
+1. 우선 ftp가 설치가 되어 있는지 확인을 한다. 
+ - 명령어 : rpm -qa vsftpd*  
+       
+    아무 반응 없이 나오면 설치 되어 있지 않은 것이다.
+
+2. 설치
+- 명령어 : # yum -y install vsftpd
+
+
+3. 다시 확인 !!
+   - 명령어 : rpm -qa vsftpd*
+ 
+
+: 설치 한 ftp의 버전이 보인다. (※ 참고 : 업데이트 명령어  # yum update vsftpd)
+
+
+4. 이제 vsftpd.conf 파일을 수정한다. (ftp의 설정 파일이다.)
+  - 명령어 : vi /etc/vsftpd/vsftpd.conf 
+  
+    vsftpd.conf 파일의 내용을 모두 삭제 하고, 밑에 내용으로 저장한다.
+    (※ 참고    vi 현재 줄 이하 모두 삭제 : 비주얼 모드(최초 기본 모드)에서 dG 입력 )
+
+ 
+#익명계정 접속허용여부
+anonymous_enable=NO 
+
+# 로컬계정 사용자의 접속허용여부
+local_enable=YES
+ 
+# 쓰기(upload) 허용여부
+write_enable=YES
+local_umask=022
+dirmessage_enable=YES
+ 
+# 파일전송 결과 로깅 여부
+xferlog_enable=YES
+connect_from_port_20=YES
+xferlog_std_format=YES
+listen=NO
+listen_ipv6=YES
+pam_service_name=vsftpd
+userlist_enable=YES
+tcp_wrappers=YES
+
+
+# 추가
+chroot_local_user=YES
+chroot_list_enable=YES
+chroot_list_file=/etc/vsftpd/chroot_list
+
+
+4-1.사용자 등록
+ - 명령어 : vi /etc/vsftpd/chroot_list
+
+# 내용
+root
+test
+
+
+
+5. 시작, 중지, 상태 관련 명령어
+
+- 명령어 : # systemctl status vsftpd.service  :  vsftpd 상태확인
+	 inactive: 실행 X -> active: 실행중
+- 명령어 : # systemctl start vsftpd.service  : vsftpd 시작
+- 명령어 : # systemctl stop vsftpd.service  : vsftpd 중지
+- 명령어 : # systemctl restart vsftpd.service : vsftpd 재시작
+?
+?6. 서버 재기동 시 vsftpd 자동실행 등록
+- 명령어 : # systemctl enable vsftpd.service
+
+
+7. ftp가 잘 접속 되는지 일단 방화벽을 중지 시키자. (포트 열기 전에 방화벽 중지 해서 접속 확인 하는 것이 센스 임)
+
+firewalld 실행 상태 확인
+- 명령어 : # systemctl status firewalld.service 
+
+firewalld 중지
+- 명령어 : # systemctl stop firewalld.service
+
+firewalld 실행
+- 명령어 : # systemctl start firewalld.service
+
+방화벽을 중지 하면 접속이 가능하나 실행하면 접속이 되질 않을 것이다. 방화벽 실행 시 포트를 열어줘야 접속이 가능하기 때문이다.
+
+
+8. 포트 21번 열기  (ftp 서버 포트 번호는 21번)
+
+  허용한 포트 목록 보기
+  - 명령어 : # firewall-cmd --list-ports 
+
+  포트 열기
+ - 명령어 : #   firewall-cmd --permanent --add-port=21/tcp
+ - 명령어 : #   firewall-cmd --permanent --zone=public --add-service=ftp
+
+ 방화벽 재실행
+- 명령어 : # firewall-cmd --reload
+
+
+9.업로드 안될시
+setsebool -P allow_ftpd_full_access on
+setsebool -P ftp_home_dir on
+
+- FileZila 설치
+  -> 구글에서 filezila ftpclient 검색 후 다운로드 (Client)
+
+- Putty로 원격제어
+- FileZila로 파일전송
+
+-----------------------------------------------------------------------------
+
+  - Hadoop 설정(19주차/21.01.15)
+
+    - Hadoop 초기 설정
+
+    * 할당된 아이피 확인
+
+    프로그램 -> 시스템 도구 -> 설정 -> 네트워크 -> IP, 기본 라우팅 확인
+
+    * 클립보드 공유 설정
+
+    장치 -> 게스트 확장 CD 이미지 삽입 -> 실행 -> 재부팅 -> 클립보드 공유, 드래그앤 드롭 -> 양방향
+
+    * 호스트이름 변경
+
+    터미널 -> root 계정으로 로그인 -> 
+      hostnamectl set-hostname slave1
+
+    * 고정 아이피 변경(Master와 Slave가 같을 경우)
+
+	프로그램 -> 시스템 도구 -> 설정 -> 네트워크 -> IP 주소 확인
+	-> 오른쪽 밑 설정 -> IPv4 -> 주소 임의로 변경 
+	(게이트웨이는 Master - Slave 동일)
+
+	* Master -> Slave 접속 시 패스워드 패스 설정(root 계정 X)
+
+	터미널 ->
+	  ssh-keygen -t rsa
+	  cd .ssh/
+	  scp id_rsa.pub /home/hadoop/.ssh/authorized_keys
+	  scp id_rsa.pub hadoop@slave1:/home/hadoop/.ssh/authorized_keys
+	  ssh hadoop@slave1
+
+	* 하둡 설치
+
+	터미널 ->
+	  wget http://apache.mirror.cdnetworks.com/hadoop/common/hadoop-2.10.1/hadoop-2.10.1.tar.gz
+	  tar xvzf hadoop-2.10.1.tar.gz
+
+	* 하둡 환경설정
+
+	터미널 ->
+	  gedit .bash_profile
+	  -> 수정
+	    export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.71-2.b15.el7_2.x86_64
+		export HADOOP_HOME=/home/hadoop/hadoop-2.10.1     
+		 
+		PATH=$PATH:$HOME/.local/bin:$HOME/bin:$HADOOP_HOME/bin:$HADOOP_HOME/sbin  
+		export PATH
+	  source .bash_profile
+
+	  cd hadoop-2.10.1/etc/hadoop/
+	  gedit hadoop-env.sh
+	  -> 수정
+	    export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.71-2.b15.el7_2.x86_64
+
+	  gedit yarn-env.sh
+	  -> 수정
+	    export JAVA_HOME=/usr/lib/jvm/java-1.8.0-openjdk-1.8.0.71-2.b15.el7_2.x86_64
+
+	  vi slaves
+	  -> 수정
+	  	slave
+
+	  gedit core-site.xml
+	  -> 수정
+	    <property>
+	        <name>fs.default.name</name>->네임로드 위치를 지정하고 있다
+	        <value>hdfs://nameserver1:9000</value>==>9000포트번호를 쓴다는것 잊지말것.
+	    </property>
+	    <property>
+	         <name>hadoop.tmp.dir</name>                                  하둡서버에서 
+	         <value>/home/hadoop/hadoop-2.10.1/tmp/</value>=>임시데이터를 지정하는곳
+	    </property>
+
+	  mkdir /home/hadoop/hadoop-2.10.1/tmp
+	  gedit hdfs-site.xml
+	  -> 수정
+	    <property>
+          <name>dfs.replication</name>
+          <value>3</value>
+	     </property>
+	     <property>
+	          <name>dfs.permissions</name>
+	          <value>false</value>
+	     </property>
+	     <property>
+	          <name>dfs.namenode.secondary.http-address</name>
+	          <value>slave1:50090</value>
+	     </property>
+	     <property>
+	          <name>dfs.namenode.secondary.https-address</name>
+	          <value>slave1:50091</value>
+	     </property>
+
+	  cp mapred-site.xml.template mapred-site.xml
+
+	  gedit mapred-site.xml
+	  -> 수정
+	    <property>
+          <name>mapreduce.framework.name</name>
+          <value>yarn</value>
+     	</property>
+
+	  gedit yarn-site.xml
+	  -> 수정
+	    <property>
+	      <name>yarn.nodemanager.aux-services</name>
+	      <value>mapreduce_shuffle</value>
+	    </property>
+	    <property>
+	        <name>yarn.nodemanager.aux-services.mapreduce_shuffle.class</name>
+	        <value>org.apache.hadoop.mapred.ShuffleHandler</value>
+	    </property>
+	    <property>
+	        <name>yarn.resourcemanager.resource-tracker.address</name>
+	        <value>nameserver1:8025</value>
+	    </property>
+	    <property>
+	        <name>yarn.resourcemanager.scheduler.address</name>
+	        <value>nameserver1:8030</value>
+	    </property>
+	    <property>
+	        <name>yarn.resourcemanager.address</name>
+	        <value>nameserver1:8040</value>
+	    </property>
+
+	    * 방화벽을 제거 안했으면 통신 포트를 일일히 연결해야함
+
+		- 하둡 설정 사항을 Slave에 배포
+
+		터미널 ->
+
+		cd  
+		scp -r /home/hadoop/hadoop-2.10.1 hadoop@slave1:~
+		scp /home/hadoop/.bash_profile hadoop@slave1:~
+
+		hadoop namenode -format
+
+	- 하둡 시작 명령
+
+	터미널 ->
+		start-dfs.sh
+		start-yarn.sh
+		-> (start-all.sh)
+
+	- 하둡 종료 명령
+
+	터미널 ->
+		stop-dfs.sh
+		stop-yarn.sh
+		-> (stop-all.sh)
+
+	* Summary(HDFS 상태 확인): http://localhost:50070/
+	  -> Utilities -> Browse the file system
+	     -> Master-Slave가 공유하는 파일
+
+-----------------------------------------------------------------------------
+
+  - Hadoop (20주차/21.1.18)
+
+    - 하둡 기본 명령
+      - 리눅스 명령과 거의 동일 -> 앞부분에 hdfs dfs -'리눅스명령' ...
+
+    hdfs dfs -ls /: 하둡의 공유된 파일 정보 출력
+    (hadoop fs -ls /)
+
+    hdfs dfs -mkdir /test: 하둡에 "test" 폴더 생성
+
+    hdfs dfs -copyFromLocal ./my.txt /test: 리눅스의 현재 워킹디렉토리에 있는 "my.txt" 파일을 하둡의 "test" 폴더에 복사
+    == (hdfs dfs -put ./my.txt /test)
+
+    hdfs dfs -rm /test/my.txt: 하둡의 "test" 폴더에 있는 "my.txt" 파일 삭제
+
+    hadoop jar /home/hadoop/hadoop-2.10.1/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.10.1.jar wordcount /test/my.txt /output: 하둡의 wordcount라는 프로그램을 my.txt에 적용시켜 output에 저장
+
+    - 외부에서 작성한 프로그램(Java MapReduce Program)을 하둡에 적용
+      -> 간단한 프로그램이더라도 대용량의 파일을 처리하기 때문에 필요
+
+    Java App - 이클립스 실행 -> Maven 프로젝트 생성 -> filter: java ->
+     artifect id: java 선택 -> 생성
+
+    mavenrepository.com -> hadoop core 검색 -> 1.2.1 버젼 클릭 -> Maven 안에 있는 텍스트 복사 -> 프로젝트 pom.xml -> dependency 태그 안에 붙여넣기
+
+    src/main/java -> mapreduce java파일 붙여넣기
+
+    project 오른쪽 클릭 -> Run as.. -> Maven install -> target폴더에 snapshot.jar 파일 생성 -> 리눅스에 복사 붙여넣기
+
+    터미널 -> 
+
+    	wget https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-core/1.2.1/hadoop-core-1.2.1.jar
+    	-> mavenrepositoty.com에 위에서 다운받은 hadoop core 오른쪽 클릭 -> 링크 복사 후 붙여넣기
+
+    	hadoop jar mymapreducer.jar 
+    		com.ic.mymapreducer.CountDriver /test /output2
+
+    * 주의사항
+
+    - JRE 라이브러리가 아닌 JDK 라이브러리로 실행
+      -> windows -> preferences -> Java -> Intsalled JRE -> JDK 라이브러리를 사용하는지 확인 -> JRE를 사용하면 Add -> jdk 폴더 찾아서 선택 후 적용
+    - 자바 컴파일 버전 확인
+      -> pom.xml ->
+              	<maven.compiler.source>11</maven.compiler.source>
+        		<maven.compiler.target>11</maven.compiler.target> 
+        		 -> 컴파일 버전을 8로 하는지 확인 -> 안할시 8로 변경
+
+    Step 1 (units 폴더 생성)
+	$ mkdir -p hadoop_work/units
+
+	Step 2 (hadoop 패키지 다운로드)
+	http://mvnrepository.com/artifact/org.apache.hadoop/hadoop-core/1.2.1
+	  -> 다운로드
+	  -> hadoop_work폴더에 복사
+	 	 -sample.txt
+	     -hadoop-core-1.2.1.jar
+
+	Step 3 (터미널에서 java 컴파일)
+	$ javac -classpath hadoop-core-1.2.1.jar -d units ProcessUnits.java
+	  -> units 폴더에 java파일을 컴파일
+	$ jar -cvf units.jar -C units/ . 
+	  -> units 폴더의 파일들을 jar 파일로 변환
+
+	Step 4 (하둡에 input 폴더 생성)
+	hdfs dfs -mkdir /input_dir 
+
+	Step 5 (input 폴더에 파일 삽입)
+	hdfs dfs -put /home/hadoop/sample.txt /input_dir 
+
+	Step 6 (input폴더의 데이터를 jar파일을 통해 output 폴더에 결과 생성)
+	hadoop jar units.jar hadoop.ProcessUnits /input_dir /output_dir
+
+	Step 7 (output폴더의 결과파일 생성 출력)
+	hdfs dfs -ls /output_dir
+
+	Step 8 (결과파일 확인)
+	hdfs dfs -cat /output_dir/part-00000
+
+	- Java파일의 MR(Map-Reduce) 프로그램 형식
+
+	package hadoop; 
+
+	import java.util.*; 
+	import java.io.IOException; 
+	import java.io.IOException; 
+	import org.apache.hadoop.fs.Path; 
+	import org.apache.hadoop.conf.*; 
+	import org.apache.hadoop.io.*; 
+	import org.apache.hadoop.mapred.*; 
+	import org.apache.hadoop.util.*; 
+
+	public class ProcessUnits2 
+	{ 
+	   //Mapper class 
+	   public static class E_EMapper extends MapReduceBase implements 
+	   Mapper<LongWritable ,/*Input key Type */ 
+	   Text,                /*Input value Type*/ 
+	   Text,                /*Output key Type*/ 
+	   IntWritable>        /*Output value Type*/ 
+	   { 
+
+	      //Map function 
+	      public void map(LongWritable key, Text value, 
+	      OutputCollector<Text, IntWritable> output,   
+	      Reporter reporter) throws IOException 
+	      { 
+
+			// key = 1 value = "1970 23 2 43 24 25 26 26 ..."
+	    	 /*
+	    	    1979
+	    	   M01 23
+	    	   M02 23
+	    	   M03 2
+	    	   ...
+	    	   M12 26
+	    	   
+	    	    1980
+	    	   M01 26
+	    	   M02 27
+	    	   M03 28
+	    	   ...
+	    	   M12 29
+	    	   
+	    	 */
+
+	         String line = value.toString(); 
+	         String [] lines = line.split("   ");
+	         for(int i=1; i<=12;i++) {
+	        	 String key1 = String.format("M%02d", i);
+	        	 int price = Integer.parseInt(lines[i]);
+	        	 output.collect(new Text(key1), new IntWritable(price)); 
+	         }
+			 
+	      } 
+	   } 
+
+	   //Reducer class 
+	   public static class E_EReduce extends MapReduceBase implements 
+	   Reducer< Text, IntWritable, Text, IntWritable > 
+	   {  
+	      //Reduce function 
+	      public void reduce( Text key, Iterator <IntWritable> values, 
+	         OutputCollector<Text, IntWritable> output, Reporter reporter) throws IOException 
+	         { 
+	    	  /*
+	    	     key  value 
+	    	     M01  [23, 26, 31, 39, 38]
+	    	     M02  [23, 27, 32, 38, 39]
+	    	     ...
+	    	     M12  [26, 30, 34, 38, 39]
+	    	     ->
+	    	     M01 150
+	    	     M02 140
+	    	     ...
+	    	     M12 145
+	    	   */
+
+	            int sum = 0;
+	            while (values.hasNext()) 
+	            { 
+	               int val = values.next().get();
+	               sum += val;
+	            } 
+	            output.collect(key, new IntWritable(sum));
+	         } 
+
+	   }  
+
+	   //Main function 
+	   public static void main(String args[])throws Exception 
+	   { 
+	      JobConf conf = new JobConf(ProcessUnits2.class); 
+	      conf.setJobName("max_eletricityunits"); 
+	      conf.setOutputKeyClass(Text.class);
+	      conf.setOutputValueClass(IntWritable.class); 
+	      conf.setMapperClass(E_EMapper.class); 
+	      conf.setCombinerClass(E_EReduce.class); 
+	      conf.setReducerClass(E_EReduce.class); 
+	      conf.setInputFormat(TextInputFormat.class); 
+	      conf.setOutputFormat(TextOutputFormat.class); 
+	      FileInputFormat.setInputPaths(conf, new Path(args[0])); 
+	      FileOutputFormat.setOutputPath(conf, new Path(args[1])); 
+	      JobClient.runJob(conf); 
+	   } 
+	} 
+
+-----------------------------------------------------------------------------
+
+  - Hadoop 프로그램 연동(19주차/21.1.19)
+
+    - 파이썬을 통한 하둡 처리
+
+	    - Mapper.py와 Reduce.py준비
+
+	      - Mapper.py
+
+		    #!/usr/bin/env python  
+			import sys 
+
+			# 입력 데이터
+			# Dear Bear Car
+			   
+			for line in sys.stdin:     
+			  	line = line.strip()     
+			  	keys = line.split()    
+			  	
+			  	for key in keys:         
+			  		value = 1         
+			  		print('{0}\t{1}'.format(key, value)
+
+			  	# 데이터 변환 후
+			  	# Dear\t1
+			  	# Bear\t1
+			  	# Car\t1 
+
+		  - Reduce.py
+
+		  	#!/usr/bin/env python
+			import sys
+
+			# 입력 데이터
+		  	# Dear\t1
+	  		# Bear\t1
+		  	# Car\t1 
+			
+			last_key = None
+			running_total = 0
+			 
+			for input_line in sys.stdin:
+			   input_line = input_line.strip()
+			   this_key, value = input_line.split("\t", 1)
+			   value = int(value)
+			 
+			   if last_key == this_key:
+			       running_total += value
+			   else:
+			       if last_key:
+			           print( "%s\t%d" % (last_key, running_total) )
+			       running_total = value
+			       last_key = this_key
+			 
+			if last_key == this_key:
+			   print( "%s\t%d" % (last_key, running_total) )
+
+		-> home에 폴더 생성 후, 이 두 파일을 이동
+
+	    - 실행 코드
+
+	    start-all.sh
+	    cd Test_Python/
+
+		hadoop jar /home/hadoop/hadoop-2.10.1/share/hadoop/tools/lib/hadoop-streaming-2.10.1.jar -input /test -output /python_output   -mapper "python ./wordcount_mapper.py"  -reducer 'python ./wordcount_reducer.py' -file wordcount_mapper.py -file wordcount_reducer.py 
+
+		hdfs dfs -cat /python_output/part-00000
+
+		- 코드 해석
+		hadoop jar /home/hadoop/hadoop-2.10.1/share/hadoop/tools/lib/hadoop-streaming-2.10.1.jar  \
+		-input /python_input \
+		 -> 인풋 파일 정보
+		-output /python_output   \
+		 -> 아웃풋 파일 정보
+		-mapper "python ./wordcount_mapper.py"  \
+		 -> mapper 파일 정보
+		-reducer 'python ./wordcount_reducer.py' \
+		 -> reduce 파일 정보
+		-file wordcount_mapper.py -file wordcount_reducer.py
+		 -> 파일 실행
+
+    - 하이브
+
+      - 하이브 설치
+
+        1. 하이브 2.3.8 설치 파일을 다운받은 후, 압축을 해제
+		 wget http://mirror.navercorp.com/apache/hive/hive-2.3.8/apache-hive-2.3.8-bin.tar.gz
+
+		 tar xvfz apache-hive-2.3.8-bin.tar.gz
+		 
+		2. hive-env.sh 파일을 준비
+		 cd apache-hive-2.3.8-bin
+		 cp conf/hive-env.sh.template conf/hive-env.sh
+
+		3. hive-env.sh 에 하둡 설치 경로를 설정
+		 vi conf/hive-env.sh
+		 gedit conf/hive-env.sh
+
+		 HADOOP_HOME=/home/hadoop/hadoop-2.10.1 (추가)
+
+
+		4. 하이브 메타스토어를 초기화 
+		  -> 하이브 2.0.0 버전부터 추가된 과정으로 하이브를 처음 실행할 때, 반드시 선행되어야 하는 과정 
+		   - dbType의 파라미터값으로 메타스토어로 사용할 데이터베이스 타입을 명시하며, Derby 외에 다른 데이터베이스를 사용하는 경우에도 반드시 이 과정을 진행해야함  
+		   참고로 schematool은 메타스토어 초기화 기능외에도 기존에 번거로웠던 업그레이드 기능도 편리하게 처리
+		 
+		 ./bin/schematool -initSchema -dbType derby
+		 
+		5. 하이브 쉘을 실행
+		 $ ./bin/hive
+		 
+		* 만약 4번 단계(initSchema)를 실행하지 않았을 경우, 다음과 같은 오류가 발생 
+
+		 Exception in thread "main" java.lang.RuntimeException: Hive metastore database is not initialized. Please use schematool (e.g.  ./schematool -initSchema -dbType ...) to create the schema. If needed, don't forget to include the option to auto-create the underlying  database in your JDBC connection string (e.g. ?createDatabaseIfNotExist=true for mysql)
+
+		 -> 이때 Derby로 사용할 경우에는 하이브 설치 경로에 생성된 metastore_db 디렉터리를 삭제한 후 initSchema를 실행. 
+		   참고로 conf/hive-site.xml에 별도의 메타스토어 정보를 설정을 추가하지 않는 경우, 하이브는 Derby를 메타스토어로 사용
+
+		6. HiveQL을 실행
+
+		show databases;
+
+	  - 워드 카운트
+
+	  	* 하이브는 insert, delete, update 안됌 -> 조회만 가능
+
+	    - 테이블 생성
+		hive>create external table test_tb(line string);
+
+		- 데이터를 테이블에 입력
+		hive>load data inpath 'hdfs://nameserver1:9000/test/my.txt' overwrite into table test_tb;
+
+		* 데이터를 가져오면 하둡에 있는 원본 데이터는 삭제
+
+		- 워드 카운트한 결과를 새 테이블에 저장
+		hive>create table word_hive as
+		     select word,count(1) cnt
+		     from (select explode(split(line,' ')) as word from test_tb) w
+		     group by word;
+
+		* explode(): 리스트를 각 레코드로 변환
+		
+		- 결과확인
+		hive>select * from word_hive limit 10;
+		
+		* limit: 최대 n개 출력
+
+	  - 월별 통계
+
+	    - 데이터 입력
+	    load data inpath 'hdfs://nameserver1:9000/input_dir/sample.txt' overwrite into table test_tb;
+
+		select split(line,"  ")[0] as year , 
+		       split(line,"  ")[1] as m1, 
+		       split(line,"  ")[2] as m2,
+		       split(line,"  ")[3] as m3,
+		       split(line,"  ")[4] as m4,
+		       split(line,"  ")[5] as m5,
+		       split(line,"  ")[6] as m6,
+		       split(line,"  ")[7] as m7,
+		       split(line,"  ")[8] as m8,
+		       split(line,"  ")[9] as m9,
+		       split(line,"  ")[10] as m10,
+		       split(line,"  ")[11] as m11,
+		       split(line,"  ")[12] as m12
+		from test_tb;
+
+		- 월별 합계
+		create table month_sum
+		as
+		select
+		  sum(split(line,"   ")[1]),
+		  sum(split(line,"   ")[2]),
+		  sum(split(line,"   ")[3]),
+		  sum(split(line,"   ")[4]),
+		  sum(split(line,"   ")[5]),
+		  sum(split(line,"   ")[6]),
+		  sum(split(line,"   ")[7]),
+		  sum(split(line,"   ")[8]),
+		  sum(split(line,"   ")[9]),
+		  sum(split(line,"   ")[10]),
+		  sum(split(line,"   ")[11]),
+		  sum(split(line,"   ")[12])
+		from test_tb;
+
+		- 월별 평균
+		create table month_avg
+		as
+		select
+		  avg(split(line,"   ")[1]),
+		  avg(split(line,"   ")[2]),
+		  avg(split(line,"   ")[3]),
+		  avg(split(line,"   ")[4]),
+		  avg(split(line,"   ")[5]),
+		  avg(split(line,"   ")[6]),
+		  avg(split(line,"   ")[7]),
+		  avg(split(line,"   ")[8]),
+		  avg(split(line,"   ")[9]),
+		  avg(split(line,"   ")[10]),
+		  avg(split(line,"   ")[11]),
+		  avg(split(line,"   ")[12])
+		from test_tb;
+
+
+
+
+
+
+
+

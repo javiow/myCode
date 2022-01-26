@@ -1,0 +1,1702 @@
+<Oracle 강의내용>
+
+ - Oracle 기초, 자료형, 제약조건(5주차/20.10.05)
+  : 데이터를 관리할 수 있는 집합체
+
+  - DBMS(DataBase Management System)
+  - DBA(DataBase Administor)
+  - DBO(DataBase Owner)
+
+ * 샘플 계정 생성
+  이름: system 암호: oracle (설치할때 설정) 로그인 -> 관리 -> 데이터 베이스 사용자 -> HR -> 잠금 해제, 암호 설정(1234) -> 사용자 변경 -> 로그아웃 -> HR 로그인
+
+ - sys or system: 관리자 계정(DBMS 관리 목적)
+  				  유저 생성, 권한 부여
+  				  -> 사용자 계정(Data 관리)
+  				     Data 저장관리 할 수 있는 공간 부여받음
+
+ - Client 접속 방법
+  1. HTTP Service
+   => http://127.0.0.1:8080/apex
+   -> 관리자만 사용 가능
+
+  2. sqlplus.exe 이용
+     -> sqlplus.exe 계정/암호
+     -> sqlplus     scott/tiger
+
+ - show user: 현재 접속한 user
+ - select tname from tab; : 접속한 user의 테이블/뷰 목록
+ - connect(conn) hr/1234 : 다른 계정으로 로그인
+
+ * 폰트(font): Lucida sans ...
+
+ - 계정 생성(기존 계정)
+  - cmd창에서 cd C:\oraclexe\app\oracle\product\10.2.0\server\RDBMS\ADMIN
+  - sqlplus system/oracle
+  - @scott
+  - commit;
+  - 브라우저에서 scott/tiger 로그인
+  * C:\oraclexe\app\oracle\product\10.2.0\server\RDBMS\ADMIN 에 있는 sql 파일만 생성 가능
+
+  3. Eclipse 이용방법
+   -> ojdbc14.jar (C:\oraclexe\app\oracle\product\10.2.0\server\jdbc\lib)
+
+   - Eclipse 실행 
+   -> ojdbc14.jar이 있는 폴더 선택, launch 
+   -> 하단 Data Source Explorer 
+   -> Database Connections 오른쪽 클릭 
+   -> New 
+   -> Oracle driver 
+   -> Name: Oracle_*** 
+   -> new driver+ 				] # 처음 Database 연결할때만 하는 설정
+   -> Oracle thin driver (10) 	]
+   -> 두번째 탭 jar 				] 
+   -> edit 						]
+   -> jar 있는 폴더에서 선택 OK 	]
+   -> Service Name: xe, Host: localhost (자기 컴퓨터) 
+   -> User name/Password 
+   -> Save Password(자기 컴퓨터만) 
+   -> Test Connection (Ping Succeeded!) 
+   -> Finish
+
+   - Create Web Project 생성 -> project 오른쪽 클릭 -> SQL 파일 생성 -> file name, oracle 선택
+
+   - Ctrl + Alt + X: 전체 실행
+   - Alt + X: 부분 실행
+   - 결과창만 보기: 오른쪽 하단 display .. 아이콘
+   - '--': 라인 주석
+   - /* 범위 주석 */ (Java와 동일)
+   - ';': 단일 명령시에는 생략 가능
+
+  * 참조사이트: 예전사이트=> oracleclub.com
+		       현재사이트=> http://www.gurubee.net/
+		       -> 데이터베이스 강의
+
+   - 바탕 화면 새로 만들기 -> 바로 가기 -> http://localhost:8080/apex -> 오라클 웹 서비스
+
+   - 초기 명령어(Java - Oracle_system)
+
+   1. User 생성(DDL)
+
+ 	create user 계정 identified by 비번 
+ 
+   2. 권한 부여(DCL)
+
+	grant connect to test -- 연결 권한
+	grant resource to test -- table 생성할 수 있는 권한
+	grant connect, resource to test
+
+	 // 권한 회수
+ 	revoke connect, resource from test
+
+   3. User 삭제(DDL)
+	drop user test
+	 
+   4. User 수정(DDL)
+	alter user test account lock -- 접근 못하게 잠금
+	alter user test account unlock -- 잠금 해제
+
+   - 테이블 생성(CMD창)
+
+    sqlplus test/test;
+    create table ttt(no int);
+    drop table ttt; -- 테이블 삭제
+
+   * Oracle 실행 에러 상황
+    * 메모리 부족
+    * Oracle 설치 후 컴퓨터 이름 변경 X
+    * 내 PC 오른쪽 클릭 -> 관리 -> 서비스 -> OracleServiceXE, OracleXETNSListener 실행 중, 자동 확인
+
+   1. 문자형
+   => 크기(단위): byte
+	char(크기): 고정길이
+	varchar2(크기): 가변길이 
+	- 오라클에서는 대부분 varchar2를 씀
+
+   2. 숫자형
+	number(자릿수)
+	number(전체자릿수, 소숫점자릿수)=> number(10, 3)
+	int		 => number(38)
+	=Integer
+	=Int								
+
+  3. 날짜형
+	date <= 년월일시분초 포함
+		
+  4. 대용량 자료형
+  	CLOB(Character Large Object): 2GB
+    BLOB(Binary Large Object): 2GB
+
+  exam)
+	 create table t2
+	 (
+	 	--변수명 자료형
+	 	name varchar2(255),
+	 	age number(3),
+	 	birthday date,
+	 	profile clob
+	 )
+	 
+	 // DML: Data 조작언어(insert, update, delete)
+	 insert into t2 values('일길동', 30, '2000-5-5', '할말 없습니다'); 
+	 
+	 // 조회
+	 select * from t2;
+
+ - desc(describe) 테이블명: 테이블 구조 확인
+
+ - table(Entity)
+  - 열: Field, Column
+  - 행: Row, Record, Tuple
+  - 필드의 집합: Domain
+
+ -  제약조건(Constraint)
+	 : Data 무결성(Integrity)을 지키기 위한 설정
+	   Table 생성시 설정
+	 1. not null(허용X): 필수입력 / null(허용)
+	 2. unique: 도메인내에 고유값만 갖는다
+	 			cf) Domain: 필드의 집합
+	 3. check: 조건에 맞는 값만 허용
+	 4. default: 기본값
+	 5. primary key(기본키)
+	 6. foreign key(외래키)
+
+	* on delete cascade: 부모가 삭제되면 참조되는 게시물도 삭제
+	####1. not null 제약: 필수입력
+					    문자형은 null 생략시 기본값  
+					    필드명 자료형() 제약조건
+					    not null은 inline 형식만 가능
+	 create table tb1
+	 (
+	 	name varchar2(100) not null,
+	 	nick_name varchar2(100) null
+	 )
+	 
+	 insert into tb1 values('일길동', '하나길동');
+	 insert into tb1(name) values('이길동');
+	 insert into tb1 values('이길동', null);
+	 -- insert into tb1(nick_name) values('개똥'); (X)
+	 
+	 select * from tb1;
+
+	####2. Unique: Domain내에 중복값 허용 안함
+	 create table tb2
+	 (
+	 	name varchar2(100) not null,
+	 	id varchar2(100) not null unique
+	 )
+	 insert into tb2 values('일길동', 'one');
+	 --insert into tb2 values('하나길동', 'one');
+	 select * from tb2;
+	 
+	 create table tb22
+	 (
+	 	name varchar2(100) not null,
+	 	id varchar2(100) not null
+	 )  
+	 // 테이블 수정을 통한 제약조건을 나중에 부여
+	 alter table tb22
+	 	add constraint unique_tb22_id unique(id)
+	 				  (제약조건명)
+	 insert into tb22 values('일길동', 'one');
+	 --insert into tb22 values('하나길동', 'one');
+	 select * from tb22;
+	 
+	 create table tb222
+	 (
+	 	name varchar2(100) not null,
+	 	id varchar2(100) not null,
+	 	constraint unique_tb222_id unique(id)
+	 )
+	 insert into tb222 values('일길동', 'one');
+	 --insert into tb222 values('하나길동', 'one');   			
+	 select * from tb222;
+
+	 ####3. check제약(조건에 맞는 값만 허용)
+	 create table tb3
+	 (
+	 	name varchar2(100) not null,
+	 	kor int,
+	 	eng int,
+	 	mat int,
+	 	constraint ck_tb3_kor check(kor >= 0 and kor <= 100)
+	 )
+	 
+	 alter table tb3
+	 	add constraint ck_tb3_eng check(eng >= 0 and eng <= 100)
+	 	
+	 alter table tb3
+	 	add constraint ck_tb3_mat check(mat between 0 and 100)
+	 cf) 필드 between A and B => A~B사이인가?
+	 
+	 insert into tb3 values('일길동', 88, 99, 100);
+	 
+	 --insert into tb3 values('이길동', -88, 99, 100);
+	 --insert into tb3 values('이길동', -88, 199, 100);
+	 --insert into tb3 values('이길동', -88, 199, -1);
+	 
+	 select * from tb3;
+	 
+	 ## check exam2
+	 create table tb4
+	 (
+	 	name varchar2(100) not null,
+	 	gender varchar2(100) not null,
+	 	blood varchar2(100) not null
+	 )
+	 
+	 -- 남자 or 여자
+	 alter table tb4
+	 	add constraint ck_tb4_gender check(gender = '남자' or gender = '여자')
+
+	 -- 혈액형: A, B, O, AB
+	 cf) 필드 in (A, B, C) => 필드 = A or 필드 = B or 필드 = C
+	 alter table tb4
+	 	add constraint ck_tb4_blood check(blood in ('A', 'B', 'O', 'AB'))
+
+	 insert into tb4 values('일길동', '남자', 'A')
+	 --insert into tb4 values('이길동', '남 자', 'A')
+	 --insert into tb4 values('이길동', '남자', 'A형')	  
+
+---------------------------------------------------------------------------
+
+ - Oracle 연산자, 함수(강의 5주차/20.10.06)
+
+ 	###4. default: 입력하지 않으면 기본값
+	create table tb5
+	(
+		name varchar2(100) not null,
+		kor int default 0,
+		eng int default 0,
+		mat int default 0
+	)
+	
+	insert into tb5 values('일길동', 66, 77, 88)
+	insert into tb5(name) values('이길동')
+	insert into tb5 values('삼길동', default, default, default)
+	insert into tb5(name, eng) values('사길동', default)
+	insert into tb5(name, eng) values('오길동', 99)
+	
+	update tb5 set kor = 85
+	where name = '일길동' or name = '이길동'
+	delete from tb5 where name = '일길동'
+	
+	select * from tb5
+
+	###5. primary key(기본키): 각각의 필드 중 대표성을 갖는 필드 지정
+						  각각의 행을 구분하기 위한 수단
+						 not null + unique(+index) 복합 적용
+						                   
+						 
+	create table tb6
+	(
+		idx int, --일련번호
+		name varchar2(100) not null, -- 이름
+		age int default 1 -- 나이
+		
+	)
+	
+	--기본키 설정
+	alter table tb6
+		add constraint pk_tb6_idx primary key(idx)
+	
+	insert into tb6 values(1, '일길동', 20)
+	insert into tb6 values(null, '이길동', 30)
+	select * from tb6
+	
+	--일련번호 관리 객체: sequence
+	
+	create sequence seq_tb6_idx
+
+	select 1+1 from dual
+	select seq_tb6_idx.nextVal from dual
+	insert into tb6 values(seq_tb6_idx.nextVal, '일길동', 20)
+	select * from tb6
+	
+	update tb6 set name = '삼길동' where idx = 4
+	delete from tb6 where idx = 5
+	select * from tb6
+
+	###6. foreign key(외래키): 외부테이블에서 값을 참조하는 키
+			  			  외부테이블의 키는 Primary key or unique
+			  			  
+	create table 학생
+	(
+		학번		 int,
+		이름 		 varchar2(100) not null,
+		전화번호	 varchar2(100),
+		보호자명	 varchar2(100),
+		보호자직업	 varchar2(100),
+		주소		 varchar2(100),
+		constraint pk_학생_학번 primary key(학번)
+	)
+	
+	insert into 학생 values(1, '일길동', '111-1111', '일아비', '자영업', '서울시 관악구 신림동');
+	insert into 학생 values(2, '이길동', '222-1111', '이아비', '회사원', '서울시 관악구 조원동');
+	select * from 학생
+	
+	create table 성적
+	(
+		일련번호 	int,
+		학번 		int,
+		국어 		int default 0,
+		영어 		int default 0,
+		수학 		int default 0,
+		학년 		int,
+		학기 		int,
+		시험종류 	varchar2(100),
+		constraint pk_성적_일련번호 primary key(일련번호)
+	)
+	
+	--외래키 설정
+	alter table 성적
+		add foreign key(학번) references 학생(학번)
+	
+	insert into 성적 values(1, 1, 88, 99, 77, 1, 1, '중간고사');
+	insert into 성적 values(2, 1, 88, 99, 77, 1, 1, '기말고사');
+	insert into 성적 values(3, 2, 88, 99, 77, 1, 1, '중간고사');
+	delete from 성적 where 일련번호 = 3;
+	
+	select * from 학생;
+	select * from 성적;
+
+	- .sql 문서로 테이블 생성
+	 -> cmd창 실행
+	 -> cd 자료있는곳
+	 -> sqlplus 아이디/패스워드
+	 -> @파일.sql
+	 -> commit;
+
+	- select문
+
+		select문 			 실행순서
+			필드명1,				3
+			필드명2,
+			...
+		from 테이블명 or 뷰		1
+		where 행 추출 조건절		2
+		order by 필드(asc/desc) 4
+	 * 실행 순서가 중요
+
+  - 연산자
+
+	1. 산술연산자: +, -, *, /
+		  cf) mod(피젯수, 젯수) => 나머지 구하는 함수
+
+	select 1+1, 3-1, 2*3, 10/3, mod(10, 3) from dual; 
+	select sabun, saname, sapay, sapay*0.1 as bonus from sawon;
+		
+	2. 관계(비교)연산자: >, >=, <, <=, = (같냐?), !=, <> (같지않냐)
+	select * from sawon
+	where deptno = 10
+	
+	select * from sawon
+	where deptno != 10
+	
+	select * from sawon
+	where sapay >= 3000
+	
+	3. 일반논리연산자: and or not 
+
+	1)and
+	select * from sawon
+	where deptno = 10 and sasex = '남자'
+	
+	select * from sawon
+	where sapay >= 3000 and sapay <= 4000
+	
+	select * from sawon
+	where sapay between 3000 and 4000
+	
+	2)or
+	select * from sawon
+	where deptno = 10 or deptno = 40
+	
+	select * from sawon
+	where sajob = '과장' or sajob = '대리'
+	
+	select * from sawon
+	where sajob in ('과장', '대리') and deptno = 10
+	
+	3)not => 가급적이면 사용하지 말 것(성능저하) => !=, <>
+	select * from sawon
+	where not sasex = '남자'
+		
+	4. 기타
+
+	필드 between A and B: A에서 B사이인가?
+	필드 in (A, B, C): (필드=A or 필드=B or 필드=C)
+	
+	- 문자열 유사검색식
+	필드 like '%_'
+			%: 모든값(자릿수 무시)
+			_: 모든값(문자 '1 자리')
+	
+	-- 최씨 검색		
+	select * from sawon
+	where saname like '최%'
+	
+	-- 이름중 2번째 글자가 '미'인 직원 추출
+	select * from sawon
+	where saname like '_미%'
+
+	- heading: select 결과의 필드명  
+ 
+  	select 
+	  	sabun as 사번, 
+	  	saname 사원명, 
+	  	sapay "년 봉", 
+	  	sapay*0.1 as bouns 
+	from sawon
+	
+	- 문자열 결합 연산자: ||
+	select saname || '님 추석명절 잘 보내세요' as msg from sawon
+	
+	sabun: 사원번호
+	saname: 사원명
+	sajon: 직급
+	sasex: 성별
+	deptno: 부서번호
+	sahire: 입사일자(date)
+	samgr: 상사사번
+	sapay: 연봉
+	
+	-- 10번 부서의 대리만 추출
+	select *
+	from sawon
+	where deptno = 10 and sajob = '대리'
+	
+	-- 고객 테이블
+	select * from gogek
+	
+	gobun: 고객번호
+	goname: 고객명
+	goaddr: 고객주소
+	gojumin: 주민번호
+	godam: 고객담당사원
+	
+	-- 고객 테이블에서 서울사는 고객만 추출
+	select * from gogek
+	where goaddr like '서울%'
+	
+	-- 고객 테이블에서 여자 고객만 추출
+	select * from gogek
+	where gojumin like '_______2%'
+	
+	-- 고객 테이블에서 겨울에 출생한 고객 추출
+	select * from gogek
+	where gojumin like '__01%' or gojumin like '___2%'
+
+  - 내장함수
+
+	1. 숫자형 함수
+
+	select 
+		ceil(10.1), floor(10.1),
+		ceil(-10.1), floor(-10.1),
+		round(10.56, 1), round(10.44, 1),
+		trunc(10.56, 1),
+		trunc(156.56, -1),
+		round(156.56, -1)
+	from dual 
+
+	2. 문자형 함수
+
+	substr('문자', 시작인덱스, 갯수)
+	substring('문자', 시작인덱스, 끝인덱스)
+	        1 2 3 4 5 6 7 8		   
+	select '우리나라대한민국' from dual
+	select substr('우리나라대한민국', 5, 2) from dual
+	
+	-- 고객 -> 서울
+	select * from gogek
+	where substr(goaddr, 1, 2) = '서울'
+	
+	-- 고객 -> 여자
+	select * from gogek
+	where substr(gojumin, 8, 1) in ('2', '4', '6', '8')
+	
+	select * from gogek
+	where to_number(substr(gojumin, 8, 1)) in (2, 4, 6, 8)
+	
+	3. 날짜형 함수
+
+	SELECT TO_CHAR(SYSDATE,'RRRR-MM-DD HH24:MI:SS') "지금시간"
+ 	 FROM DUAL ;
+ 
+	SELECT TO_CHAR(SYSDATE-1,'RRRR-MM-DD HH24:MI:SS') "하루전지금시간"
+	  FROM DUAL ;
+	 
+	SELECT TO_CHAR(SYSDATE-1/24,'RRRR-MM-DD HH24:MI:SS') "1시간전시간"
+	  FROM DUAL ;
+	 
+	SELECT TO_CHAR(SYSDATE-1/24/60,'RRRR-MM-DD HH24:MI:SS') "1분전시간"
+	  FROM DUAL ;
+	 
+	SELECT TO_CHAR(SYSDATE-1/24/60/10,'RRRR-MM-DD HH24:MI:SS') "6초전시간"
+	  FROM DUAL ;
+	 
+	SELECT TO_CHAR(SYSDATE-(5/24 + 30/24/60 + 10/24/60/60),'RRRR-MM-DD HH24:MI:SS') "5시간 30분 10초전"
+	  FROM DUAL ;
+	
+	-- 사원 테이블에서 입사일자를 년/월/일 별로 추출
+	select 
+		sabun, saname, sahire, 
+		to_char(sahire, 'YYYY') 입사년도,
+		to_char(sahire, 'MM') 입사월,
+	    to_char(sahire, 'DD') 입사일
+	from sawon
+	where to_number(to_char(sahire, 'YYYY')) >= 2000
+
+	-- add_months(기준일, 가감달)
+	select 
+		sysdate 입대일, 
+		add_months(sysdate, 18) 전역일,
+		add_months(sysdate, -1) 전달
+	 from dual
+	
+	-- 월의 차
+	months_between(앞날짜, 뒷날짜): 앞날짜 - 뒷날짜 (개월)
+	
+	퇴직금 = ((연봉 / 13) * 근무월수) / 12
+	
+	select 
+		sabun, saname, sahire,
+		ceil(months_between(sysdate, sahire)) 총근무월수,
+		ceil(sapay/13) as 월급,
+		to_char(ceil(months_between(sysdate, sahire)/12)*10000  * ceil(sapay/13), 'L999,999,999') as 퇴직금
+	from sawon
+	
+---------------------------------------------------------------------------
+
+ - Oracle 함수, 서브쿼리, 뷰(5주차/20.10.07)
+
+  - ROUND 함수(날짜형)
+
+	SELECT TO_CHAR(ROUND(TO_DATE('2011-09-11 21:00:01',
+	                             'RRRR-MM-DD HH24:MI:SS'), 'YEAR'),
+	               'RRRR-MM-DD HH24:MI:SS')  
+	  FROM DUAL;
+	 
+	SELECT TO_CHAR(ROUND(TO_DATE('2011-09-11 21:00:01',
+	                             'RRRR-MM-DD HH24:MI:SS'), 'MONTH'),
+	               'RRRR-MM-DD HH24:MI:SS')  
+	  FROM DUAL;
+	 
+	SELECT TO_CHAR(ROUND(TO_DATE('2011-09-11 21:00:01',
+	                             'RRRR-MM-DD HH24:MI:SS'), 'DD'),
+	               'RRRR-MM-DD HH24:MI:SS')  
+	  FROM DUAL;
+	 
+	SELECT TO_CHAR(ROUND(TO_DATE('2011-09-11 21:00:01,
+	                             'RRRR-MM-DD HH24:MI:SS')), 
+	               'RRRR-MM-DD HH24:MI:SS')   
+	  FROM DUAL;
+
+	
+  - decode 함수
+	-- use: scott
+	select * from emp;
+	select
+		empno, ename, deptno,
+		decode(deptno, 10, 'Accounting', 
+					   20, 'Research', 
+					   30, 'Sales', 
+					   40, 'Operations', 
+					   'etc') as dname
+	from emp;
+	
+  - case 함수
+	
+		select
+		empno, ename, deptno,
+		case deptno 
+			when 10 then  'Accounting' 
+			when 20 then  'Research' 
+			when 30 then  'Sales' 
+			when 40 then  'Operations' 
+			else 'etc'
+			end as dname
+	from emp;
+	
+	-- use: test
+	
+	-- decode
+	
+	select
+		gobun, goname, gojumin,
+		decode(substr(gojumin, 8, 1), 1, '남자', 
+									  2, '여자', 
+									  3, '남자', 
+									  4, '여자') as gender
+	from gogek
+	
+	-- case
+	
+	select
+	gobun, goname, gojumin,
+		case
+			when to_number(substr(gojumin, 8, 1)) in (1, 3, 5, 7) then '남자'
+			else '여자'
+		end as gender
+	from gogek
+	
+	-- 고객 출생 계절
+	select
+	gobun, goname, gojumin,
+		case 
+			when to_number(substr(gojumin, 3, 2)) between 3 and 5  then '봄'
+			when to_number(substr(gojumin, 3, 2)) between 6 and 8 then '여름'
+			when to_number(substr(gojumin, 3, 2)) between 9 and 11 then '가을'
+			else '겨울'
+		end as season
+	from gogek
+	
+	select
+	gobun, goname, gojumin,
+		case floor(to_number(substr(gojumin, 3, 2))/3)
+			when 1  then '봄'
+			when 2  then '여름'
+			when 3  then '가을'
+			else '겨울'
+		end as season
+	from gogek
+
+  - NULL 함수
+
+ 	-- 각 부서의 부서장 추출(null 추출: is null)
+	select * from sawon
+	where samgr is null
+	
+	-- 부서장이 아닌 직원 추출(null이 아닌 것 추출: is not null)
+	select * from sawon
+	where samgr is not null
+
+	-- nvl, nvl2
+	select
+		sabun, saname, samgr, 
+		nvl(samgr, 0) samgr2, -- null인 경우 0으로 치환
+		nvl2(samgr, 1, 0) samgr3 -- null인 경우 0, null이 아닌 경우는 1
+	from sawon
+
+
+  - Subquery
+	 : 하위쿼리의 결과를 이용해서 메인쿼리를 수행
+
+	-- 최불암과 동일한 부서직원 추출
+	
+	1. 최불암의 부서 알아본다
+	select deptno from sawon where saname = '최불암'
+	
+	2. 10번 부서 직원 추출
+	select * from sawon where deptno = (1)
+
+	select * from sawon 
+	where deptno = (select deptno 
+					from sawon 
+					where saname = '최불암')
+	
+  - 통계 함수
+	select 
+		sum(sapay) 급여합계,
+		avg(sapay) 급여평균,
+		max(sapay) 최대급여,
+		min(sapay) 최저급여,
+		count(*) 사원수,
+		count(samgr) 관리가아닌사원수,
+		max(sahire) 최근입사일자,
+		min(sahire) 최초입사자
+	from sawon
+	
+
+	-- 사원테이블에서 가장 최근에 입사한 사원 정보 출력
+	
+	select * from sawon
+	where sahire = ( select max(sahire) from sawon)
+	
+	-- 급여평균보다 많이 받는 직원 추출
+	
+	select * from sawon
+	where sapay > (select avg(sapay) from sawon)
+
+	insert into sawon values(21, '장동건', '남자', 40, '사원', sysdate, 11, 2000)
+	
+	Q1. 사원 테이블에서 장동건과 동일한 직급을 갖는 직원 추출
+	select * from sawon
+	where sajob in (select sajob
+					from sawon
+					where saname = '장동건')
+	-- 다중행 서브쿼리: in, any, all, exists ..
+	
+	Q2. 사원 테이블에서 장동건과 동일한 년도에 입사한 직원 추출
+	select * from sawon
+	where to_char(sahire,'YYYY') in (select to_char(sahire,'YYYY')
+									 from sawon
+									 where saname = '장동건')
+	
+	Q3. 사원테이블에서 이미자와 동일한 월에 입사한 직원추출
+	select * from sawon
+	where to_char(sahire, 'MM') = (select to_char(sahire, 'MM')
+								   from sawon
+								   where saname = '이미자')
+	
+	
+	Q4. 고객테이블에서 류민과 동일한 지역(광역시)에 사는 고객 추출
+	select * from gogek
+	where substr(goaddr, 1, 2) = (select substr(goaddr, 1, 2)
+							      from gogek
+							      where goname = '류민')
+			
+	Q5. 고객테이블에서 마징가와 같은 년대에 태어난 고객 추출
+	select * from gogek
+	where trunc(to_number(substr(gojumin, 1, 2)), -1) = 
+					(select trunc(to_number(substr(gojumin, 1, 2)), -1)
+					 from gogek
+					 where goname = '마징가')
+	
+	Q6. 고객테이블에서 만두와 같은 계절에 태어난 고객 추출
+
+	select * 
+	from gogek
+	where case floor(to_number(substr(gojumin, 3, 2))/3)
+					when 1 then '봄'
+					when 2 then '여름'
+					when 3 then '가을'
+					else '겨울'
+				end = (select 
+						case floor(to_number(substr(gojumin, 3, 2))/3)
+							when 1 then '봄'
+							when 2 then '여름'
+							when 3 then '가을'
+							else '겨울'
+						end as season
+						from gogek
+						where goname = '만두')
+
+ 	-- View 생성
+ 		create or replace view gogek_view
+ 		as
+	 		select 
+				gobun, goname, goaddr, gojumin, godam,
+				case  floor(to_number(substr(gojumin, 3, 2))/3)
+					when 1 then '봄'
+					when 2 then '여름'
+					when 3 then '가을'
+					else '겨울'
+				end as season
+			from gogek
+
+		select * from gogek_view
+		where season = (select season from gogek_view where goname = '만두')
+
+  - 뷰(View)
+	1. 가상테이블 (테이블과 동일하게 사용)
+	2. 뷰 내부에 수행할 SQL문장이 저장
+	3. 사용목적
+		1) 편리성: 복잡한 명령을 간결하게 사용
+		2) 보안성: 외부에 제한적으로 노출
+
+	--고객 테이블 정보
+	
+	gobun goname goaddr godam gojumin year
+	update gogek set gojumin = '011212-4123456' where goname = '몰리'
+	
+	* 뷰 생성하기 위해서 권한 필요(관리자한테 요청) or
+	 -> cmd
+	 -> sqlplus system/oracle
+	 -> grant create view to test;
+
+	--뷰 생성(편의성)
+
+	create or replace view gogek_view2 
+	as
+		select
+			gobun, goname, goaddr, godam, 
+			rpad(substr(gojumin, 1, 7), 14, '*') as gojumin, 
+			(
+			to_number(substr(gojumin, 1, 2)) + 
+			case 
+				when to_number(substr(gojumin, 8, 1)) in (1, 2, 5, 6) then 1900
+				when to_number(substr(gojumin, 8, 1)) in (3, 4, 7, 8) then 2000
+				else 1800
+			end
+			) as year 
+		from gogek
+	
+	--뷰 사용
+	select * from gogek_view2
+	
+	create or replace view gogek_view22 
+	as
+		select 
+			g.*,
+			(to_number(to_char(sysdate, 'YYYY')) - year + 1) as age 
+		from 
+			(select * from gogek_view2) g -- inline view
+		
+	select * from gogek_view22
+	
+	- 뷰의 보안성 테스트
+	--use: system
+	--gogek_view2을 이용할 수 있는 계정 생성
+	create user test2 identified by test2
+	
+	--연결 권한만 부여
+	grant connect to test2
+	
+	-- test -> test2에게 권한 부여
+	-- use: test
+	
+	grant select on gogek_view2 to test2
+	
+	--use: test2
+	select * from test.gogek_view2
+
+ --------------------------------------------------------------------------
+
+  - Oracle (5주차/20.10.08)
+
+   - 상관쿼리
+    : 주쿼리의 정보와 서브쿼리의 정보를 상호 교환(<-> 일반쿼리)
+    * 메인쿼리의 레코드 수만큼 서브쿼리가 수행
+      -> 성능저하의 요인
+
+    -- 각 부서의 최고 급여자 추출
+	select * from sawon
+	where 
+		  (
+		  sapay = (select max(sapay) from sawon
+				   where deptno = 10) and
+		  deptno = 10
+		  )
+		  or
+		  (
+		  sapay = (select max(sapay) from sawon
+				   where deptno = 20) and
+		  deptno = 20
+		  )
+		  or
+		  (
+		  sapay = (select max(sapay) from sawon
+				   where deptno = 30) and
+		  deptno = 30
+		  )
+		  or
+		  (
+		  sapay = (select max(sapay) from sawon
+				   where deptno = 40) and
+		  deptno = 40
+		  )
+		  order by deptno
+
+	-- 상관쿼리 작성
+	
+	select * from sawon s1
+	where sapay = (select max(sapay) from sawon
+				   where s1.deptno = deptno)
+	order by deptno
+
+
+   - group by
+    : 그룹별 통계를 알아보기 위함(-> 통계함수)
+    * 그룹으로 묶은 열을 제외한 다른 열들을 조회할 수 없음
+
+    - 정렬(sort)
+	
+	-- 부서별 성별 정렬
+	
+	asc: 오름차순
+	desc: 내림차순
+	
+	select * from sawon
+	order by deptno asc, sasex asc
+	--       1차 정렬               2차 정렬
+	
+	-- 그룹통계: sum, avg, max, min, count ...
+	select count(*), sum(sapay), avg(sapay) from sawon
+	
+	-- 부서별 통계
+	select
+		deptno, 
+		count(*) 인원수, 
+		sum(sapay) 급여합계,
+		avg(sapay) 급여평균, 
+		min(sapay) 최저급여,
+		max(sapay) 최대급여
+	from sawon
+	group by deptno
+	order by deptno
+	
+	-- 부서별 성별 통계
+	
+	select
+		deptno, sasex, 
+		count(*) 인원수, 
+		avg(sapay) 급여평균
+	from sawon
+	group by deptno, sasex
+	order by deptno, sasex
+
+	-- 입사년도별 통계
+	
+	select
+		to_char(sahire, 'YYYY') 입사년도,
+		count(*) 인원수
+	from sawon
+	group by to_char(sahire, 'YYYY')
+	order by to_char(sahire, 'YYYY')
+	
+	-- 입사월별 통계
+	
+	select
+		to_char(sahire, 'MM') 입사월,
+		count(*) 인원수
+	from sawon
+	group by to_char(sahire, 'MM')
+	order by to_char(sahire, 'MM')
+	
+	-- 입사년도별 월별 통계
+	
+	select
+		to_char(sahire, 'YYYY') 입사년도,
+		to_char(sahire, 'MM') 입사월,
+		count(*) 인원수
+	from sawon
+	group by to_char(sahire, 'YYYY'), to_char(sahire, 'MM')
+	order by to_char(sahire, 'YYYY'), to_char(sahire, 'MM')
+	
+	Q1. 사원테이블에서 입사년대별 인원수
+	select
+		trunc(to_number(to_char(sahire, 'YYYY'), -1)) 입사년대,
+		count(*) 인원수
+	from sawon
+	group by trunc(to_number(to_char(sahire, 'YYYY'), -1))
+	order by trunc(to_number(to_char(sahire, 'YYYY'), -1))
+	
+	select
+		substr(to_char(sahire, 'YYYY'), 1, 3) || '0' 입사년대,
+		count(*) 인원수
+	from sawon
+	group by substr(to_char(sahire, 'YYYY'), 1, 3) || '0'
+	order by substr(to_char(sahire, 'YYYY'), 1, 3) || '0'
+	
+	Q2. 고객테이블에서 지역별 인원수
+	select 
+		substr(goaddr, 1, 2) 지역별,
+		count(*) 인원수
+	from gogek
+	group by substr(goaddr, 1, 2)
+	
+	Q3. 고객테이블에서 출생 계절별 인원수(View 이용)
+	
+	select 
+		season 계절별,
+		count(*) 인원수
+	from gogek_view
+	group by season
+	
+	Q4. 고객테이블에서 성별인원수(view 생성 -> 이용)
+	select * from gogek
+	
+	create or replace view gogek_view3
+	as
+		select 
+			g.*,
+			case 
+				when to_number(substr(gojumin, 8, 1)) in(1, 3, 5, 7) then '남자'
+				else '여자'
+			end as gosex
+		from ( select * from gogek ) g
+	
+	select * from gogek_view3
+	
+	select
+		gosex 성별,
+		count(*) 인원수
+	from gogek_view3
+	group by gosex
+	
+	- having: 그룹별 통계에 대한 조건절
+	
+	-- 부서별 인원수
+	select
+		deptno, 
+		count(*) 인원수
+	from sawon
+	where 1 = 1
+	group by deptno
+	having count(*) >= 5
+	order by deptno
+
+  - ERwin (ERD 모델러)
+
+   - create model (왼쪽 상단): 모델 생성
+    -> logical: 논리적 모델링 physical: 물리적 모델링
+
+   - Entity (오른쪽 상단): 클릭 후 엔티티 생성
+
+   - Identifying relationship (오른쪽 상단): 클릭 후 엔티티 두개를 선택
+     - 일반: 식별 관계 (일대다)
+     - many-to-many: 식별 관계 (다대다)
+     - non: 비식별 관계 (일대다)
+
+   - model -> model properties -> notation -> logical, physical IE check
+
+   - 관계선 오른쪽 클릭 -> Relationship properties -> One or more,
+    No Nulls (하나 이상의 값, 널 허용X)
+
+   - 자기 자신을 참조 -> 관계선 두번 클릭 -> Relationship properties ->
+    Rolename -> 참조할 이름
+
+   - Logical : 관계를 설정하기위해 임의적으로 명명 (논리적 모델링)
+   - Physical : 실제 데이터베이스 테이블, 속성 이름 (물리적 모델링)
+
+   - Physical로 바꾼 후, 이름 변경 후 엔티티를 더블 클릭해 타입을 지정
+
+   - Tools -> Forward Engineer -> Schema Generation -> Preview : 테이블 코딩
+
+  - 조인(join)
+	 : 2개 이상의 테이블을 결합해서 조회하는 방법
+	
+	종류)
+	 1. cross join: 조건없이 결합
+	 
+		 select * from dept,sawon
+		 [ANSI-92 SQL]
+		 select * from dept cross join sawon
+	 
+	 2. inner join: equi-join(1:1 만족하는 행만 결합)
+	 
+		 select * from sawon s, dept d
+		 where s.deptno = d.deptno --조인조건
+		 	   and
+		 	   s.deptno = 10       --일반필터조건
+		 [ANSI-92 SQL] A inner join B on 조인조건
+		 select 
+		 	 *
+		 from sawon s inner join dept d on s.deptno = d.deptno
+		 where s.deptno = 10
+		 
+	3. self join: 자신의 테이블과 연결
+
+		사번 직위 사원명 상사사번 상사직위 상사명
+		    sawon s1            sawon s2
+		 
+		select 
+			s1.sabun 사번, s1.sajob 직위, s1.saname 사원명, 
+			s2.sabun 상사사번, s2.sajob 상사직위, s2.saname 상사명
+		from sawon s1, sawon s2		 
+		where s1.samgr = s2.sabun
+		order by s1.sabun
+
+	4. outer join
+	
+		select 
+			s1.sabun 사번, s1.sajob 직위, s1.saname 사원명, 
+			s2.sabun 상사사번, s2.sajob 상사직위, s2.saname 상사명
+		from sawon s1, sawon s2		 
+		where s1.samgr = s2.sabun(+)
+		order by s1.sabun
+
+		[ANSI-92 SQL]
+		
+		select 
+			s1.sabun 사번, s1.sajob 직위, s1.saname 사원명, 
+			s2.sabun 상사사번, s2.sajob 상사직위, s2.saname 상사명
+		from sawon s1 left outer join sawon s2 on s1.samgr = s2.sabun
+		order by s1.sabun
+		
+   * as(alias) 명을 쓰면 원래 이름은 사라짐
+
+   		4.Outer join
+	    A left  outer join B :  A(all) , B(만족하는행만)+null추가 
+	    A right outer join B :  A(만족하는행만)+null추가, B(all)
+	    A full  outer join B :  A(all) B(all)  + null추가  
+	    
+	
+	  사번  사원명  부서명   고객번호  고객명      
+	    sawon s     dept d        gogek g
+	            (1)
+	                          (2)
+	    
+	    
+	    select
+	       sabun,saname,d.deptno,dname,gobun,goname
+	    from sawon s,dept d,gogek g
+	    where d.deptno = s.deptno 
+	          and 
+	          s.sabun=g.godam(+)
+	          and
+	          gobun is null
+	    order by sabun
+	    
+	    
+	    [ANSI-92 SQL] 
+	    select
+	       sabun,saname,d.deptno,dname,gobun,goname
+	    from  sawon s inner  join dept d    on s.deptno=d.deptno 
+	          left outer join gogek g       on s.sabun=g.godam
+	    --where gobun is null      
+	    order by sabun
+		    
+		Q1)    
+		사번  사원명  부서명 고객번호 고객명  상사사번 상사명 상사담당고객번호 상사당당고객명
+		  sawon s1    dept d     gogek g1         sawon s2            gogek g2
+		  
+		  select
+		    s1.sabun 사번,s1.saname 사원명,
+		    d.dname 부서명,
+		    g1.gobun 고객번호,g1.goname 고객명,
+		    s2.sabun 상사사번,s2.saname 상사명,
+		    g2.gobun 상사담당고객번호,g2.goname 상사담당고객명
+		  from sawon s1 inner join dept d   on s1.deptno = d.deptno
+		       left outer join gogek g1     on s1.sabun  = g1.godam
+		       left outer join sawon s2     on s1.samgr  = s2.sabun
+		       left outer join gogek g2     on s2.sabun  = g2.godam
+		  order by s1.sabun
+
+
+ --------------------------------------------------------------------------
+
+  - Oracle JDBC(6주차/20.10.12)
+
+   - JDBC 과정
+    => DB(Oracle Database) - DBService - Vo - Dao - Java App
+
+    -> Java Project 생성, class 파일 생성
+
+    -> Project 오른쪽 클릭 -> Build Path -> Configure Build Path -> Libraries -> Add External JARs -> ojdbc14.jar 파일 선택
+
+    -> Static Method 생성(OracleDriver 로딩(클래스 파일))
+
+    //static 초기화
+
+	static {
+        //Driver Loading
+		// cf)  ojdbc60.jar 부터는 안해도 자동 Loading됨
+		
+		try {
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			//            -> 왼쪽 카테고리의 ojdbc14.jar의 OracleDriver 위치
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+	}
+
+	-> 연결관리객체 생성
+
+	String url		 = "jdbc:oracle:thin:@localhost:1521:xe";
+	String user		 = "test";
+	String password	 = "test";
+
+	Connection conn = DriverManager.getConnection(url, user, password);
+
+   - 오라클 Driver url:
+    오른쪽 상단 Java EE -> Data Source Explorer -> 
+    Oracle.. 오른쪽 클릭 ->ropertise -> Driver Properties -> 
+    Connection URL
+
+	-> 명령처리객체 얻어오기
+
+	Statement stmt =  conn.createStatement();
+	String sql="select deptno as no,loc,dname from dept";
+
+	-> 결과행 처리 객체 얻어오기
+
+	//SQL명령 수행
+	//select명령외의 SQL수행시: app -> DB
+	//stmt.executeUpdate(sql);
+	
+	//select명령수행할때: app <- DB
+
+
+	ResultSet rs =  stmt.executeQuery(sql);
+		
+		//행->필드값 얻어오기
+		while(rs.next()) {
+		    //rs의 현재위치(Data(record)위치) 
+			
+			int deptno   = rs.getInt("no");
+			String dname = rs.getString("dname");
+			String loc   = rs.getString("loc");
+			
+			System.out.printf("[%d]-[%s]-[%s]\n",
+					           deptno,dname,loc);
+		}
+		
+	-> 닫기
+	rs.close();  //3
+	stmt.close();//2
+	conn.close();//1
+
+
+	* 열었으면 꼭 닫아야 함
+
+	* 소스안에 정보를 저장하면 보안성이 취약하기 때문에 properties 파일에 
+	저장 후 불러옴
+	// Project 오른쪽 클릭 -> New -> file -> src/db, 
+										file name: db.properties -> finish
+	   -> jdbc.driver = oracle.jdbc.driver.OracleDriver
+		  jdbc.url = jdbc:oracle:thin:@localhost:1521:xe
+		  jdbc.user = test
+		  jdbc.pwd = test
+
+	// Connection 얻어오기
+	Properties prop = new Properties();
+	prop.load(new FileReader("src/db/db.properties"));
+
+	String url		 = prop.getProperty("jdbc.url");
+	String user		 = prop.getProperty("jdbc.user");
+	String password	 = prop.getProperty("jdbc.pwd");
+
+
+	- Perspective
+	 -> Java EE : 통합환경(SQL 코딩...)
+	 -> Java : Java 파일 코딩
+
+---------------------------------------------------------------------------
+
+ - Oracle 모듈화(6주차/20.10.13)
+
+  - JDBC 모듈화
+  	1. Oracle Database 생성
+	  -- 일련번호 관리객체
+	  
+	  create sequence seq_sungtb_idx
+	 
+	  -- 성적테이블
+	 
+	 create table sungtb
+	 (
+	 	idx int,						--일련번호
+	 	name varchar2(100) not null,	--이름
+	 	kor int default 0,				--국어
+	 	eng int default 0,				--영어
+	 	mat int default 0				--수학
+	 )
+	 
+	  -- 기본키 지정
+	  alter table sungtb
+	  	add constraint pk_sungtb_idx primary key(idx);
+	 
+	  -- 점수 check 제약
+	  alter table sungtb
+	  	add constraint ch_sungtb_kor check(kor between 0 and 100);
+	  	
+	  alter table sungtb
+	  	add constraint ch_sungtb_eng check(eng between 0 and 100);
+	  	
+	  alter table sungtb
+	  	add constraint ch_sungtb_mat check(mat between 0 and 100);
+	  	
+	  	
+	  -- sample data
+	  insert into sungtb values(seq_sungtb_idx.nextVal, '일길동', 97, 88, 99);
+	  insert into sungtb values(seq_sungtb_idx.nextVal, '이길동', 77, 98, 99);
+	  insert into sungtb values(seq_sungtb_idx.nextVal, '삼길동', 97, 98, 99);
+	  insert into sungtb values(seq_sungtb_idx.nextVal, '사길동', 77, 78, 99);
+	  insert into sungtb values(seq_sungtb_idx.nextVal, '오길동', 77, 78, 79);
+
+	  select * from sungtb
+	  
+	  rank() over(정렬조건)
+	  
+	  select 
+	  	sabun, saname, sapay,
+		rank() over(order by sapay desc) as rank  
+	  from sawon
+	  
+	  
+	  -- 뷰 생성
+	  create or replace view sungtb_view
+	  as
+		  select
+		  	idx, name, kor, eng, mat,
+		  	kor + eng + mat as tot,
+		  	round((kor + eng + mat)/3, 1) as ave,
+		  	rank() over(order by (kor + eng + mat) desc) as rank
+		  from sungtb
+		  order by idx
+		  
+	  select * from sungtb_view
+	  
+	  -- 오길동 점수 수정
+	  update sungtb set kor = 100, eng = 100, mat = 100
+	  	where idx = 5;
+
+	  select * from sungtb_view
+
+	2. DBService 객체 생성
+
+  	- 요청할때마다 DBService 생성 -> single-ton 설계 
+   	- DBServie: Connection 관리
+   	- try-catch -> 내부 문제 해결
+   	  throws -> 외부로 문제 전달
+
+    public class DBService {
+	
+		// Oracle Driver Loading
+		static {
+			
+			try {
+				Class.forName("oracle.jdbc.driver.OracleDriver");
+			} catch (ClassNotFoundException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+		}
+		
+		// Single-ton
+		static DBService single = null;
+
+		public static DBService getInstance() {
+
+			if (single == null) {
+				single = new DBService();
+			}
+
+			return single;
+		}
+		
+		String url;
+		String user;
+		String pwd;
+		
+		// new DBService() (X)
+		// 외부에서 객체 생성 불가 -> getInstance()로만 생성
+		// 만들어둔 Propertise 객체에 접속하여 정보를 가져오는 메소드 생성자
+		private DBService() {
+			try {
+				Properties prop = new Properties();
+				prop.load(new FileReader("src/db/db.properties"));
+				
+				// 전역변수 사용(외부에서 사용해야되기 때문)
+				url		 = prop.getProperty("jdbc.url");
+				user	 = prop.getProperty("jdbc.user");
+				pwd	 	 = prop.getProperty("jdbc.pwd");
+				
+				// db.properties에 없을 경우(FileNotFoundException)
+				// -> 하나로 통합(Exception)
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
+		}
+		
+		// sql Connection 사용
+		// Instance Method: 객체가 생성되어야 사용할 수 있는 메소드
+		public Connection getConnection() throws SQLException {
+			Connection conn = null;
+			
+			//Properties prop = new Properties();
+			
+			conn = DriverManager.getConnection(url, user, pwd);
+			
+			return conn;
+		}
+
+	}
+
+   	- window -> preference -> Java -> Editor -> Templates -> New : 
+   	코드 자동완성 추가 (코드 템플릿)
+   	 * Insert Variable: 환경 변수 추가
+   	 				   ${primary_type_name}: 메인클래스 이름
+   	 				   ${cursor}: 커서
+   	 				   
+   	 * 한 클래스엔 public class 2개 이상 생성불가
+
+   	3. Vo 객체 생성 (값을 저장관리하는 객체)
+   	 속성명 == 필드명 (다르면 일일히 연결해야함)
+
+   	public class SungVo {
+	
+		// 멤버필드(Member field)
+		// = 속성(Attribute)
+		// = Property
+		
+		int idx;
+		
+		String name;
+		int kor;
+		int eng;
+		int mat;
+		
+		int tot;
+		String ave;
+		int rank;
+		
+		public SungVo() {
+			// TODO Auto-generated constructor stub
+		}
+		
+		// Insert 할때 필요한 정보 생성자 생성
+		public SungVo(String name, int kor, int eng, int mat) {
+			super();
+			this.name = name;
+			this.kor = kor;
+			this.eng = eng;
+			this.mat = mat;
+		}
+
+
+		public int getIdx() {
+			return idx;
+		}
+		public void setIdx(int idx) {
+			this.idx = idx;
+		}
+		public String getName() {
+			return name;
+		}
+		public void setName(String name) {
+			this.name = name;
+		}
+		public int getKor() {
+			return kor;
+		}
+		public void setKor(int kor) {
+			this.kor = kor;
+		}
+		public int getEng() {
+			return eng;
+		}
+		public void setEng(int eng) {
+			this.eng = eng;
+		}
+		public int getMat() {
+			return mat;
+		}
+		public void setMat(int mat) {
+			this.mat = mat;
+		}
+		public int getTot() {
+			return tot;
+		}
+		public void setTot(int tot) {
+			this.tot = tot;
+		}
+		public String getAve() {
+			return ave;
+		}
+		public void setAve(String ave) {
+			this.ave = ave;
+		}
+		public int getRank() {
+			return rank;
+		}
+		public void setRank(int rank) {
+			this.rank = rank;
+		}
+		
+	}
+
+   	4. Dao 객체(Data Access Object/데이터 처리 객체)
+   	 CRUD 기능: selectList, selectOne, delete, update, insert
+
+   	* where 1 = 1: 모든 행 출력
+   	* PreparedStatement -> 변수 처리
+
+   	public class SungTBDao {
+
+		// Single-ton
+		static SungTBDao single = null;
+
+		public static SungTBDao getInstance() {
+
+			if (single == null) {
+				single = new SungTBDao();
+			}
+
+			return single;
+		}
+		
+		// 전체 조회
+		public List<SungVo> selectList(){
+			
+			List<SungVo> list = new ArrayList<SungVo>();
+			
+			Connection conn = null;
+			PreparedStatement pstmt = null;
+			ResultSet rs = null;
+			String sql = "select * from sungtb_view";
+			
+			try {
+				// 1. Connection 얻어오기
+				conn = DBService.getInstance().getConnection();
+				
+				// 2. PreparedStatement 얻어오기 (SQL문을 미리 얻어놈)
+				//     <-> Statement
+				pstmt = conn.prepareStatement(sql);
+				
+				// 3. ResultSet 얻어오기
+				rs = pstmt.executeQuery();
+				// -> BOF(파일 이전 영역을 가리키고 있음)
+				
+				while(rs.next()) {
+					
+					SungVo vo = new SungVo();
+					// rs의 필드값을 Vo에 넣는다.
+					vo.setIdx(rs.getInt("idx"));
+					vo.setName(rs.getString("name"));
+					vo.setKor(rs.getInt("kor"));
+					vo.setEng(rs.getInt("eng"));
+					vo.setMat(rs.getInt("mat"));
+					vo.setTot(rs.getInt("tot"));
+					vo.setAve(rs.getString("ave"));
+					vo.setRank(rs.getInt("rank"));
+					
+					list.add(vo);
+					
+				}
+				
+			} catch (Exception e) {
+				// TODO: handle exception
+				e.printStackTrace();
+			} finally {
+				// 무조건 실행되는 구문
+				
+				try {
+					// 닫기(자원 반환): 열린 역순으로 닫는다
+					// 열려있는 객체만 닫기
+					if(rs != null) rs.close();
+					if(pstmt != null) pstmt.close();
+					if(conn != null) conn.close();
+					
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			
+			}
+			
+			
+			return list;
+		}
+
+		// 수정하기
+		public int update(SungVo vo) {
+			// TODO Auto-generated method stub
+			// insert는 성공하면 1
+
+			int res = 0;
+			// 조회 필요 X, Connection, PreparedStatement만 필요
+
+			Connection conn = null;
+			PreparedStatement pstmt = null;
+
+			String sql = "update sungtb set name = ?, kor = ?, eng = ?, mat = ? where idx = ?";
+
+			try {
+				// 1. Connection 얻기
+				conn = DBService.getInstance().getConnection();
+				// 2. PreparedStatement
+				pstmt = conn.prepareStatement(sql);
+				// 3. PreparedStatement Parameter 셋팅
+				pstmt.setString(1, vo.getName());
+				pstmt.setInt(2, vo.getKor());
+				pstmt.setInt(3, vo.getEng());
+				pstmt.setInt(4, vo.getMat());
+				pstmt.setInt(5, vo.getIdx());
+				// 4. 명령수행
+				// 몇 개가 처리됐는지 반환값
+				res = pstmt.executeUpdate();
+
+			} catch (Exception e) {
+				// TODO: handle exception
+				// 에러 메세지 출력
+				e.printStackTrace();
+			} finally {
+				try {
+
+					if (pstmt != null)
+						pstmt.close();
+					if (conn != null)
+						conn.close();
+
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+			return res;
+		}
+		
+	}
+
+	5. Java App 생성
+
+		public static void main(String[] args) throws SQLException {
+		// TODO Auto-generated method stub
+
+			Scanner scanner = new Scanner(System.in);
+			int menu = 0;
+			boolean bRunning = true;
+			
+			while(bRunning) {
+				
+				System.out.println("---------[작업선택]----------");
+				System.out.println("1.조회   2.추가   3.수정  4.삭제");
+				System.out.println("0.종료");
+				System.out.print("선택:");
+				
+				menu = scanner.nextInt();
+				
+				switch(menu) 
+				{
+					case 0: bRunning = false; break;
+					case 1: display(); break;
+					case 2: insert(scanner); break;
+					case 3: update(scanner); break;
+					case 4: delete(scanner); break;
+				}
+				
+			}// end-while
+			
+			System.out.println("--End--");
+
+			
+		}
+
+	
+		static void display() {
+			List<SungVo> list = SungTBDao.getInstance().selectList();
+			//System.out.print("전체 데이터 갯수:\n" + list.size());
+			System.out.println("---------------------------------");
+			System.out.println(" 번호     이름   국어   영어   수학   총점   평균    등수");
+			System.out.println("---------------------------------");
+			
+			for(SungVo vo: list) {
+				System.out.printf("%3d%5s%4d%4d%4d%4d%5s%4d\n",
+						vo.getIdx(), 
+						vo.getName(), 
+						vo.getKor(), 
+						vo.getEng(),
+						vo.getMat(), 
+						vo.getTot(), 
+						vo.getAve(), 
+						vo.getRank());
+			
+			]
+			
+			System.out.println("---------------------------------");
+			
+		}
+
+---------------------------------------------------------------------------
+
+  - DML명령 문법 정리
+
+    - select
+      : select (열) from (테이블)
+
+    - insert
+      : insert into (테이블) values (값)
+
+    - update
+      : update (테이블) set (열) = (값) where (열) = (값)
+
+    - delete
+      : delete from (테이블) where (열) = (값)

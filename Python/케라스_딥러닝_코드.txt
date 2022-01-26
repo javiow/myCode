@@ -1,0 +1,1715 @@
+  - 케라스 딥러닝 코드
+
+	- ANN를 활용한 4가지 방식의 분류 분석
+
+	from keras import models, layers
+
+	# 분산 방식 모델링을 포함하는 함수형 구현
+	def ANN_models_func(Nin, Nh, Nout):
+		x = layers.Input(shape = (Nin, ))
+		h = layers.Activation('relu')(layers.Dense(Nh)(x))
+		y = layers.Activation('softmax')(layers.Dense(Nout)(h))
+		model = models.Model(x, y)
+		model.compile(loss = 'categorical_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
+		return model
+
+	# 연쇄 방식 모델링을 포함하는 함수형 구현
+	def ANN_seq_func(Nin, Nh, Nout):
+		model = models.Sequential()
+		model.add(layers.Dense(Nh, activation = 'relu', input_shape = (Nin, )))
+		model.add(layers.Dense(Nout, activation = 'softmax'))
+		model.compile(loss = 'categorical_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
+		return model
+
+	# 분산 방식 모델링을 포함하는 객체지향형 구현
+	class ANN_models_class(models.Model):
+		def __init__(self, Nin, Nh, Nout):
+			hidden = layers.Dense(Nh)
+			output = layers.Dense(Nout)
+			relu = layers.Activation('relu')
+			softmax = layers.Activation('softmax')
+
+			x = layers.Input(shape = (Nin, ))
+			h = relu(hidden(x))
+			y = softmax(output(h))
+
+			super().__init__(x, y)
+			self.compile(loss = 'categorical_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
+
+	# 연쇄 방식 모델링을 포함하는 객체지향형 구현
+	class ANN_seq_class(models.Sequential):
+		def __init__(self, Nin, Nh, Nout):
+			super().__init__()
+			self.add(layers.Dense(Nh, activation = 'relu', input_shape = (Nin, )))
+			self.add(layers.Dense(Nout, activation = 'softmax'))
+			self.compile(loss = 'categorical_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
+
+	# 분류 ANN에 사용할 예제 데이터 불러오기
+	import numpy as np
+	from keras import datasets
+	from keras.utils import np_utils
+
+	def data_func():
+		(X_train, y_train), (X_test, y_test) = datasets.mnist.load_data()
+
+		Y_train = np_utils.to_categorical(y_train)
+		Y_test = np_utils.to_categorical(y_test)
+
+		L, W, H = X_train.shape
+		X_train = X_train.reshape(-1, W * H)
+		X_test = X_test.reshape(-1, W * H)
+
+		X_train = X_train / 255.0
+		X_test = X_test / 255.0
+
+		return (X_train, y_train), (X_test, y_test)
+
+	# 분류 ANN 학습 및 성능 분석
+	def main():
+		Nin = 784
+		Nh = 100
+		number_of_class = 10
+		Nout = number_of_class
+
+		model = ANN_seq_class(Nin, Nh, Nout)
+		(X_train, y_train), (X_test, y_test) = data_func()
+
+		#################################################
+		# Training
+		#################################################
+
+		history = model.fit(X_train, y_train, epochs = 15, batch_size = 100, validation_split = 0.2)
+		performance_test = model.evaluate(X_test, y_test, batch_size = 100)
+
+		print('Test Loss and Accuracy -> ', performance_test)
+
+		plot_loss(history)
+		plt.show()
+		plot_acc(history)
+		plt.show()
+
+	# Run code
+	if __name__ == '__main__':
+		main()
+
+	- ANN를 활용한 회귀 분석 (분산 방식 모델링을 포함한 객체지향형 구현)
+
+	# 회귀 ANN 모델링
+	from keras import models, layers
+
+	class ANN(models.Model):
+		def __init__(self, Nin, Nh, Nout):
+			hidden = layers.Dense(Nh)
+			output = layers.Dense(Nout)
+			relu = layers.Activation('relu')
+
+			x = layers.Input(shape = (Nin, ))
+			h = relu(hidden(x))
+			y = output(h)
+
+			super().__init__(x, y)
+			self.compile(loss = 'mse', optimizer = 'sgd')
+
+	from keras import datasets
+	from sklearn.preprocessing import MinMaxScaler
+
+	def Data_func():
+		(X_train, X_test), (y_train, y_test) = datasets.boston_housing.load_data()
+		scaler = MinMaxScaler()
+		X_train = scaler.fit_transform(X_train)
+		X_test = scaler.fit_transform(X_test)
+		return (X_train, X_test), (y_train, y_test)
+
+	import matplotlib.pyplot as plt
+
+	# 손실을 그리는 함수
+	def plot_loss(history):
+		plt.plot(history.history['loss'])
+		plt.plot(history.history['val_loss'])
+		plt.title('Model Loss')
+		plt.ylabel('Loss')
+		plt.xlabel('Epoch')
+		plt.legend(['Train', 'Validation'], loc = 0)
+
+	def main():
+		Nin = 13
+		Nh = 5
+		Nout = 1
+
+		model = ANN(Nin, Nh, Nout)
+		(X_train, X_test), (y_train, y_test) = Data_func()
+		
+		history = model.fit(X_train, y_train, epochs = 100, batch_size = 100, validation_split = 0.2, verbose = 2)
+		performance_test = model.evaluate(X_test, y_test, batch_size = 100)
+		print('Test Loss: ', performance_test)
+
+		plot_loss(history)
+		plt.show()
+
+	if __name__ = '__main__':
+		main()
+
+	- DNN를 활용한 분류 분석(연쇄 방식을 포함한 객체지향형 구현)
+
+	# 기본 파라미터 설정
+	Nin = 784
+	Nh_l = [100, 50]
+	number_of_class = 10
+	Nout = number_of_class
+
+	# 분류 DNN 구현
+	from keras import models, layers
+	class DNN(models.Sequential):
+		def __init__(selft, Nin, Nh_l, Nout):
+			self.__init__()
+			self.add(layers.Dense(Nh_l[0], activation = 'relu', name = 'Hidden-1', input_shape = (Nin, )))
+			self.add(layers.Dropout(0.2))
+
+			self.add(layers.Dense(Nh_l[1], activation = 'relu', name = 'Hidden-2'(Nin, )))
+			self.add(layers.Dropout(0.2))
+
+			self.add(layers.Dense(Nout, activation = 'softmax'))
+			self.compile(loss = 'categorical_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
+
+	# 분류 DNN 학습 및 성능 평가
+	model = DNN(Nin, Nh_l, Nout)
+	(X_train, y_train), (X_test, y_test) = Data_func()
+	history = model.fit(X_train, y_train, batch_size = 100, epochs = 10, validation_split = 0.2)
+	performance_test = model.evaluate(X_test, y_test, batch_size = 100)
+	print('Test Loss and Accuracy: ', performance_test)
+
+	plot_loss()
+	plt.show()
+
+	plot_acc()
+	plt.show()
+
+	- DNN를 활용한 컬러 이미지 분류 분석(연쇄 방식을 포함한 객체지향현 구현)
+
+	# 데이터 불러오기
+	import numpy as np
+	from keras import datasets
+	from keras.utils import np_utils
+
+	def Data_func():
+		(X_train, X_test), (y_train, y_test) = datasets.cifar10.load_data()
+		
+		Y_train = np_utils.to_categorical(y_train)
+		Y_test = np_utils.to_categorical(y_test)
+
+		L, W, H, C = X_train.shape
+		X_train = X_train.reshape(-1, W * H * C)
+		X_test = X_test.reshape(-1, W * H * C)
+
+		X_train = X_train / 255.0
+		X_test = X_test / 255.0
+
+		return (X_train, X_test), (Y_train, Y_test)
+
+	# DNN 모델링
+	from keras import models, layers
+
+	class DNN(models.Sequencial):
+		def __init__(self, Nin, Nh_l, Pd_l, Nout):
+			super().__init__()
+
+			self.add(layers.Dense(Nh_l[0], activation = 'relu', input_shape = (Nin, ), name = 'Hidden-1'))
+			self.add(layers.Dropout(Pd_l[0]))
+
+			self.add(layers.Dense(Nh_l[1], activation = 'relu', name = 'Hidden-2'))
+			self.add(layers.Dropout(Pd_l[1]))
+
+			self.add(layers.Dense(Nout, activation = 'softmax'))
+			self.compile(loss = 'categorical_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
+
+	# 학습 및 성능 평가
+	import matplotlib.pyplot as plt
+
+	def main():
+		Nh_l = [100, 50]
+		Pd_l = [0.05, 0.5]
+		number_of_class = 10
+		Nout = number_of_class
+
+		(X_train, X_test), (y_train, y_test) = Data_func()
+		model = DNN(X_train.shape[1], Nh_l, Pd_l, Nout)
+		history = model.fit(X_train, y_train, epochs = 10, batch_size = 100, validation_split = 0.2)
+		
+		performance_test = model.evaluate(X_test, y_test, batch_size = 100)
+		print('Test Loss and Accuracy:', performance_test)
+
+		plot_loss(history)
+		plt.show()
+
+		plot_acc(history)
+		plt.show()
+
+	if __name__ == '__main__':
+		main()
+
+	- CNN를 활용한 분류 분석(연쇄 방식을 포함한 객체지향형 구현)
+
+	# 분류 CNN 모델링
+	import keras
+	from keras import models, layers
+	from keras import backend
+
+	class CNN(models.Sequential):
+		def __init__(self, input_shape, num_classes):
+			super().__init__()
+			
+			self.add(layers.Conv2D(32, kernel_size = (3, 3), activation = 'relu', input_shape = input_shape))
+
+			self.add(layers.Conv2D(64, (3, 3), activation = 'relu'))
+			self.add(MaxPooling2D(pool_size = (2, 2)))
+			self.add(layers.Dropout(0.25))
+
+			self.add(layers.Flatten())
+			
+			self.add(layers.Dense(128, activation = 'relu'))
+			self.add(layers.Dropout(0.5))
+			self.add(layers.Dense(num_classes, activation = 'softmax'))
+
+			self.compile(loss = keras.losses.categorical_crossentropy, optimizer = 'rmsprop', metrics = ['accuracy'])
+
+	# 분류 CNN을 위한 데이터 준비
+	from keras import datasets
+
+	class DATA():
+		def __init__(self):
+			num_classes = 10
+
+			(X_train, y_train), (X_test, y_test) = datasets.mnist.load_data()
+			img_rows, img_cols = X_train,shape[1:]		
+		
+			if backend.image_data_format() == 'channels_first':
+				X_train = X_train.reshape(X_train.shape[0], 1, img_rows, img_cols)
+				X_test = X_test.reshape(X_test.shape[0], 1, img_rows, img_cols)
+				input_shape = (1, img_rows, img_cols)
+
+			else:
+				X_train = X_train.reshape(X_train.shape[0], img_rows, img_cols, 1)
+				X_test = X_test.reshape(X_test.shape[0], img_rows, img_cols, 1)
+				input_shape = (img_rows, img_cols, 1)
+
+			X_train = X_train.astype('float32')
+			X_test = X_test.astype('float32')
+			X_train /= 255
+			X_test /= 255
+
+			y_train = keras.utils.to_categorical(y_train, num_classes)
+			y_test = keras.utils.to_categorical(y_test, num_classes)
+
+			self.input_shape = input_shape
+			self.num_classes = num_classes
+			self.X_train, self.y_train = X_train, y_train
+			self.X_test, self.y_test = X_test, y_test
+
+	# 분류 CNN 학습 및 평가
+	def main():
+		batch_size = 128
+		epochs = 10
+
+		data = DATA()
+		model = CNN(data.input_shape, data.num_classes)
+
+		history = model.fit(data.X_train, data.y_train, batch_size = batch_size, epochs = epochs, validation_split = 0.2)
+		score = model.evaluate(data.X_test, data.y_test)
+		
+		print()
+		print('Test Loss: ', score[0])
+		print('Test Accuracy: ', score[1])
+
+		plot_loss(history)
+		plt.show()
+
+		plot_acc(history)
+		plt.show()
+
+	if __name__ == '__main__':
+		main()
+
+	- 문장을 판별하는 RNN-LSTM 구현(분산 방식을 포함하는 객체지향형 구현)
+
+	# 영화 리뷰를 분석해 평점 정보 예측 (긍정 or 부정)
+	from __future__ import print_function
+	from keras.preprocessing import sequence
+	from keras.datasets import imdb
+	from keras import models, layers
+
+	class Data:
+		def __init__(self, max_features = 20000, maxlen = 80):
+			(x_train, y_train), (x_test, y_test) = imdb.load_data(num_words = max_features)
+			x_train = sequence.pad_sequences(x_train, maxlen = maxlen)
+			x_test = sequence.pad_sequences(x_test, maxlen = maxlen)
+			self.x_train, self.y_train = x_train, y_train
+			self.x_test, self.y_test = x_test, y_test
+		
+	class RNN_LSTM(models.Model):
+		def __init__(self, max_features, maxlen):
+			x = layers.Input((maxlen, ))
+			h = layers.Embedding(max_features, 128)(x)
+
+			h = layers.LSTM(128, dropout = 0.2, recurrent_dropout = 0.2)(h)
+			
+			y = layers.Dense(1, activation = 'sigmoid')(h)
+			super().__init__(x, y)
+
+			self.compile(loss = 'binary_crossentropy', optimizer = 'adam', metrics = ['accuracy'])
+
+	class Machine:
+		def __init__(self, max_features = 20000, maxlen = 80):
+			self.data = Data(max_features = max_features, maxlen = maxlen)
+			self.model = RNN_LSTM(max_features, maxlen)
+
+		def run(self, epochs = 3, batch_size = 32):
+			data = self.data
+			model = self.model
+			
+			print('Training Stage')
+			print('=======================')
+			
+			model.fit(data.x_train, data.y_train, epochs = epochs, batch_size = batch_size, validation_data = (data.x_test, data.y_test))
+			score, acc = model.evaluate(data.x_test, data.y_test, batch_size = batch_size)
+
+			print('Test performance: accuracy = {0}, loss = {1}'.format(acc, score))
+
+	def main():
+		m = Machine()
+		m.run()
+
+	if __name__ == '__main__':
+		main()
+
+	- 시계열 데이터를 예측하는 LSTM 구현(회귀)
+
+	# 패키지 임포트
+	import seaborn as sns
+	import pandas as pd
+	import numpy as np
+	import matplotlib.pyploy as plt
+	from sklearn import model_selection
+	from keras import models, layers
+	from keraspp import skeras
+
+	# 코드 실행 및 결과 보기
+	def main():
+		machine = Machine()
+		machine.run(epochs = 400)
+
+	# 학습하고 평가하기
+	class Machine():
+		def __init__(self):
+			self.data = Dataset()
+			shape = self.data.X.shape[1:]
+			self.model = rnn_model(shape)
+
+		def run(self, epochs = 400):
+			d = self.data
+			X_train, X_test = d.X_train, d.X_test
+			y_train, y_test = d.y_train, d.y_test
+			X, y = d.X, d.y
+			m = self.model
+			h = m.fit(X_train, y_train, epochs = epochs, validation_data = [X_test, y_test], verbose = 0)
+
+			skeras.plot_loss(h)
+			plt.title('History of training')
+			plt.show()
+
+			yp = m.predict(X_test)
+			print('Loss:', m.evaluate(X_test, y_test))
+			plt.plot(yp, label = 'Prediction')
+			plt.plot(y_test, label = 'Original')
+			plt.legend(loc = 0)
+			plt.title('Validation Results')
+			plt.show()
+
+			yp = m.predict(X_test).reshape(-1)
+			print('Loss:', m.evaluate(X_test, y_test))
+			print(yp.shape, y_test.shape)
+
+			df = pd.DataFrame()
+			df['Sample'] = list(range(len(y_test))) * 2
+			df['Normalized Passengers'] = np.concatenate([y_test, yp], axis = 0)
+			df['Type'] = ['Original'] * len(y_test) + ['Prediction'] * len(yp)
+			
+			plt.figure(figsize = (7, 5))
+			sns.barplot(x = "Sample", y = "Normalized Passengers", hue = "Type", data = df)
+			plt.ylabel('Normalized Passengers')
+			plt.show()
+
+			yp = m.evaluate(X)
+			
+			plt.plot(yp, label = 'Original')
+			plt.plot(y, label = 'Prediction')
+			plt.legend(loc = 0)
+			plt.title('All Results')
+			plt.show()
+
+		def rnn_model(shape):
+			m_x = layers.Input(shape = shape)
+			m_h = layers.LSTM(10)(m_x)
+			m_y = layers.Dense(1)(m_h)
+			m = models.Model(m_x, m_y)
+
+			m.compile('adam', 'mean_squared_error')
+			m.summary()
+			return m
+
+	# 데이터 불러오기
+	class Dataset:
+		def __init__(self, fname = 'international-airline-passengers.csv', D = 12)
+			data_dn = load_data(fname = fname)
+			X, y = get_Xy(datadn, D = D)
+			X_train, X_test, y_train, y_test = model_selection.train_test_split(X, y, test_size = 0.2, random_state = 0)
+
+	def load_data(fname = 'international-airline-passengers.csv'):
+		dataset = pd.read_csv(fname, usecols = [1], engine = 'python', skipfooter = 3)
+		data = dataset.values.reshape(-1)
+		plt.plot(data)
+		plt.xlabel('Time'); plt.yabel('Passengers')
+		plt.title('Original Data')
+		plt.show()
+
+		data_dn = (data - np.mean(data)) / np.std(data) / 5
+		plt.plot(data_dn)
+		plt.xlabel('Time'); plt.ylabel('Normalized Passengers')
+		plt.title('Normalized data by $E[]$ and $5\sigma$')
+		plt.show()
+
+		return data_dn
+
+	def get_Xy(data, D = 12):
+		X_l = []
+		y_l = []
+		N = len(data)
+		assert N > D, "N should be larger than D, where N is len(data)"
+		for ii in range(N-D-1):
+			X_l.append(data[ii:ii+D])
+			y_l.append(data[ii+D])
+		X = np.array(X_l)
+		X = X.reshape(X.shape[0], X.shape[1], 1)
+		y = np.array(y_l)
+		print(X.shape, y.shape)
+		return X, y
+
+	if __name__ == '__main__':
+		main()
+
+	- 완전 연결 계층을 통한 AE 구현
+	# 완전 연결 계층 AE 모델링
+	from keras import models, layers
+
+	class AE(models.Model):
+		def __init__(self, x_nodes = 784, z_dim = 36):
+			x_shape = (x_nodes, )
+			x = layers.Input(shape = x_shape)
+			z = layers.Dense(z_dim, activation = 'relu')(x)
+			y = layers.Dense(x_nodes, activation = 'sigmoid')(z)
+
+			super().__init__(x, y)
+
+			self.x = x
+			self.z = z
+			self.y = y
+
+			self.compile(optimizer = 'adadelta', loss = 'binary_crossentropy', metircs = ['accuracy'])
+
+		# 부호화 함수
+		def Encoder(self):
+			return models.Model(self.x, self.z)
+
+		# 복호화 함수
+		def Decoder(self):
+			z_shape = (self.z_dim, )
+			z = layers.Input(shape = z_shape)
+			y_layer = self.layers[-1]
+			y = y_layer(z)
+			return models.Model(z, y)
+
+	# 데이터 준비
+	from keras.datasets import mnist
+	import numpy as np
+	(X_train, _), (X_test, _) = mnist.load_data()
+
+	X_train = X_train.astype('float32') / 255.0
+	X_test = X_test.astype('float32') / 255.0
+	# 3차원 -> 2차원 변환
+	X_train = X_train.reshape((len(X_train), np.prod(X_train).shape[1:]))
+	X_test = X_test.reshape((len(X_test), np.prod(X_test).shape[1:]))
+	print(X_train.shape)
+	print(X_test.shape)
+
+	# 학습 효과 분석
+	from keraspp.skeras import plot_loss, plot_acc
+	import matplotlib.pyplot as plt
+
+	# 완전 연결 계층 AE 동작 확인
+	def show_ae(autoencoder):
+		encoder = autoencoder.Encoder()
+		decoder = autoencoder.Decoder()
+
+		encoded_imgs = encoder.predict(X_test) 
+		decoded_imgs = decoder.predict(encoded_imgs) 
+
+		n = 10
+		plt.figure(figsize = (20, 6))
+		for i in range(n):
+			
+			ax = plt.subplot(3, n, i + 1)
+			plt.imshow(X_test[i].reshape(28, 28))
+			plt.gray()
+			ax.get_xaxis.set_visible(False)
+			ax.get_yaxis.set_visible(False)
+
+			ax = plt.subplot(3, n, i + 1 + n)
+			plt.stem(encoded_imgs[i].reshape(-1))
+			plt.gray()
+			ax.get_xaxis.set_visible(False)
+			ax.get_yaxis.set_visible(False)
+
+			ax = plt.subplot(3, n, i + 1 + n + n)
+			plt.imshow(decoded_imgs[i].reshape(28, 28))
+			plt.gray()
+			ax.get_xaxis.set_visible(False)
+			ax.get_yaxis.set_visible(False)
+		
+		plt.show()
+
+	def main():
+		x_nodes = 784
+		z_dim = 36
+
+		autoencoder = AE(x_nodes, z_dim)
+
+		history = autoencoder.fit(X_train, X_train, epochs = 10, batch_size = 256, shuffle = True, validation_data = (X_test, X_test))
+
+		plot_acc(history)
+		plt.show()
+		plot_loss(history)
+		plt.show()
+
+		show_ae(autoencoder)
+		plt.show()
+
+	if __name__ == '__main__':
+		main()
+
+	- 합성곱 계층을 통한 AE 구현
+
+	from keras import layers, models
+
+	def Conv2D(filters, kernel_size, padding = 'same', activation = 'relu'):
+		return layers.Conv2D(filters, kernel_size, padding = padding, activation = activation)
+
+	class AE(models.Model):
+		def __init__(self, org_shape = (1, 28, 28))
+			# Input
+			original = layers.Input(shape = org_shape)
+
+			# Encoding-1
+			x = Conv2D(4, (3, 3))(original)
+			x = layers.MaxPooling((2, 2), padding = 'same')(x)
+
+			# Encoding-2
+			x = Conv2D(8, (3, 3))(x)
+			x = layers.MaxPooling((2, 2), padding = 'same')(x)
+
+			# Encoding-3
+			z = Conv2D(1, (7, 7))(x)
+
+			# Decoding-1
+			y = Conv2D(16, (3, 3))(z)
+			y = layers.UpSampling2D((2, 2))(y)
+
+			# Decoding-2
+			y = Conv2D(8, (3, 3))(y)
+			y = layers.UpSampling2D((2, 2))(y)
+
+			# Decoding-3
+			y = Conv2D(4, (3, 3))(y)
+			
+			# Decoding & Output
+			decoded = Conv2D(1, (3, 3), activation = 'sigmoid')(y)
+
+			super().__init__(original, decoded)
+			self.compile(optimizer = 'adadelta', loss = 'binary_crossentropy', merics = ['accuracy'])
+
+	# 데이터 준비 및 학습 효과 분석
+	from ex4_1_cnn_mnist_cl import DATA
+	from keraspp.skeras import plot_acc, plot_loss
+	import matplotlib.pyplot as plt
+
+	# 합성곱 AE 결과 시각화
+	from keras import backend
+
+	def show_ae(autoencoder):
+		x_test = data.x_test
+		decoded_imgs = autoencoder.predict(x_test)
+		print(decoded_imgs.shape, x_test.shape)
+
+		if backend.image_data_format() == 'channels_first':
+			N, n_ch, n_i, n_j = x_test.shape
+		else:
+			N, n_i, n_j, n_ch = x_test.shape
+
+		n = 10
+		plt.figure(figsize = (20, 4))
+		for i in range(n):
+			ax = plt.subplot(2, n, i + 1)
+			plt.imshow(x_test[i])
+			ax.get_xaxis.set_visible(False)
+			ax.get_yaxis.set_visible(False)
+
+			ax = plt.subplot(2, n, i + 1 + n)
+			plt.imshow(decoded_imgs[i])
+			ax.get_xaxis.set_visible(False)
+			ax.get_yaxis.set_visible(False)
+
+		plt.show()
+
+	# 합성곱 AE 학습 및 성능 평가
+	def main(epochs = 20, batch_size = 128):
+		data = DATA()
+		autoencoder = AE(data.input_shape)
+
+		history = autoencoder.fit(data.x_train, data.x_train, epochs = epochs, batch_size = batch_size, shuffle = True, validation_split = 0.2)
+
+		plot_loss()
+		plt.show()
+
+		plot_acc()
+		plt.show()
+
+	if __name__ == '__main__':
+		main()
+
+	- 완전 연결 계층 GAN을 통한 확률분포 생성
+
+	# 패키지 임포트
+	import numpy as np
+	import matplotlib.pyploy as plt
+
+	from keras import models
+	from keras.layer import Dense, Conv1D, Reshape, Flatten, Lambda
+	from keras.optimizers import Adam
+	from keras import backend as K
+
+	# 코드 수행과 결과 보기
+	def main():
+		machine = Machine(n_batch = 1, ni_D = 10)
+		machine.run(n_repeat = 200, n_show = 200, n_test = 100)
+
+	# 데이터 관리 클래스
+	class Data:
+		def __init__(self, mu, sigma, ni_D):
+			self.real_sample = lambda n_batch: np.random.normal(mu, sigma, (n_batch, ni_D))
+			self.in_sample = lambda n_batch: np.random.rand(n_batch, ni_D)
+
+	# 머신 구현하기
+	class Machine:
+		def __init__(self, n_batch = 10, ni_D = 100):
+			data_mean = 4
+			data_stddev = 1.25
+			
+			self.n_iter_D = 1
+			self.n_iter_G = 5
+
+			self.data = Data(data_mean, data_stddev, ni_D)
+			self.gan = GAN(ni_D, nh_D = 50, nh_G = 50)
+
+			self.n_batch = n_batch
+			# self.ni_D = ni_D
+
+		def train_D(self):
+			gan = self.gan
+			n_batch = self.n_batch
+			data = self.data
+
+			# Real data
+			Real = data.real_sample(n_batch)
+			# Generated data
+			Z = data.in_sample(n_batch)
+			# 허구이미지 생성
+			Gen = gan.G.predict(Z)
+
+			# 판별망 학습
+			gan.D.trainable = True
+			gan.D_train_on_batch(Real, Gen)
+
+		def train_GD(self):
+			gan = self.gan
+			n_batch = self.n_batch
+			data = self.data
+		
+			# 무작위 잡음 벡터 생성
+			Z = data.in_sample(n_batch)
+			# 판별망 가중치 고정
+			gan.D.trainable = False
+			# 학습용 생성망 학습
+			gan.GD_train_on_batch(Z)
+
+		# 정의된 각 신경망의 에포크 당 모델 학습
+		def train_each(self):
+			for it in range(self.n_iter_D):
+				self.train_D()
+			for it in range(self.n_iter_G):
+				self.train_GD()
+
+		# 에포크 당 모델 학습
+		def train(self, epochs):
+			for epoch in range(epochs):
+				self.train_each()
+
+		def test(self, n_test):
+			gan = self.gan
+			data = self.data
+			Z = data.in_sample(n_test)
+			Gen = gan.G.repdict(Z)
+			return Gen, Z
+
+		# 실제, 생성, 무작위 이미지 출력
+		def show_hist(self, Real, Gen, Z):
+			plt.hist(Real.reshape(-1), histtype = 'step', label = 'Real')
+			plt.hist(Gen.reshape(-1), histtype = 'step', label = 'Generated')
+			plt.hist(Z.reshape(-1), histtype = 'step', label = 'Input')
+			plt.legend(loc = 0)
+
+		def test_and_show(self, n_test):
+			data = self.data
+			Gen, Z = self.test(n_test)
+			Real = data.real_sample(n_test)
+			self.show_hist(Real, Gen, z)
+			Machine.print_stat(Real, Gen)
+
+		def run_epochs(self, epochs, n_test):
+			self.train(epochs)
+			self.test_and_show(n_test)
+
+		def run(self, n_repeat = 200, n_show = 200, n_test = 100):
+			for ii in range(n_repeat):
+				print('Stage', ii, '(Epoch: {})'.format(ii * n_show))
+				self.run_epochs(n_show, n_test)
+				plt.show()
+
+		@staticmethod
+		def print_stat(Real, Gen):
+			def stat(d):
+				return (np.mean(d), np.std(d))
+			print('Mean and Std of Real:', stat(Real))
+			print('Mean and Std of Gen:', stat(Gen))
+
+	# GAN 모델링
+	# 람다 계층 처리 함수
+	def add_decorate(x):
+		m = K.mean(x, axis = -1, keepdims = True)
+		d = K.square(x - m)
+		return K.concatenate([m, d], axis = -1)
+
+	# 람다 계층 출력 벡터 모양 정의 함수
+	def add_decorate_shape(input_shape):
+		shape = list(input_shape)
+		assert len(shape) == 2
+		shape[1] *= 2
+		return tuple(shape)
+
+	lr = 2e-4 # 0.0002
+	adam = Adam(lr = lr, beta_1 = 0.9, beta_2 = 0.999)
+
+	def model_compile(model):
+		return model.compile(loss = 'binary_crossentropy', optimizer = adam, metrics = ['accuracy'])
+
+	class GAN:
+		def __init__(self, ni_D, nh_D, nh_G):
+			self.ni_D = ni_D
+			self.nh_D = nh_D
+			self.nh_G = nh_G
+
+			self.D = self.gen_D()
+			self.G = self.gen_G()
+			self.GD = self.make_GD()
+
+		# 판별망
+		def gen_D(self):
+			ni_D = self.ni_D
+			nh_D = self.nh_D
+
+			D = models.Sequential()
+			D.add(Lambda(add_decorate, output_shape = add_decorate_shape, input_shape = (ni_D, )))
+
+			D.add(Dense(nh_D, activation = 'relu'))
+			D.add(Dense(nh_D, activation = 'relu'))
+			D.add(Dense(1, activation = 'sigmoid'))
+	  
+			model_compile(D)
+			return D
+		
+		# 생성망
+		def gen_G(self):
+			ni_D = self.ni_D
+			nh_D = self.nh_D
+
+			G = models.Sequential()
+			G.add(Reshape((ni_D, 1), input_shape = (ni_D, )))
+			G.add(Conv1D(nh_G, 1, activation = 'relu'))
+			G.add(Conv1D(nh_G, 1, activation = 'sigmoid'))
+			G.add(Conv1D(1, 1))
+			G.add(Flatten())
+
+			model_compile(G)
+			return G
+
+		# 학습용 생성망
+		def make_GD(self):
+			G, D = self.G, self.D
+			GD = models.Sequential()
+			GD.add(G)
+			GD.add(D)
+			D.trainable = False
+			model_cimpile(GD)
+			D.trainable = True
+			return GD
+
+		# 판별망 학습
+		def D_train_on_batch(self, Real, Gen):
+			D = self.D
+			X = np.concatenate([Real, Gen], axis = 0)
+			y = np.array([1] * Real.shape[0] + [0] * Gen.shape[0])
+			D.train_on_batch(X, y)
+		
+		# 학습용 생성망 학습
+		def GD_train_on_batch(self, Z):
+			GD = self.GD
+			y = np.array([1] * Z.shape[0])
+			GD.train_on_batch(Z, y)
+
+	if __name__ == '__main__':
+		main()
+
+	- 합성곱 계층 GAN을 통한 필기체 생성
+
+	from keras.datasets import mnist
+	import numpy as np
+	from PIL import Image
+	import math
+	import os
+
+	import keras.backend as K
+	import tensorflow as tf
+
+	K.set_image_data_format('channels_first')
+	print(K.image_data_format)
+
+	def mse_4d(y_true, y_pred):
+		return K.mean(K.square(y_pred - y_true), axis = (1, 2, 3))
+	def mse_4d_tf(y_true, y_pred):
+		return tf.reduce_mean(tf.square(y_pred - y_true), axis = (1, 2, 3))
+
+	# 합성곱 계층 GAN 수행
+	import argparse
+
+	def main():
+		# 명령행에서 아규먼트를 입력받음
+		parser = argparse.ArgumentParser()
+
+		parser.add_argument('--batch_size', type = int, default = 16, help = 'Batch size for the network')
+		parser.add_argument('--epochs', type = int, default = 1000, help = 'Epochs for the network')
+		parser.add_argument('--output_fold', type = str, default = 'GAN_OUT', help = 'Output fold to save the results')
+		parser.add_argument('--input_dim', type = int, default = 10, help = 'Input dimension for the generator')
+		parser.add_argument('--n_train', type = int, default = 32, help = 'The number of training data')
+
+		args = parser.parse_args()
+		train(args)
+
+	# 합성곱 계층 GAN 모델링
+	from keras import models, layers, optimizers
+
+	class GAN(models.Sequential):
+		def __init__(self, input_dim = 64):
+			super().__init__()
+			self.input_dim = input_dim
+			
+			self.generator = self.GENERNATOR()
+			self.discriminator = self.DISCRIMINAOTR()
+			self.add(self.generator)
+			self.discriminator.trainable = False
+			self.add(self.discriminator)
+
+			self.compile_all()
+
+		def compile_all(self):
+			d_optim = oprimizers.SGD(lr = 0.0005, momentum = 0.9, nesterov = True)
+			g_optim = oprimizers.SGD(lr = 0.0005, momentum = 0.9, nesterov = True)
+
+			self.generator.compile(loss = mse_4d_tf, optimizer = "SGD")
+			self.compile(loss = 'binary_crossentropy', optimizer = g_optim)
+			self.discriminator.compile(loss = 'binary_crossentropy', optimizer = d_optim)
+
+		# 생성망 정의
+		def GENERATOR(self):
+			input_dim = self.intput_dim
+			
+			model = models.Sequential()
+			model.add(layers.Dense(1024, activation = 'tanh', input_shape = input_dim))
+			model.add(layers.Dense(128 * 7 * 7, activation = 'tanh'))
+			model.add(layers.BatchNormalizatin())
+			model.add(layers.Reshape((128, 7, 7), input_shape = (128 * 7 * 7)))
+			model.add(layers.UpSampling2D(size = (2, 2)))
+			model.add(layers.Conv2D(64, (5, 5), activation = 'tanh', padding = 'same'))
+			model.add(layers.UpSampling2D(size = (2, 2)))
+			model.add(layers.Conv2D(1, (5, 5), activation = 'tanh', padding = 'same'))
+
+			return model
+
+		# 판별망 정의
+		def DISCRIMINATOR(self):
+			model = models.Sequential()
+
+			model.add(layers.Conv2D(64, (5, 5), padding = 'same', activation = 'tanh', input_shape = (1, 28, 28)))
+			model.add(layers.MaxPooling2D(pool_size = (2, 2)))
+			model.add(layers.Conv2d(128, (5, 5), activation = 'tanh'))
+			model.add(layers.Flatten())
+			model.add(layers.Dense(1024, activation = 'tanh'))
+			model.add(layers.Dense(1, activation = 'sigmoid'))
+
+			return model
+
+		# 무작위 잡음 벡터 생성(균등분포)
+		def get_z(self, ln):
+			input_dim = self.input_dim
+			return np.random.uniform(-1, 1, (ln, input_dim))
+
+		def train_both(self, x):
+			ln = x.shape[0]
+			# 생성망 학습
+			z = self.get_z(ln)
+			w = self.generator.predict(z, verbose = 0)
+			xw = np.concatenate((x, w))
+			y2 = [1] * ln + [0] * ln
+
+			d_loss = self.discriminator.train_on_batch(xw, y2)
+
+			# 판별망 학습
+			z = self.get_z(ln)
+			self.discriminator.trainable = False
+			g_loss = self.train_on_batch(z, [1] * ln)
+			self.discriminator.trainable = True
+
+			return d_loss, g_loss
+
+	# 합성곱 계층 GAN 학습 수행
+	def combine_images(generated_images):
+		num = generated_images.shape[0]
+		width = int(math.sqrt(num))
+		height = int(math.ceil(float(num) / width))
+		shape = generated_images.shape[2:]
+		image = np.zeros((height * shape[0], width * shape[1]), dtype = generated_images.dtype)
+		for index , img in enumerate(generated_images):
+			i = int(index / width)
+			j = index % width
+			image[i * shape[0]:(i + 1) * shape[0], j * shape[1]:(j + 1) * shape[1]] = img[0, :, :]
+		return image
+
+	# 입력받은 벡터에서 배치 사이즈만큼 추출
+	def get_x(X_train, index, BATCH_SIZE):
+		return X_train[index * BATCH_SIZE : (index + 1) * BATCH_SIZE]
+
+	# 이미지 저장
+	def save_images(generated_images, output_fold, epoch, index):
+		image = combine_images(generated_images)
+		image = image * 127.5 + 127.5
+		Image.fromarray(image.astype(np.int8)).save(output_fold + '/' + str(epoch) + "_" + str(index) + ".png")
+		
+	def load_data(n_train):
+		(X_train, y_train), (_, _) = mnist.load_data()
+		return X_train[:n_train]
+
+	def train(args):
+		BATCH_SIZE = args.batch_size
+		epochs = args.epochs
+		output_fold = args.output_fold
+		input_dim = args.input_dim
+		n_train = args.n_train
+
+		os.makedirs(output_fold, exist_ok = True)
+		print('Output_fold is ', output_fold)
+
+		X_train = load_data(n_train)
+		X_train = (X_train.astype(np.float32) - 127.5) / 127.5
+		X_train = X_train.reshape((X_train.shape[0], 1) + X_train.shape[1:])
+
+		gan = GAN(input_dim)
+
+		d_loss_ll = []
+		g_loss_ll = []
+
+		# 에포크 당 학습
+		for epoch in range(epochs):
+			print("Epoch is", epoch)
+			print("Number of batches", int(X_train.shape[0] / BATCH_SIZE))
+
+			d_loss_l = []
+			g_loss_l = []
+
+			# 배치당 학습
+			for index in range(int(X_train.shape[0] / BATCH_SIZE)):
+				x = get_x(X_train, index, BATCH_SIZE)
+				d_loss , g_loss = gan.train_both(x)
+				
+				d_loss_l.append(d_loss)
+				g_loss_l.append(g_loss)
+
+			# 10회 에포크 마다 생성망이 생성한 이미지 저장, 마지막 에포크도 저장
+			if epoch % 10 == 0 or epoch == epochs - 1:
+				z = gan.get_z(x.shape[0])
+				w = gan.generator.predict(z, verbose = 0)
+				save_images(w, output_fold, epoch, 0)
+			
+			d_loss_ll.append(d_loss_l)
+			g_loss_ll.append(g_loss_l)
+
+		# 가중치 저장
+		gan.generator.save_weights(output_fold + '/' + 'generator', True)
+		gan.discriminator.save_weights(output_fold + '/' + 'discriminator', True)
+
+		# 손실값 저장
+		np.savetxt(output_fold + '/' + 'd_loss', d_loss_ll)
+		np.savetxt(output_fold + '/' + 'g_loss', g_loss_ll)
+
+	if __name__ == '__main__':
+		main()
+
+	- UNET을 통한 컬리 이미지 복원
+
+	# 서브패키지들과 클래스들 불러오기
+	from keras import models, backend
+	from keras.layers import Input, Conv2D, MaxPooling2D, Dropout, Activation
+	from keras.layers import UpSampling2D, BatchNormalization, Concatenate
+
+	# UNET 모델링
+	class UNET(models.Model):
+		def __init__(self, org_shape, n_ch):
+			ic = 3 if backend.image_data_format() == 'channels_first' else 1
+
+			# 합성곱 계층 블록
+			def conv(x, n_f, mp_flag = True):
+				x = MaxPooling2D((2, 2), padding = 'same')(x) if mp_flag else x
+				x = Conv2D(n_f, (3, 3), padding = 'same')(x)
+				x = BatchNormalization()(x)
+				x = Activation('tanh')(x)
+				x = Dropout(0.05)(x)
+				x = Conv2D(n_f, (3, 3), padding = 'same')(x)
+				x = BatchNormalization()(x)
+				x = Activation('tanh')(x)
+				return x
+
+			# 역합성곱 계층 블록
+			def deconv_unet(x, e, n_f):
+				x = UpSampling2D((2, 2))(x)
+				# 합성곱 계층 처리 결과와 결합
+				x = Concatenate(axis = ic)([x, e])
+				x = Conv2D(n_f, (3, 3), padding = 'same')(x)
+				x = BatchNormalization()(x)
+				x = Activation('tanh')(x)
+				x = Conv2D(n_f, (3, 3), padding = 'same')(x)
+				x = BatchNormalization()(x)
+				x = Activation('tanh')(x)
+				return x
+
+			# Input
+			original = Input(shape = org_shape)
+
+			# Encoding
+			c1 = conv(original, 16, mp_flag = True)
+			c2 = conv(c1, 32)
+			
+			# Encoder
+			encoded = conv(c2, 64)
+			
+			# Decoding
+			x = deconv_unet(encoded, c2, 32)
+			x = deconv_unet(x, c1, 16)
+			decoded = Conv2D(n_ch, (3, 3), activation = 'sigmoid', padding = 'same')(x)
+
+			super().__init__(original, decoded)
+			self.compile(optimizer = 'adadelta', loss = 'mse')
+
+	# 데이터 준비
+	from keras import datasets, utils
+
+	class DATA():
+		def __init__(self, in_ch = None):
+			(x_train, y_train), (x_test, y_test) = datasets.cifar10.load_data()
+
+			# 흑백 or 컬러 이미지 정보 추출
+			if x_train.ndim == 4:
+				if backend.image_data_format() == 'channels_first':
+					n_ch, img_rows, img_cols = x_train.shape[1:]
+				else:
+					img_rows, img_cols, n_ch = x_train.shape[1:]
+			else:
+				img_rows, img_cols = x_train.shape[1:]
+				n_ch = 1
+
+			# 초기화 함수의 입력 아규먼트 중 in_ch이 정의됐다면 입력된 컬러 이미지들을 흑백으로 바꾸는 단계
+			in_ch = n_ch if in_ch is None else in_ch
+
+			x_train = x_train.reshape('float32')
+			x_test = x_test.reshape('float32')
+			x_train /= 255
+			x_test /= 255
+
+		# 컬러 -> 흑백 변환
+		def RGB2Gray(X, fmt):
+			if fmt == 'channels_first':
+				R = X[:, 0:1]
+				G = X[:, 1:2]
+				B = X[:, 2:3]
+			else:
+				R = X[..., 0:1]
+				G = X[..., 1:2]
+				B = X[..., 2:3]
+			return 0.299 * R + 0.587 * G + 0.114 * B
+
+		def RGB2RG(x_train_out, x_test_out, fmt):
+			if fmt == 'channels_first':
+				x_train_in = x_train_out[:, :2]
+				x_test_in = x_test_out[:, :2]
+			else:
+				x_train_in = x_train_out[..., :2]
+				x_test_in = x_test_out[..., :2]
+			return x_train_in, x_test_in
+
+		# 흑백 이미지 3차원 -> 4차원 변환
+		if backend.image_data_format() == 'channels_first':
+			x_train_out = x_train.reshape(x_train.shape[0], n_ch, img_rows, img_cols)
+			x_test_out = x_test.reshape(x_test.shape[0], n_ch, img_rows, img_cols)
+			input_shape = (in_ch, img_rows, img_cols)
+		else:
+			x_train_out = x_train.reshape(x_train.shape[0], img_rows, img_cols, n_ch)
+			x_test_out = x_test.reshape(x_test.shape[0], img_rows, img_cols, n_ch)
+			input_shape = (img_rows, img_cols, in_ch)
+
+		if in_ch == 1 and n_ch == 3:
+			x_train_in = RGB2Gray(x_train_out, backend.image_data_format())
+			x_test_in = RGB2Gray(x_test_out, backend.image_data_format())
+		elif in_ch == 2 and n_ch == 3:
+			x_train_in, x_test_in = RGB2Gray(x_train_out, x_test_out, backend.image_data_format())
+		else:
+			x_train_in = x_train_out
+			x_test_in = x_test_out
+			
+		self.input_shape = input_shape
+		self.x_train_in, self.x_train_out = x_train_in, x_train_out
+		self.x_test_in, self.x_test_out = x_test_in, x_test_out
+		self.n_ch = n_ch
+		self.in_ch = in_ch
+
+	# UNET 처리 그래프 그리기
+	from keraspp.skeras import plot_loss
+	import matplotlib.pyplot as plt
+	import numpy as np
+
+	def show_images(data, unet):
+		x_test_in = data.x_test_in
+		x_test_out = data.x_test_out
+		decoded_imgs = unet.predict(x_test_in)
+
+		# 채널 차원의 위치가 마지막이 아니라면 파이썬 이미지 처리에서 가정하는 위치인 마지막으로 변경
+		if backend.image_data_format() == 'channels_first':
+			print(x_test_out.shape)
+			x_test_out = x_test_out.swapaxes(1, 3).swapaxes(1, 2)
+			print(x_test_out.shape)
+			decoded_imgs = decoded_imgs.swapaxes(1, 3).swapaxes(1, 2)
+			if data.in_ch == 1:
+				x_test_in = x_test_in[:, 0, ...]
+			elif data.in_ch == 2:
+				print(x_test_out.shape)
+				x_test_in_tmp = np.zeros_like(x_test_out)
+				x_test_in = x_test_in.swapaxes(1, 3).swapaxes(1, 2)
+				x_test_in_tmp[..., :2] = x_test_in
+				x_test_in = x_test_in_tmp
+			else:
+				x_test_in = x_test_in.swapaxes(1, 3).swapaxes(1, 2)
+		else:
+			if data.in_ch == 1:
+				x_test_in = x_test_in[..., 0]
+			elif data.in_ch == 2:
+				x_test_in_tmp = np.zeros_like(x_test_out)
+				x_test_in_tmp[..., :2] = x_test_in
+				x_test_in = x_test_in_tmp
+
+		n = 10
+		plt.figure(figsize = (20, 6))
+		for i in range(n):
+			
+			# 입력 이미지 출력
+			ax = plt.subplot(3, n, i + 1)
+			plt.imshow(x_test_in[i])
+			ax.get_xaxis().set_visible(False)
+			ax.get_yaxis().set_visible(False)
+
+			# 복원 이미지 출력
+			ax = plt.subplot(3, n, i + 1 + n)
+			plt.imshow(decoded_imgs[i])
+			ax.get_xaxis().set_visible(False)
+			ax.get_yaxis().set_visible(False)
+
+			# 목표 이미지 출력
+			ax = plt.subplot(3, n, i + 1 + n * 2)
+			plt.imshow(x_test_out[i])
+			ax.get_xaxis().set_visible(False)
+			ax.get_yaxis().set_visible(False)
+
+		plt.show()
+
+	# UNET 학습 및 결과 확인
+	def main(in_ch = 1, epochs = 10, batch_size = 128, fig = True)
+		data = DATA(in_ch = in_ch)
+		unet = UNET(data.input_shape, data.n_ch)
+		
+		history.fit(data.x_train_in, data.x_train_out, epochs = epochs, batch_size = batch_size, shuffle = True, validataion_split = 0.2)
+		if fig:
+			plot_loss(history)
+			show_images(data, unet)
+
+	# 명령행 아규먼트 처리
+	if __name__ == '__main__':
+		import argparse
+		from distutils import util
+
+		parser = argparse.ArgumentParser(description = 'UNET: Gray to RGB')
+		parser.add_argument('--input_channels', type = int, default = 2, help = 'input channels (default: 1)')
+		parser.add_argument('--epochs', type = int, default = 10, help = 'training epochs (default: 10)')
+		parser.add_argument('--batch_size', type = int, default = 128, help = 'batch size (default: 128)')
+		parser.add_argument('--fig', type = lambda x : bool(util.strtobool(x)), default = True, help = 'fig (default: True)')
+		args = parser.parse_args()
+
+		print("Args:", args)
+		main(args.input_channels, args.epochs, args.batch_size, args.fig)
+
+	- 이미지 데이터 수 늘리기
+
+	### 이미지 데이터 수 늘리기 실행 코드
+	# 라이브러리 임포트
+	from sklearn import model_selection
+	from keras import datasets
+	import keras
+	assert keras.backend.image_data_format() == 'channels_last'
+	from keraspp import aigen
+
+	# 머신 클래스 상속 후 생성
+	class Machine(aigen.Machine_Generator):
+		def __init__(self):
+			(x_train, y_train), (x_test, y_test) = datasets.cifar10.load_data()
+			_, X, _, y = model_selection.train_test_split(x_train, y_train, test_size = 0.02)
+
+			X = X.astype(float)
+			gen_param_dict = {'rotation_range':10}
+			super().__init__(X, y, nb_classes = 10, gen_param_dict = gen_param_dict)
+
+	# 모델의 학습 및 성능 평가 수행
+	def main():
+		m = Machine()
+		m.run()
+
+	if __name__ == '__main__':
+		main()
+
+
+	### 이미지 데이터 수 늘리기 세부 코드
+	# 패키지 임포트
+	from keras.preprocessing.image import ImageDataGenerator
+	from . import aicnn
+
+	# 머신 클래스 구현
+	class Machine_Generator(aicnn.Machine):
+		def __init__(self, X, y, nb_classes = 2, steps_per_epoch = 10, fig = True, gen_param_dict = None):
+			super().__init__(X, y, nb_classes = nb_classes, fig = fig)
+			self.set_generator(steps_per_epoch = steps_per_epoch, gen_param_dict = gen_param_dict)
+
+		def set_generator(self, steps_per_epoch = 10, gen_param_dict = None):
+			if gen_param_dict is not None:
+				self.generator = ImageDataGenerator(**gen_param_dict)
+			else:
+				self.generator = ImageDataGenerator()
+
+			print(self.data.X_train.shape)
+
+			self.generator.fit(self.data.X_train, seed = 0)
+			self.steps_per_epoch = steps_per_epoch
+
+		def fit(self, epoch = 10, batch_size = 64, verbose = 1):
+			model = self.model
+			data = self.data
+			generator = self.generator
+			steps_per_epoch = self.steps_per_epoch
+
+			history = model.fit_generator(generator.flow(data.X_train, data.Y_train, batch_size = batch_size), epochs = epochs, steps_per_epoch = steps_per_epoch, validation_data = (data.X_test, data.Y_test))
+			return history
+
+	- 미리 학습한 모델 사용하기
+
+	### 미리 학습한 모델 사용하기 실행 코드
+	from sklearn import model_selection
+	from keras import datasets
+	import keras
+	assert keras.backend.image_data_format() == 'channels_last'
+
+	from keraspp import aiprt
+
+	class Machine(aiprt.Machine_Generator):
+		def __init__(self):
+			(x_train, y_train), (x_test, y_test) = datasets.cifar10.load_data()
+			_, X, _, y = model_selection.train_test_split(x_train, y_train, test_size = 0.02)
+
+			X = X.astype(float)
+		
+			gen_param_dict = {'rotation_range':10}
+
+			super().__init__(X, y, nb_classes = 10)
+
+	def main():
+		m = Machine()
+		m.run()
+
+	if __name__ == '__main__':
+		main()
+
+	### 미리 학습한 모델 사용하기 세부 코드
+
+	import numpy as np
+	from keras import backend as K
+	from keras.models import Model
+	from keras.layers import Dense, GlobalAveragePooling2D
+	from keras.layers import Dropout, BatchNormalization
+	from keras.applications.imagenet_utils import preprocess_input
+	from keras.applications import VGG16
+	from . import aicnn
+	from . import aigen
+
+	# CNN 클래스
+	class CNN(aicnn.CNN):
+		def __init__(model, input_shape, nb_classes, n_dense = 128, p_dropout = 0.5, BN_flag = False, PretrainedModel = VGG16):
+			model.in_shape = input_shape
+			model.n_dense = n_dense
+			model.p_dropout = p_dropout
+			model.PretrainedModel = PretrainedModel
+
+			base_model = PretrainedModel(weights = 'imagenet', include_top = False, input_shape = input_shape)
+			
+			x = base_model.input
+			h = base_model.output
+			z_cl = h
+			h = model.topmodel(h)
+			z_fl = h
+			y = Dense(nb_classes, activation = 'softmax', name = 'preds')(h)
+
+			for layer in base_model.layers:
+				layer.trainable = False
+
+			model.cl_part = Model(x, z_cl)
+			model.fl_part = Model(x, z_fl)
+
+			model.x = x
+			model.y = y
+
+		def topmodel(model, h):
+			BN_flag = model.BN_flag
+
+			n_dense = model.n_dense
+			p_dropout = model.p_dropout
+
+			h = GlobalAveragePooling2D()(h)
+			h = Dense(n_dense, activation = 'relu')(h)
+
+			if BN_flag:
+				h = BatchNormalization()(h)
+			else:
+				h = Dropout(p_dropout)(h)
+			return h
+
+	# DataSet 클래스
+	class DataSet(aicnn.DataSet):
+		def __init__(self, X, y, nb_classes, n_channels = 3, scaling = True, test_size = 0.2, random_state = 0):
+			self.n_channels = n_channels
+			super().__init__(X, y, nb_classes, scaling = scaling, test_size = test_size, random_state = random_state)
+
+		def add_channels(self):
+			n_channels = self.n_channels
+
+			if n_channels == 1:
+				super().add_channels()
+			else:
+				X = self.X
+				if X.ndim < 4:
+					N, img_rows, img_cols = X.shape
+					if K.image_dim_ordering() == 'th':
+						X = X.reshape(X.shape[0], 1, img_rows, img_cols)
+						X = np.concatenate([X, X, X], axis = 1)
+						input_shape = (n_channels, img_rows, img_cols)
+					else:
+						X = X.reshape(X.shape[0], img_rows, img_cols, 1)
+						X = np.concatenate([X, X, X], axis = 3)
+						input_shape = (img_rows, img_cols, n_channels)
+				else:
+					if K.image_dim_ordering() == 'th':
+						N, Ch, img_rows, img_cols = X.shape
+						if Ch == 1:
+							X = np.concatenate([X, X, X], axis = 1)
+						input_shape = (n_channels, img_rows, img_cols)
+					else:
+						N, img_rows, img_cols, Ch = X.shape
+						if Ch == 1:
+							X = np.concatenate([X, X, X], axis = 3)
+						input_shape = (img_rows, img_cols, n_channels)
+	 
+				X = preprocess_input(X)
+				self.X = X
+				self.input_shape = input_shape
+
+	# Machine_Generator 클래스
+	class Machine_Generator(aigen.Machine_Generator):
+		def __init__(self, X, y, nb_classes = 2, steps_per_epoch = 10, n_dense = 128, p_dropout = 0.5, BN_flag = False, scaling = False, PretrainedModel = VGG16, fig = True, gen_param_dict = None):
+			self.scaling = scaling
+			self.n_dense = n_dense
+			self.p_dropout = p_dropout
+			self.BN_flag = BN_flag
+			self.PretrainedModel = PretrainedModel
+
+			super().__init__(X, y, nb_classes = nb_classes, steps_per_epoch = steps_per_epoch, fig = fig, gen_param_dict = gen_param_dict)
+
+		def set_data(self, X, y):
+			nb_classes = self.nb_classes
+			scaling = self.scaling
+			self.data = DataSet(X, y, nb_classes, n_channels = 3, scaling = scaling)
+
+		def set_model(self):
+			data = self.data
+			nb_classes = self.nb_classes
+			n_dense = self.n_dense
+			p_dropout = self.p_dropout
+			BN_flag = self.BN_flag
+			PretrainedModel = self.PretrainedModel
+
+			self.model = CNN(data.input_shape, nb_classes, n_dense = n_dense, p_dropout = p_dropout, BN_flag = BN_flag, PretrainedModel = PretrainedModel)
+
+	- 케라스 고급 기능(lambda 계층 만들기)
+	
+	# 케라스 Lambda 계층과 파이썬 lambda 이용하기
+	def Lambda_with_lambda():
+		from keras.layers import Lambda, Input
+		from keras.models import Model
+
+		x = Input((1, ))
+		y = Lambda(lambda x : x + 1)(x)
+		m = Model(x, y)
+
+		yp = m.predict_on_batch([1, 2, 3])
+		print(yp)
+
+	# 케라스 Lambda 계층 전용 함수 사용하기
+	def Lambda_function():
+		from keras.layers import Lambda, Input
+		from keras.models import Model
+
+		def kproc(x):
+			return x ** 2 + 2 * x + 1
+		
+		def kshape(input_shape):
+			return input_shape
+
+		x = Input((1, ))
+		y = Lambda(kproc, kshape)(x)
+		m = Model(x, y)
+		
+		yp = m.predict_on_batch([1, 2, 3])
+		print(yp)
+
+	# 백엔드 함수 이용하여 Lambda 계층 만들기
+	def Backend_for_Lambda():
+		from keras.layers import Input, Lambda
+		from keras.models import Model
+		from keras import backend as K
+
+		def kproc_concat(x):
+			m = K.mean(x, axis = 1, keepdims = True)
+			d1 = K.abs(x - m)
+			d2 = K.square(x - m)
+			return K.concatenate([x, d1, d2], axis = 1)
+
+		def kshape_concat(input_shape):
+			output_shape = list(input_shape)
+			output_shape[1] *= 3
+			return tuple(output_shape)
+
+		x = Input((3, ))
+		y = Lambda(kproc_concat, kshape_concat)(x)
+		m = Model(x, y)
+
+		yp = m.predict_on_batch([[1, 2, 3], [3, 4, 6]])
+		print(yp)
+
+	# 엔진 전용 함수 사용하기
+	def TF_for_Labmda():
+		from keras.layers import Input, Lambda
+		from keras.models import Model
+		import tensorflow as tf
+
+		def kproc_concat(x):
+			m = tf.reduce_mean(x, axis = 1, keep_dims = True)
+			d1 = tf.abs(x - m)
+			d2 = tf.square(x - m)
+			return tf.concat([x, d1, d2], axis = 1)
+
+		def kshape_concat(input_shape):
+			output_shape = list(input_shape)
+			output_shape[1] *= 3
+			return tuple(output_shape)
+
+		x = Input((3, ))
+		y = Lambda(kproc_concat, kshape_concat)
+		m = Model(x, y)
+		yp = m.predict_on_batch([[1, 2, 3], [3, 4, 6]])
+		print(yp)
+
+	def main():
+		print('Lambda with lambda')
+		Lambda_with_lambda()
+
+		print('Lambda function')
+		Lambda_function()
+
+		print('Backend for Lambda')
+		Backend_for_Lambda()
+
+		print('TF for Lambda')
+		TF_for_Lambda()
+
+	if __name__ == '__main__':
+		main()
+
+	- 케라스 확장 기능(나만의 계층, 텐서플로와 케라스 혼합)
+
+	### 나만의 계층 만들기
+	# 라이브러리 임포트 및 초기
+	from keras import backend as K
+	from keras.engine.topology import Layer
+	import numpy as np
+
+	from keras import initializers
+	igu = initializers.get('glorot_uniform')
+	iz = initializers.get('zeros')
+
+	# 새로운 계층을 위한 클래스 만들기
+	class SFC(Layer):
+		def __init__(self, No, **kwargs):
+			self.No = No
+			super().__init__(**kwargs)
+
+		def build(self, inshape):
+			self.w = self.add_weight("w", (inshape[1], self.No), initializer = igu)
+			self.b = self.add_weight("b", (self.No, ), initializer = iz)
+			super().build(inshape)
+
+		def call(self, x):
+			return K.dot(x, self.w) + self.b
+
+		def compute_output_shape(self, inshape):
+			return (inshape[0], self.No)
+
+	# 데이터 준비
+	x = numpy.array([0, 1, 2, 3, 4])
+	y = x * 2 + 1
+
+	# 모델링
+	model = Keras.models.Sequential()
+	model.add(SFC(1, input_shape = (1, )))
+	model.compile('SGD', 'mse')
+
+	# 학습과 성능 평가
+	model.fit(x[:2], y[:2], epochs = 100, verbose = 0)
+	print('Targets:', [y:2])
+	print('Predictions:', model.predict(x[:2]).flatten())
+
+	### 텐서플로와 케라스 섞어쓰는 인공신경망
+	# 텐서플로와 케라스 연결하기
+	import tensorflow as tf
+	sess = tf.Session()
+
+	from keras import backend as K
+	K.set_session(sess)
+
+	# 분류 DNN 모델 구현
+	from keras.layers import Dense, Dropout
+	from keras.metrics import categorical_accuracy, categorical_crossentropy
+
+	class DNN():
+		def __init__(self, Nin, Nh_l, Nout):
+			self.X_ph = tf.placeholder(tf.float32, shape = (None, Nin))
+			self.L_ph = tf.placeholder(tf.float32, shape = (None, Nout))
+
+			# Modeling
+			H = Dense(Nh_l[0], activation = 'relu')(self.X_ph)
+			H = Dropout(0.5)(H)
+			H = Dense(Nh_l[1], activation = 'relu')(H)
+			H = Dropout(0.25)(H)
+			self.Y_tf = Dense(Nout, activation = 'softmax')(H)
+
+			# Operation
+			self.Loss_tf = tf.reduce_mean(categorical_crossentropy(self.L_ph, self.Y_tf))
+			self.Train_tf = tf.train.AdamOptimizer().minimize(self.Loss_tf)
+			self.Acc_tf = categorical_accuracy(self.L_ph, self.Y_tf)
+			self.Init_tf = tf.global_variables_initializer()
+
+	# 데이터 준비
+	import numpy as np
+	from keras import datasets
+	from keras.utils import np_utils
+
+	def Data_func():
+		(X_train, y_train), (X_test, y_test) = datasets.mnist.load_data()
+
+		Y_train = np_utils.to_categorical(y_train)
+		Y_test = np_utils.to_categorical(y_test)
+
+		L, W, H = X_train.shape
+		X_train = X_train.reshape(-1, W * H)
+		X_test = X_test.reshape(-1, W * H)
+
+		X_train = X_train / 255.0
+		X_test = X_test / 255.0
+		return (X_train, Y_train), (X_test, Y_test)
+
+	# 학습과 효과 분석
+	from keraspp.skeras import plot_loss, plot_acc
+	import matplotlib.pyplot as plt
+
+	def run(model, data, sess, epochs, batch_size = 100):
+		(X_train, Y_train), (X_test, Y_test) = data
+		sess.run(model.Init_tf)
+		with sess.as_default():
+			N_tr = X_train.shape[0]
+			for epoch in range(epochs):
+				for b in range(N_tr // batch_size):
+					X_tr_b = X_train[batch_size * (b-1):batch_size * b]
+					Y_tr_b = Y_train[batch_size * (b-1):batch_size * b]
+
+					model.Train_tf.run(feed_dict = {model.X_ph: X_tr_b, model.L_ph: Y_tr_b, K.learning_phase(): 1})
+					loss = sess.run(model.Loss_tf, feed_dict = {model.X_ph: X_test, model.L_ph: Y_test, K.learning_phase(): 0})
+					acc = model.Acc_tf.eval(feed_dict = {model.X_ph: X_test, model.L_ph: Y_test, K.learning_phase(): 0})
+					print("Epoch {0}: loss = {1:.3f}, acc = {2:.3f}".format(epoch, loss, np.mean(acc)))
+
+	# 분류 DNN 학습 및 테스팅
+	def main():
+		Nin = 784
+		Nh_l = [100, 50]
+		number_of_class = 10
+		Nout = number_of_class
+
+		data = Data_func()
+		model = DNN(Nin, Nh_l, Nout)
+		run(model, data, sess, 10, 100)
+
+	if __name__ == '__main__':
+		main()

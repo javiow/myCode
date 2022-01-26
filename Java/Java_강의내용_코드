@@ -1,0 +1,1716 @@
+<R/Python을 이용한 빅데이터 분석 전문가 강의 내용>
+
+ - Java 기초(1주차/20.09.08)
+
+  기초 내용
+
+   소스: 프로그래밍 언어로 작성된 텍스트 파일
+   컴파일: 소스 파일을 컴퓨터가 이해할 수 있는 기계어로 만드는 과정
+
+   Java의 특징
+    - WORA(Write Once Run Anywhere)
+     : 한번 작성된 코드는 모든 플랫폼에서 바로 실행됨
+       *C언어는 플랫폼 호환성이 없음(플랫폼마다 다르게 작성)
+    - 바이트 코드(byte code)
+     : 자바 소스를 컴파일한 목적코드
+       CPU에 종속적이지 않은 중립적인 코드
+       JVM에 의해 해석되고 실행됨
+       클래스 파일(.class)에 저장
+    - JVM(Java Virtual Machine)
+       자바 바이트 코드를 실행하는 자바 가상 기계(소프트웨어)
+       각기 다른 플랫폼에 설치
+    
+
+    Java 실행 과정
+     자바 프로그래밍 -> 소스 코드(Hello.java) -> 자바 컴파일러 -> 바이트 코드(Hello.class) -> 자바 가상 기계 -> 운영체제
+    *C언어는 운영 체제에 바로 명령을 실행
+
+    JDK(Java Development Kit) : 자바 응용 개발 환경
+     - javac: 자바 소스를 바이트 코드로 변환하는 컴파일러
+     - java: 자바 응용프로그램 실행기
+    JRE(Java Runtime Environment) : 자바 실행 환경
+
+
+  Java 환경설정
+  
+  0. 위치
+  내 PC 속성 -> 고급시스템 설정 -> 환경변수탭
+  * 사용자 변수: 컴퓨터에 로그인하는 유저들에 적용
+  * 시스템 변수: 컴퓨터 시스템 전체에 적용
+
+  1. 설치경로
+  JAVA_HOME = C:\Program Files\Java\jdk1.8.0_261
+  확인방법: cmd -> echo %java_home%
+
+  2. Path
+  Path = %JAVA_HOME%\BIN
+  확인방법: cmd -> path
+  * Path를 설정하지 않으면 cmd에서 Java가 설치된 경로로 가서 실행해야함.
+  * cmd창을 닫았다가 열어야 변경사항이 적용됨.
+
+  Java 파일 실행
+
+  메모장으로 내용 입력 
+  -> 모든 파일로 저장 형식 변경 
+  -> 이름.java 으로 저장 
+  -> cmd창을 켜서 java파일이 저장된 곳으로 이동
+     1. 저장된 폴더를 드래그하여 복사 붙여넣기
+     2. 경로를 일일히 cd (이름) 하여 이동 (Tab키를 누르면 자동완성)
+  -> javac.exe 이름.java 치면 폴더에 이름.class 생성됨 (exe 생략가능)
+  -> java.exe 이름 치면 파일 실행(JVM 구동)
+  * 메모장으로 작성할때 class명과 저장파일명이 같아야함.
+  * type 이름.java -> 파일 내용 확인
+  * 작업 하나당 JVM이 하나씩 생성되어 작업함.
+  ** 가끔 회사에서 코딩테스트때 이클립스가 아닌 메모장으로 프로그래밍 시킴
+
+  Compile(컴파일) 기능
+   1. syntax(문법) 체크
+   2. static 처리(미리 준비해놓음)
+    - 변수/메소드/클래스
+
+  Eclipse 사용
+
+   오른쪽 상단 Open perspective - 작업 환경 변경
+   왼쪽 상단 Create Project 를 클릭하여 프로젝트 생성()
+   // - 한줄 주석
+   /* ... */ - 범위 주석
+
+   단축키
+    주석설정: Ctrl + Shift + /
+    주석해제: Ctrl + Shift + \
+    글꼴 크게: Ctrl + Shift + '+'
+    글꼴 작게: Ctrl + Shift + '-'
+	글꼴명 바꾸기: Window -> Preference -> 필터 창에 font 검색
+	들여쓰기: tab
+	내어쓰기: Shift + tab
+	코드 정리: Ctrl + Shift + F
+	코드 실행: Ctrl + F11
+   단축키 설정: Window -> Preference -> keys
+
+   클래스를 새로 추가해서 만들때 package : 폴더 생성
+   예약어 : 미리 생성해놓은 명령
+   사용자 정의 명칭 : 사용자가 선언하는 명칭 클래스명/변수명/메소드명/상수명
+   변수: 변하는 값(수)
+   상수: 변하지 않는 수(값)
+   메소드: 함수
+   Ctrl + Space (자동완성)
+   클래스명.객체명.메소드명()
+
+----------------------------------------------------------------------------------
+
+ - Java 자료형(1주차/20.09.09)
+
+  출력방법
+	System.out.println("내용+줄바꿈");//print + line next
+	System.out.print("내용+not 줄바꿈\n");//print + "내용 \n" -> new line
+	System.out.printf("%s", "내용");//print format(형식)
+	System.out.println();//줄바꾸기: 내용없이 println 실행
+
+  public -> 예약어
+
+  명명법 금지조항
+   1. 숫자로 시작되면 안된다.(맨 앞만 아니면 됨)
+   2. 중간에 공백 띄우지 말것.
+   3. 특수문자 사용 불가(키보드상 영문자,한글,숫자를 제외한 모든문자(예외:$,_))
+   4. 예약어 사용 불가
+
+  클래스 명명법(권고사항)
+   1. 첫글자는 대문자로 작성
+   2. 2개 이상의 단어가 조합되는 경우
+    1) 매단어 첫글자를 대문자로 한다
+    2) 매단어 연결을 _로 한다
+
+  클래스: 설계서 
+         ex) 휴대폰 설계서
+             class Student{} // 내부클래스
+  객체: 설계서에 의해서 만들어진 실체(Object) 
+        ex) 휴대폰
+        Student s = new Student(); // 객체생성
+
+  변수/메소드 명명법(권고사항)
+   1. 첫글자는 소문자로 작성
+   2. 2개 이상의 단어가 조합되는 경우
+    1) 매단어 첫글자를 대문자로 한다
+    2) 매단어 연결을 _로 한다
+
+  상수 명명법(권고사항)
+   1. 모든문자는 대문자로 작성
+   2. 2개 이상의 단어가 조합되는 경우 연결을 _로 한다
+
+  이클립스는 자바파일, 클래스파일 따로 저장
+   - src 폴더에 .java 파일
+   - bin 폴더에 .class 파일
+  이클립스는 저장할때 컴파일이 됨
+
+  DataType(자료형)
+   역할: 메모리 공건에 얼마만큼의 크기(성질)의 공간을 할당할지를  결정하는 인자
+           - 정보 저장 단위
+            1. bit = 2가지 정보 표현 (2^1)
+                -> 정보저장 최소 단위
+            2. nibble = (4bit)16가지 정보 표현 (2^4)
+            3. byte = (8bit)256가지 정보 표현 (2^8)
+                -> 메모리에 할당할 수 있는 최소 단위
+                   short - 2byte
+                   int - 4byte
+                   long - 8byte
+
+    boolean(논리형): 1byte(1bit만 쓰고 나머지 안씀), 범위:true or false, 기본값:FALSE, 출력서식: %b or %B
+    *Java에서는 거짓 = FALSE, 참 = TRUE (0, 1 아님)
+
+    char(문자형): 2byte, 범위: 0 ~ 65536, 출력서식: %c
+    
+    byte(정수형): 1byte, 범위:-128 ~ 127, 출력서식: %d, %o, %x
+    short(정수형): 2byte, 범위:-32768 ~ 32767, 출력서식: %d, %o, %x
+    int(정수형): 4byte, 범위:-2147483648 ~ 2147483647, 출력서식: %d, %o, %x
+    long(정수형): 8byte, 범위:20자리, 출력서식: %d, %o, %x
+    -> 고정소숫점 방식
+
+    float(실수형): 4byte, 범위:10^-38 ~ 10^38, 출력서식: %f (long보다 크기가 큼)
+    double(실수형): 8byte, 범위:10^-308 ~ 10^308, 출력서식: %f
+    -> 부동소숫점 방식
+
+   메모리 할당 과정
+    클래스파일 -> 자바실행 -> JVM이 OS에게 메모리 임대요청 -> OS가 메모리 임대 -> JVM이 메모리 사용
+     - 클래스 영역(코드, 코드적재:메소드, 정적변수/메소드)
+     - 임시 변수(stack, 변수, 지역변수) : 후입선출
+                                        block내에서 선언된 변수는 모두 지역 변수
+     - 객체 생성(heap, 변수) : new 클래스
+     - JNI(Java Native Interface) : 외부 라이브러리 연결
+
+   진수 변환
+    2진수 -> 8진수 : 8진수의 범위는 0 ~ 7
+    				7을 2진수로 나타내면 111
+                    따라서 2진수로 표현된 숫자를 3개씩 끊어서 각 자리수를 더해서 계산
+                    ex) 50 -> 110010 -> 110, 010 -> 6, 2 -> 62(8)
+    2진수 -> 16진수 : 16진수의 범위는 0 ~ 15
+    				 0~9 까지는 숫자로 표현, 10부터는 알파벳
+    				 -> a(10), b(11), c(12), d(13), e(14), f(15)
+    				 15를 2진수로 나타내면 1111
+    				 따라서 4개씩 끊어서 각 자리수를 더해서 계산
+    				 ex) 50 -> 110010 -> 11, 0010 -> 3, 2 -> 32(16) -> 0x32
+
+   맨앞의 비트는 부호를 결정 -> 0:양수, 1:음수
+   보수법: 가산기, 감산기 중 가산기만 사용하기위해 고안한 방법(음수 표현 방법) 
+   		 ex) 10에 대한 3의 보수?: 10 = 3 + ? -> 7
+   		 - 부호절대치: ex) 10 -> 00001010, -10 -> 10001010
+   		 - 1보수법: ex) -10 -> 11110101 (0을 1로 변환)
+   		 - 2보수법: ex) -10 -> 11110110 (1보수법을 계산한 결과에서 1을 더함, 요즘 컴퓨터는 전부 2보수법을 사용
+   		           첫번째 1이 나올때까지는 그대로 쓰고 나머지는 뒤집기 (00001010 -> 11110110)
+   		 * 부호절대치와 1보수법은 -0이 존재,
+   		   2보수법은 -0이 존재하지 않아 한자리가 빔
+   		    ex) 0 -> 00000000 -> 10000000(부호절대치) -> 11111111(1보수법) -> 00000000(2보수법)
+   		   따라서 -32768 ~ 32767 같이 - 범위가 하나 더 있음.
+
+   실수 이진 표현
+    ex) 120.25 -> 1111000.01 -> 1.11100001*2^6(정규화) 
+        2^6 -> 133(127bios 기준) -> 10000101
+        지수부는 8bit, 가수부는 23bit, 부호1bit 총 32bit로 표현(4byte)
+        2^128 -> 3.4*10^38 -> 따라서 10^38까지 표현가능
+        가수부 길이가 길수록 정밀도가 올라감
+
+   자바파일 이름 바꾸기 - 파일 오른쪽 클릭 -> Refactor -> Rename
+
+   Boolean
+   논리형 자료형: boolean
+   상수: true or false
+   출력서식: %b% or %B%
+   변수선언: 자료형 변수명
+		    헝가리안 표기법(접두어)
+            int nPay; number
+
+   정수형
+   정수: 소숫점이 없는 수
+   자료형: byte, short, int(기본형), long
+   상수: 0 1 <= int형으로 처리
+		 0L <= long형으로 처리
+   출력서식: %d -> decimal(10진법) %o -> octal(8진수) %x -> hexa(16진수)
+   8진수 표현: 앞에 0을 붙인다
+   16진수 표현: 앞에 0x를 붙인다
+   * 컴퓨터는 무조건 2진수로 저장
+   출력서식 : %md <= 전체자릿수 오른쪽 정렬
+             %-md <= 전체자릿수 왼쪽 정렬
+             %0md <= 빈공간은 0
+
+    실수형
+    실수: 소숫점이 있는 수
+    자료형: float, double(기본형)
+	상수: 0.0 1.0E + 2(지수형) <= double
+	      0.0F <= float형
+	출력서식: %f (소수점 6자리까지 출력)
+	         %g (자릿수가 적은쪽으로 출력)
+	         %e (소수점 6자리까지 출력)
+			 %m.nf
+		      m:전체자릿수(생략가능) .n:소숫점자릿수
+		     %-mf : 왼쪽 정렬
+		     %0mf : 앞공간은 0 채우기
+
+---------------------------------------------------------------------------------
+
+ - Java 연산자(1주차/20.09.10)
+
+ 	문자형
+ 		SBCS(Single Byte Character Set): 모든문자를 1byte처리
+	 	DBCS(Double Byte Character Set): 모든문자를 2byte처리
+	 	*Java는 DBCS
+	 	MBCS(Multi Byte Character Set): 영문자 1byte
+	 									한글/한자/일본 2byte처리
+	 	*운영체제는 MBCS
+	 	ASCII Code(0~127 128~)
+	 	 제어/통신문자(0~31)
+	 	 제어문자 표현은 앞에 \붙인다
+	 	 '\r': carrige return(Home key) -> 맨 앞으로 보내라
+	 	 '\n': new line(Enter) -> 다음 줄로 가라
+	 	 '\t': tab
+	 	 
+	 	 '\b': left arrow(<-backward)
+	 	 '\a': alert(경고음)
+	 	 '\f': 프린트 다음장 넘겨라
+	 	 *하드웨어를 제어하는 문자 ex)줄바꿈
+	 	 
+	  	 일반문자(32~127)
+	  	 ' ': 32
+	  	 'A': 65	소문자-대문자 => 32
+	  	 'a': 97
+	  	 '0': 48
+	  	 '1': 49
+
+	  	문자형 자료형: char(2byte)
+		상수: 'A' '가' '韓' '▣'(ASCII code 없음)
+		출력서식: %c
+				  %-mc : 왼쪽 정렬
+		          *%0cf : 불가능
+		변수: char
+
+	문자열
+		문자열: 1개 이상의 문자가 나열된 형태(클래스형 자료형)
+		상수: "A" "ABC" "안녕"
+		           -> 'A','B','C'
+		     *'A'(char)와 "A"(String)는 다르다
+		출력서식: %s
+			      %-ms : 왼쪽 정렬
+		*소숫점이하는 출력문자수
+		변수: String
+
+	객체 지향 프로그래밍
+		Scanner: 입력처리하는 객체
+		*import java.util.Scanner; //Scanner + Crtl + Space
+		Console: 입/출력장치(단말장치)
+		System.out: 출력객체(콘솔)
+		System.in: 입력객체(키보드)
+		
+		입력도구
+        자료형  변수명(객체명)     new 클래스명(입력대상: 파일정보/네트워크정보..)
+		Scanner scanner        = new Scanner(System.in); 
+		*Buffer: 임시기억장소
+
+		scanner.nextLine() -> 문자열 입력(엔터 포함o)
+		*scanner.next() -> 문자열 입력(버퍼, 엔터 포함x -> 무시)
+		 scanner.nextInt() - 버퍼, 엔터 포함x
+		 scanner.nextDouble() - 버퍼, 엔터 포함x
+		 -> 이 메소드를 실행하면 버퍼에 엔터값 남음 따라서 오류 발생
+		 	scanner.nextLine():키보드버퍼에 남아있는 엔터값을 가져와서 버림
+		 	하지만, 이 메소드는 처음 입력 구분자를 무시
+		 	-> 공백없는 문자열을 입력받으면 그냥 써도 된다.
+		 
+		scanner.nextInt() -> 정수값 입력
+		*nextInt(8)은 8진수 입력
+
+		scanner.nextDouble() -> 실수값 입력
+
+		클래스를 드래그하여 F4 -> 도움말(사용할 수 있는 메소드)
+
+	연산자
+
+		연산자 사용시 고려사항
+		 1. 우선순위
+		 2. 자료형
+
+		단항연산자
+			단항연산자: ~ ! ++ -- (cast) -(부호)
+		
+			~ (tilde) : 이진논리 Not 연산자 = 0->1, 1->0 (1보수)
+			! : 일반논리 Not 연산자 
+			++ -- : 증감연산자
+			        형식: ++변수     (전위형)
+				            변수++   (후위형)
+			        ++: 자신의 값을 1씩 증가
+			        --: 자신의 값을 1씩 감소
+			        전위형: 모든연산에 앞서 자신이 먼저 연산
+		            후위형: 모든연산 종료 후에 마지막에 연산
+		    -값(상수/변수) : 부호연산자
+
+			형변환
+		 
+		 		1. 자동형변환(묵시적: 프로모션)
+		 			1)연산시: 자료형이 큰 쪽으로 변환
+		 			2)대입시: 좌변항측으로 맞춰져서 변환(단, 좌변항이 클 경우)
+		 	
+		 		2. 강제형변환(명시적: 디모션)
+		 			형식) (타입)값    ex) (int)1.0
+		 
+		 		자료형의 크기(표현 범위): byte < short < int < long < float < double
+		 			1. 연산시 형변환
+		 				double b = 1 + 1.0; // 1->1.0 => 1.0 + 1.0
+		
+						int형보다 작은 자료형은 연산결과 무조건 int
+		 				byte + byte => int
+		 				byte + short => int
+		 				short + short => int
+		
+						int형보다 큰 자료형은 큰 쪽으로 형변환
+		 				int + long => long
+		 				int + float => float
+		 				float + double => double
+
+		 			2. 대입시 자동형변환
+		 				double d = 10;
+
+		산술연산자
+
+        *(곱) /(몫) %(나머지)
+        +(더하기) -(빼기)
+		
+		int a = 10;
+		int b = 3;
+		
+		더하기
+		int res = a + b;
+		System.out.printf("%d + %d = %d\n", a, b, res);
+		
+		빼기
+		res = a - b;
+		System.out.printf("%d - %d = %d\n", a, b, res);
+		
+		곱
+		res = a * b;
+		System.out.printf("%d * %d = %d\n", a, b, res);
+		
+		몫
+		res = a / b;
+		System.out.printf("%d / %d = %d\n", a, b, res);
+		
+		나머지
+		res = a % b;
+		 %: 출력서식의 일부로 인식
+		 -> 문자로 인식시키려고 함 -> %% => '%'
+		System.out.printf("%d %% %d = %d\n", a, b, res);
+
+		*몫연산자는 정수/정수연산시만 몫이 구해진다
+		*나눗셈(몫/나머지) => 젯수가 0이면 안된다
+
+----------------------------------------------------------------------------------
+
+ - Java 연산자(1주차/20.09.11)
+
+ 	쉬프트 연산자(2진 연산)
+
+ 	 n >> 2 : n을 이진수로 변환시켜 2bit만큼 오른쪽으로 미룬다
+ 	 		  ex) n = 10 -> 00001010
+ 	 		 	  n >> 2 -> [00]000010[10] = 00000010
+ 	          빈공간은 부호로 채움
+ 	 n >> a = n/2^a
+ 	 n << a = n*2^a
+ 	          빈공간은 무조건 0으로 채움
+ 	 
+ 	 *쉬프트 연산자가 / or * 연산보다 빠름
+
+ 	 n >>> a : 빈공간은 무조건 0으로 채움
+
+ 	관계(비교)연산자
+
+ 	 a < b : 작은가
+ 	 a <= b : 작거나 같은가
+ 	 a > b : 큰가
+ 	 a >= b : 크거나 같은가
+ 	 a == b : 같은가
+ 	 a != b : 같지 않은가
+
+ 	이진논리연산자
+
+ 	 *이진값에만 해당
+ 	 A & B : A와B 모두 참이어야 참(AND)
+ 	         소거연산: 1 -> 유지, 0 -> 소거
+ 	 A | B : A, B 둘 중 하나이상이 참이어야 참(OR)
+ 	 		 소거연산: 0 -> 유지, 1 -> 추가
+ 	 A ^ B : A, B 둘의 값이 서로 다를때만 참(Exclusive OR)
+ 	 		 소거연산: 0 -> 유지, 값은값 -> 소거
+
+ 	일반논리연산자
+
+ 	 일반논리 연산자: &&(AND)  ||(OR)
+		            A && B: 모두 참일때 참
+		            A || B: 1개만 참이어도 참
+
+	 배수구하기: 변수 % 배수 == 0
+	 Short Circuit Evaluation(경제적 연산)
+	 A && B : A가 false면 B는 수행안함
+
+	삼항연산자
+
+	 (조건) ?  값1 :  값2
+	 (조건) ? (참) : (거짓)
+	 *절대값 구할때도 사용
+
+	대입연산자
+
+	 대입연산자: =
+	 복합대입연산자: += -= *= /= %= &= ^= ....
+	 Error
+	  1. Syntax Error(문법 에러)
+	  2. Logical Error(로직 에러)
+		
+	 동일한 연산 우선 순위를 갖을시 : left -> right
+		n = 3 + 2 - 1 + 7 - 5;
+		
+	 단항/3항/대입연산자는 left <- right
+	 *클래스 설명서 참고: ex)Ctrl + MONTH 클릭 -> Attach Source -> Java/jdk/src.zip 선택 -> 클래스 파일 닫고 다시 Ctrl + MONTH 클릭
+
+----------------------------------------------------------------------------------
+
+ - Java 제어문(2주차/20.09.14)
+
+ 	flow chart: 프로그래밍의 흐름을 설명하는 차트
+ 	제어문: 프로그램의 흐름 제어하는 명령
+ 	 1. 조건분기문: if, if~else
+ 	 2. 다중선택문: switch
+ 	 3. 반복문
+ 	  1) 조건반복문: for, while
+ 	  2) 반복조건문: do~while
+ 	 4. 기타: break, continue, return
+
+ 	if문
+ 	 - if문의 명령이 2개 이상일 때, 괄호로 묶어줘야함
+
+ 	switch문
+ 	 - break가 없으면 값이 계속 밑으로 떨어져서 default값이 나옴
+ 	 - 결과가 같으면 break문을 마지막에 써도 됨
+ 	 - 수식 사용가능 ex) switch(kor/10)
+
+ 	for문
+ 	 - 진행과정: 초기식 -> 조건식 -> 수행명령 -> 증감식
+ 	 - 조건식이 거짓일 때 종료
+ 	 - i는 for문 안쪽에서 사용가능(지역변수)
+ 	 - Thread.sleep(1000);  // milisec(1/1000초) -> 1초 대기
+ 	  -> 지연시키는 메소드
+ 	  -> 옆에 solution 클릭하면 main 앞에 throws InterruptedException 붙음
+ 	 - i에 문자도 입력 가능 ex) for(int i = 'A'; i <= 'Z'; i++)
+ 	 - 초기식, 증감식 생략가능
+ 	 - 조건식을 생략하면 무조건 TRUE
+
+ 	while문
+ 	 - 진행과정: 조건식 -> 수행명령
+ 	 - FileReader 객체 -> 파일 읽어오는 객체
+ 	  -> 옆에 solution 클릭 후 Exception 추가
+ 	  -> FileReader("file.java")
+ 	 * 코드 정리: Ctrl + Shift + o (불필요한 코드 제거)
+ 	  -> 읽어오면 문자 맨 처음위치에 커서가 있음
+	  -> fr.read() => 커서 위치에 있는 문자 1개 읽어오기, 읽어오면 다음으로 넘어감
+	  -> fr.close() => 파일닫기(열면 반드시 닫아야함)
+	 - 조건식에 true을 입력하면 무한루프
+	  -> 명령식에 break;를 입력해 탈출
+	  -> 문서 끝까지 읽으면 fr.read()는 -1을 반환
+
+	do-while문
+	 - 진행과정: 수행명령 -> 조건식
+	 - 명령문 먼저 실행하고 또 실행할지 여부를 체크할 때 사용
+	 - continue
+	  -> 반복문에서만 사용(for, while, do-while)
+	  -> 현재명령을 종료하고 다음 제어식으로 이동해라
+	  -> break문은 바로 종료
+
+------------------------------------------------------------------------------
+
+ - Java 제어문(2주차/20.09.15)
+
+    break: switch/반복문을 탈출하는 제어문
+	    1) break: 현재 수행되는 반복구간을 탈출
+	    2) break label: label영역의 반복구간을 탈출
+	continue: 현재 명령 종료하고 다음 제어식으로 이동해라
+	    1) continue: 현재 반복문
+	    2) continue label: label 영역의 반복문
+
+	System.in.read() - 문자 1개 입력(1yte)
+	Integer.MAX_VALUE - 정수의 최대값
+	Math.PI - 원주율 값
+	큰 수는 double형으로 저장
+	Math.pow(r, n) - r의 n승
+
+------------------------------------------------------------------------------
+
+ - Java 메소드(2주차/20.09.16)
+
+ 	메모리 처리 방식
+ 	 - Queue(FIFO): 선입선출
+ 	 				First In First Out
+ 	 - Stack(LIFO): 후입선출
+ 	 				Last In First Out
+
+ 	실행취소: Ctrl+Z -> 윈도우 환경
+ 		 	 Ctrl+C or D -> 리눅스
+
+ 	화이트 문자: '\t', '\n', '\r', ' '
+    1문자씩 읽어오는 객체(필터링)
+	 -> InputStreamReader isr = new InputStreamReader(System.in)
+	 	int ch = isr.read();
+	 	-> 한글을 읽어들일 때 사용
+
+ 	메소드(Method)
+ 		:수단/방법(특정기능을 구현하기 위한 코드의 집합) (=function)
+  		-> public (static) 반환형 이름 (입력변수)
+  		{
+  			명령
+  			return 반환변수
+  		}
+
+  		- 반환형과 반환변수의 자료형은 일치해야함. (형변환 가능)
+  		- 메소드는 클래스 안에서만 사용 가능 -> 클래스 호출 후 메소드 호출
+  		- public -> 접근 제한자, 외부에서 사용 가능, 대부분 public
+  		- 반환형이 없을때(return 생략 가능) -> void: 무치형(아무것도 없음)
+  		- static 
+  		 -> 이미 만들어진 변수/메소드/클래스)(정적)
+  		 -> static이 없으면 메소드 호출할 때 만듦
+  		 -> static은 static 끼리만 호출 가능
+  		- 다른 영역에서 메소드 호출할 때 -> 클래스.메소드()
+  		- 메소드가 어디서든 return을 만나면 코드 종료
+
+    클래스(Class)
+    	: 생성될 객체에 대한 설계서
+	    - new 생성된 객체는 heap에 저장
+	 	- 생성된 객체는 메소드를 포함
+	 	- this.메소드: 같은 클래스 안에 있는 메소드 호출
+
+    
+    Method Overload(중복메소드): 메소드 명을 동일하나 인자정보가 틀린메소드
+	class 누르고 F4 -> 클래스의 메소드 정보
+	Ctrl + 메소드 클릭 -> 메소드 정보
+
+	호출방식에 따른 메소드 분류
+	 	1. Call by Name: 이름만 이용한 호출
+	    2. Call by Value: 이름+값
+		3. Call by Reference: 이름+참조값
+
+
+------------------------------------------------------------------------------
+
+ - Java 배열(2주차/20.09.17)
+
+ 	배열
+ 	 : 동일한 자료형 연속할당
+
+ 	 - 자료구조
+
+ 	  1. 선형구조
+ 	   - 인접 리스트(배열)
+ 	   - 링크드 리스트(주소 연결)
+
+ 	  2. 비선형구조
+ 	   - 트리구조
+ 	   - 그래프
+
+		자료형 [] 변수명 = new 자료형[n];
+		ex) int [] mr = new int[4];
+		   -> 변수명은 stack 영역, 자료형은 heap 영역에 저장
+		index는 0부터 시작
+
+		[n] -> 1차원
+		[n][m] -> 2차원
+		[l][n][m] -> 3차원(2차원 l개)
+
+		변수명.length - 배열의 길이
+		기존 Array 관리하는 클래스 : Arrays
+		 -> Arrays.fill(): 값 채우기
+		    Arrays.fill(mr, 1, 3, 1): 구간 채우기
+		    			             -> (배열, 시작, "끝-1", 값)
+		
+ 	  초기화: 변수선언과 동시에 값을 부여
+ 	  	      배열 초기화 시 갯수는 생략
+ 	  	      new int[] 생략 가능
+ 	  	      ex) int [] mr = new int[] {1, 2, 3, 4, 5};
+ 	  	     	= int [] mr = {1, 2, 3, 4, 5};
+
+ 	* 코드 자동완성 없애기: Window -> Preference -> Java -> Editor -> Content Assist -> Advanced -> Java Proposals, Java Non-Type Proposals 체크
+
+ 	 정렬(오름차순): Arrays.sort(mr);
+
+ 	 - 개선 loop (JDK 5.0 이후부터 지원)
+ 	  변수: 배열(or Collection)
+	  for(int n : mr2) -> n에 mr2의 값이 하나씩 입력
+
+	 난수 발생 객체: Random
+	 				.nextInt(n): 0 ~ n-1 중 랜덤한 정수 입력
+
+	 - 현재 시스템 날짜 구하기
+		Calendar c = Calendar.getInstance();
+		age = c.get(Calendar.YEAR) - year + 1;
+
+	* elipsis(생략부호) -> int ...nr: 인자는 주어지는 대로
+-------------------------------------------------------------------------------
+
+ - Java 배열(2주차/20.09.18)
+
+
+ 	2차원 배열
+ 	 ex) int [][] mm = new int[3][4];
+ 	     -> 3x4 테이블
+ 	     -> 행,열 인덱스 모두 0부터 시작함
+ 	     -> 실제 저장하는 값은 총 16개
+ 	        -> 3x4 + 참조변수(열):3개 + 참조변수(배열):1개
+
+ 	 - 행갯수: mm.length
+ 	   열갯수: mm[0].length == mm[1].length == mm[2].length
+ 	   		  => mm[i].length
+
+ 	 ex) mm[1][1] = 10;
+ 	     -> int [] m = mm[1];
+ 	     -> m[1] = 10;
+ 	     -> m => mm[1]
+ 	     -> mm[1][1] = 10;
+
+ 	* 변수이름 드래그 + Ctrl+1 -> Rename => 변수이름 한번에 모두 바꾸기
+ 	- 1차원 배열처럼 {} 에 직접 입력 가능
+ 	- 고정 길이 배열: 열의 길이가 같은 배열
+ 	  가변 길이 배열: 열의 길이가 다른 배열
+ 	    - 생성방법
+ 	     	int [][] mm2 =  {
+								{1, 2},
+								{5, 6, 7},
+								{9, 10, 11, 12}
+							};
+
+			int [][] mm3 = new int[3][];
+			 mm3[0] = new int[] {1, 2}; 
+			  -> 참조변수만 만들고 1차원 배열을 명시적으로 입력해야함
+			 int [] m1 = {3, 4, 5};
+			 mm3[1] = m1;
+			 mm3[2] = new int[] {6, 7};
+
+	static "int [][]" rotate_right_90(int [][] src) 
+	         -> 메소드의 반환형
+	메소드는 return 값 하나만 반환가능
+
+-------------------------------------------------------------------------------
+
+ - Java 클래스(3주차/20.09.21)
+
+ 객체 지향 프로그래밍(OOP: Object Oriented Programming)
+
+  -> 클래스, "설계서" (어떤 제품(객체)을 만들기 위한)
+   - 속성(상태): 변수
+   - 행위(동작): 메소드
+  => 객체(Object) 생산
+
+  - 장점
+
+   유지보수가 편함(소프트웨어를 만들기 쉬움)
+   생산성이 좋음
+
+  - 특징
+
+   1. 추상화: 각 객체의 공통속성을 모아서 설계
+   2. 은닉화: 객체가 갖는 중요한 속성을 외부로부터 숨긴다
+   3. 상속: 코드의 재사용(기존 객체 기능을 물려받아서 새로운 객체를 생성)
+   4. 다형성: 각 객체별로 명령을 전달하는게 아니라 추상적 단계에서 명령을 전달
+
+  - 접근제한자(변수, 메소드, 클래스 전부 사용 가능)
+
+  	+: public(공개모드) - 외부 패키지 전부 허용
+  	#: protected(보호모드) - 같은 패키지 내 클래스, 외부 패키지의 상속 클래스만 허용
+  	-: private(비공개모드) - 같은 클래스내에서만 허용
+  	(생략): default - 동일 패키지만 허용 
+
+  	* public 외에는 거의 private 취급 -> 대부분 다른 패키지에 저장하기 때문
+  	* 메소드는 대부분 public
+  	* 클래스의 변수들은 대부분 외부에서 다루지 않게 만듬 
+  	 -> 외부에서 값을 변경할 수 있는 기능(메소드) 추가
+	 -> setter method: set필드명 <-> getter method: get필드명
+	* Alt + Shift + s -> Generate getter/setter (자동 생성)
+	* Windows -> show view -> outline : 클래스 내 변수, 메소드 정보
+
+	instance 변수 => 객체가 생성될 때 만들어지는 변수
+	instance method => 객체가 생성될 때 만들어지는 메소드
+	*instance: 객체의 포괄적 표현
+	 	instance는 자동 초기화
+		- 숫자형: 0
+		- boolean: False
+		- 참조변수: NULL (String)
+	* Member field: 변수
+	
+  - 생성자(Constructor) Method
+
+	 	1. 객체 생성시 자동 호출
+	 	2. 목적: 초기화(변수, 기타)
+	 	3. 형식: 1) 클래스명과 동일한 이름을 갖는 메소드
+	 			2) 반환형이 없음
+	 			3) Method Overload가 가능
+	 	4. 생략가능(JVM이 자동생성해서 처리)
+	 	5. Overload 생성자 선언시 기본 생성자는 무조건 같이 선언
+
+	 * 클래스 드래그 + F4 -> 객체앞에 c -> 생성자
+	 * Alt + Shift + s -> Generate Constructor from Superclass(기본 자동 생성)
+	 				   -> Generate Constructor using Fields(변수 포함 자동 생성)
+	 * this()는 자신의 생성자, 클래스 에서 가장 먼저 호출 되어야함.
+	   this는 자신의 정보를 담는 참조변수
+
+-------------------------------------------------------------------------------
+
+ - Java 클래스(3주차/20.09.22)
+
+  - Static
+
+   -> "클래스 변수", "클래스 메소드"
+   -> 프로그래밍 시작할 때 미리 생성
+   -> 무조건 하나만 생성(모든 객체가 공유)
+  
+  * Ctrl + Shift + o -> import class 자동 생성
+  * 클래스 안에 private 생성자 -> 객체 생성 X
+  * 취소선: 앞으로 없어질 것
+
+  - single-ton(pattern)
+
+   : 객체를 하나만 만들어서 서비스하자(메모리의 낭비 방지)
+    ex) static MyTime single = null;
+	
+		public static MyTime getInstance() {
+			//없으면 생성해라
+			if(single == null) // 맨 처음 실행할 때
+				single = new MyTime(); // 객체 생성
+			
+			return single; // 두 번째부터는 같은 객체 반복 호출
+		}
+
+	* 스프링은 기본적으로 single-ton 코드
+	* getInstance() -> 대부분 single-ton 코드
+	* Design Patter: 개발방법론
+
+ - String 객체
+
+  두 문자열 비교: equals() 메소드 사용 ('==' 사용 가능하나 입력에 따라 결과 다름)
+ 
+	문자열 불변: 객체는 하나
+	            '+' 연산 -> 계속 생성됨 -> 메모리 낭비
+	ex)
+
+	String msg = ++count + "little, " + 
+				 ++count + "little, " + 
+				 ++count + "little Indian";
+	
+	System.out.println(msg);
+	System.out.println(msg.length());
+	
+	* 해결방안1: StringBuffer
+	StringBuffer sb = new StringBuffer(32); // 32char
+	count = 0;
+	
+	sb.append(++count);
+	sb.append("little, ");
+	sb.append(++count);
+	sb.append("little, ");
+	sb.append(++count);
+	sb.append("little Indian");
+	
+	StringBuffer -> String: toString()
+	msg = sb.toString();
+
+    * 해결방안2: String.format("형식", 값);
+	count = 0;
+	msg = String.format("%d little, %d little, %d little Indian", 
+			++count, ++count, ++count);
+	System.out.println(msg);
+
+	* Search -> Quick Search : 예전에 작성했던 코드 찾기
+
+---------------------------------------------------------------------------
+
+ - Java String(3주차/20.09.23)
+
+	 문자열 -> 숫자: Integer.parselnt("12")
+	
+	 숫자문자 -> 숫자
+	 '0': 48  '1': 49
+	 '1' - '0' => 49 - 48 => 1
+
+	- 문자열 분리 객체
+	 StringTokenizer()
+	 delimater(구분문자): 공백, 엔터, 탭
+	 ex) 
+	 	StringTokenizer st = new StringTokenizer(sido_list);
+		System.out.println(st.countTokens());
+		
+		while(st.hasMoreTokens()) { // 토큰있냐?
+			String token = st.nextToken(); // 가져오기
+			System.out.println(token);
+		}
+	 * token위주로 분리
+
+	 split() -> 배열로 생성
+	 ex) 
+	 	String [] sido_array = sido_list.split(" ");
+		for(String sido: sido_array) {
+			System.out.println(sido);
+		}
+	 * 분리문자 위주로 분리
+
+	- Collection(데이터를 저장관리 하는 객체)
+	  - HashSet, Stack, LinkedList
+	  - ArrayList: 동적 배열 
+	  - 자바의 모든 객체를 저장할 수 있다
+      -> 컬렉션이 저장관리하는 데이터는 객체만 저장된다.
+
+      ex)
+      	ArrayList list = new ArrayList();
+		
+		int n = 10; // 변수
+		Integer n0b = new Integer(10); // 객체
+		
+		list.add(n0b);
+		
+		// Auto-Boxing: JDK 5.0 later
+		list.add(n);   // new Integer(n) -> 자동으로 객체로 변환
+		list.add(100); // new Integer(100)
+	 	
+	 	* Project -> Properties -> Java Compiler -> 자바 버전 조절 가능
+
+	- 상속(Inheritance)
+	 : (기존) 코드의 재사용
+
+	  유형
+	   1. has a : 다른객체를 포함
+	   2. is a : 기능을 물려받는 개념
+
+	   Base/Super/Parent : 상속을 하는 클래스
+	   Derivation/Sub/Child : 상속을 받는 클래스
+
+	  참조변수
+	   1. 객체위치
+	   2. 사용범위
+
+	  ex)
+	  	AdvanceCalc ac = new AdvanceCalc();
+
+	  	//ac객체 정보를 use_basecalc에게 전달
+		use_basecalc(ac);
+
+		//ac -> Object영역만 사용할 수 있는 정보만 전달
+		use_object(ac);
+
+	  up-casting: 영역이 축소
+	  				ex) list.add(str1);
+						list.add(n0b);	
+
+	  down-casting: 영역을 확장
+	  				ex) res = ((AdvanceCalc)ob).hap(a);
+
+	  *클래스 -> 생산자가 필요한 것(설계서)
+	  *인터페이스 -> 사용자가 필요한 것(사용 설명서)
+
+-----------------------------------------------------------------------------
+
+ - Java 상속(3주차/20.09.24)
+
+ 	초기화 순서
+ 	 (상속을 한)부모 클래스 -> (상속받은)자식 클래스
+ 	<-> 호출 순서
+ 	 자식 클래스 -> 부모 클래스
+
+ 	Override(재정의) 
+ 	 : 부모에게 상속받은 클래스를 재정의
+ 	   <-> Overload(중복메소드)
+ 	   맨 마지막의 재정의된 메소드 호출
+ 	   ex) 부모 참조변수 = 자식 클래스
+ 	      -> 부모 메소드 호출(== 자식 메소드)
+ 	      -> 자식 메소드 출력
+
+ 	   접근제한자 크기순서(허용범위)
+	   private < default < protected < public
+	   부모 클래스가 protected 이면 자식 클래스는 protected 이상이어야 한다. 
+	   (재정의 할시)
+
+	  *Overload는 호출 정보(입력 변수)가 달라야 함.
+
+	final
+
+	 1. 변수 앞 final(상수 선언) 
+ 		-> 변수 값을 바꾸지 못함
+ 		* static final double PI = 3.14; 
+ 		  메소드 밖 -> static, 안 -> static 생략 가능
+
+ 	 2. 메소드 앞 final
+ 		-> 더 이상 재정의 하지 말아라
+ 	
+ 	 3. 클래스 앞 final
+ 		-> 더 이상 상속하지 말아라
+
+ 	추상화(abstract)
+ 	 : 각 객체의 공통속성을 추출하는 과정
+ 	   추상 메소드는 대부분 바디(내용)가 없다.
+ 	   추상메소드를 포함한 클래스로부터 상속받는 클래스는 반드시 재정의 
+ 	    의무를 갖는다.
+ 	   1개 이상의 추상메소드를 포함한 클래스는 추상클래스로 선언
+ 	   <-> 추상클래스는 추상메소드를 포함하지 않아도 된다.
+
+ 	  * New -> Class -> Superclass -> Browse -> 부모 클래스 검색
+ 	  	: 상속받을 부모 클래스 연결
+
+ 	  다형성(Polymorphism)
+	  : 동일한 명령에 대해서 각각의 객체가 자신에 맞는 행위를 하는 것
+
+	인터페이스
+	 : 객체 사용하기 위한 메뉴얼, 객체간의 통신수단
+	 - 인터페이스에는 상수와 추상메소드만 들어올 수 있다.
+	  - 인터페이스 내에서는 abstract, final 생략 가능
+	  - 추상메소드 반드시 재정의(== 추상 클래스)
+	 - implements: 미완성된 메소드를 구현 <-> extends(가져다 쓰는 것)
+	 - 클래스 다이어그램에선 <<인터페이스명>> 으로 표현
+	  - 인터페이스명+Impl -> 구현 객체
+	  - 점선 -> 인터페이스, 실선 -> 상속
+
+	  ex)
+	  public interface BaseCalc {
+
+		// 상수, 추상메소드만 들어올 수 있음
+		// final, abstract 생략 가능
+		public static final String INTERFACE_NAME = "BaseCalc";	
+							double PI = 3.14;
+		
+		// required: 반드시 재정의(바디가 없음)
+		public abstract int plus(int a, int b);
+						int minus(int a, int b);
+		
+		// optional: 선택 사항(재정의 해도 되고 안해도 됨) JDK 8.0 later
+		default int multiply(int a, int b) {
+			return a*b;
+		}
+	  }
+		
+	추상클래스와 인터페이스 공통점,차이점
+
+	공통점
+	 - 추상메소드 포함
+	 - 상속받는 객체는 반드시 재정의 의무를 갖는다
+	 - 객체 생성하지 못한다
+	    ex) // 둘다 생성 불가
+	    	new BaseCalc(); -> 인터페이스
+	    	new 학생(); -> 추상클래스
+
+	차이점
+	 - 추상클래스 "설계서"
+	  - 일반변수/메소드 포함된다(일반클래스의 모든요소를 포함할 수 있다)
+	  - 목적: 여러 객체의 공통 속성을 추출해서 설계해놓은 클래스
+	  - 클래스는 다중 상속 불가
+
+	 - 인터페이스 "설명서"
+	  - 상수/추상메소드만 포함(JDK 8.0 이후부터 일반 메소드 형식 포함)
+	  - 목적: 객체의 사용 방법을 매뉴얼화, 객체 간의 통신 수단
+	  - 인터페이스는 다중 상속 가능
+	   - 인터페이스간 상속: extends
+	   - 인터페이스 - 구현 객체간 상속: implements
+
+------------------------------------------------------------------------------
+
+ - Java (3주차/20.09.25)
+
+ 	Factory Pattern (in Design Pattern)
+ 	 - single-ton코드를 활용한 공장식 생산 코드
+ 	 - 요청할때마다 생산하지 않고 미리 생산할 객체를 하나 만들어놓고 요청시에 각각 객체 생성
+
+ 	ex)
+
+ 	import myutil.RemoteCon;
+	import myutil.TV;
+
+	public class TVFactory {
+
+		// single-ton
+		static TVFactory single = null;
+		
+		public static TVFactory getInstance() {
+			
+			if(single == null) single = new TVFactory(); 
+			
+			return single;
+		}
+		
+		private TVFactory() {
+			// TODO Auto-generated constructor stub
+			// 외부에서 호출 가능하지만 객체를 수정하지 않게 하기 위해 접근 제한
+		}
+		
+		// TV 생성
+		public RemoteCon getTV() {
+			
+			TV tv = new TV();
+			
+			return tv;
+		}
+	
+	
+	}
+
+	=>
+		// Factory Pattern에 의한 TV 생성
+		TVFactory factory = TVFactory.getInstance();
+		RemoteCon remoteCon2 = factory.getTV();
+			
+		remoteCon2.onOff();
+
+
+	예외 처리
+
+	 - Exception in thread "main": 프로그램 종료
+	 - try-catch문:
+	 	try{
+	 		if(...) throw new Exception("...");
+	 		본문 코드
+	 	}catch(Exception e){ // 상위 객체가 있으면 모든 에러 잡음
+	 		예외 발생 시 코드
+	 	}
+
+	 - 메소드 thorws Exception{
+	 	if(...)
+	 	 throw new Exception("...");
+	 } -> 내부 예외 내용을 현 메소드 사용자에게 위임
+
+	 - finally{ ... } : 예외 유무와 상관없이 무조건 처리
+	 * alt + shift + z -> 예외 처리
+
+	Generic, Collection
+
+	ex)
+		// Generic 없이 객체 생성: 내부 저장 타입은 Object
+		//  인터페이스   =  클래스
+		ArrayList list1 = new ArrayList();
+		
+		String str = "안녕";
+		list1.add(str); // 0
+		list1.add(new Integer(100));
+		
+		// down-casting(영역 확장)
+		String str1 = (String) list1.get(0);
+		
+		// Generic 설정: 저장타입 -> String
+		ArrayList<String> list2 = new ArrayList<String>();
+		list2.add(str); // 0
+		//list2.add(new Integer(100)); -> String 객체가 아니여서 불가
+		
+		// down-casting 필요 없음
+		String str2 = list2.get(0);	 
+
+	 * 컬렉션/제너릭에 객체 타입만 저장 가능 -> int, double 불가능
+	 * 배열: length() -> 컬렉션: size()
+
+	Set
+
+	 1. 순서없이 저장되는 자료구조
+ 	 2. 중복값 허용안된다
+
+ 	 결과값 낱개로 가져오기
+
+ 	  1. 개선 loop
+
+ 	   - 자료형 변수: 컬렉션/배열
+ 	   ex) 	for(int n : lottoSet) {
+				System.out.print(n + " ");
+			}
+
+ 	  2. iterator
+
+ 	   ex) 
+ 	   Iterator<Integer> it = lottoSet.iterator();
+ 	   while(it.hasNext()) { // 값이 있냐?
+			int n = it.next(); // 값 가져오기
+			System.out.print(n + " ");
+		}
+
+	  3. 배열
+
+	  ex)
+		Integer [] n_array = new Integer[lottoSet.size()];
+	    //Set -> Array로 넘겨준다
+	    lottoSet.toArray(n_array);
+	    System.out.println("--배열 이용--");
+	    for(int n: n_array) {
+	    	System.out.print(n + " ");
+		}
+
+	ArrayList(Vector와 비슷)
+
+	 - 생성
+	  List<> 이름 = new ArrayList<>();
+
+	 - 추가
+	  이름.add();
+
+	 - 삭제
+	  이름.remove();
+
+	 - Array 변환
+	  이름.toArray();
+
+	VO(Value Object)
+ 	: 값을 저장관리하는 객체
+ 	 * 최근 자주 사용하는 소스
+ 	 * 처음부터 아예 생성자를 만들지 않는다 
+ 	   or 기본 생성자는 만들어 놓는다. -> 프레임워크에서 찾음
+ 	  - getter/setter 생성
+ 	 * 기존 메소드를 Override해서 출력형식 변경 가능
+
+ 	DTO(Data Transfer Object)
+ 	: 데이터를 전달하는 객체
+ 	 * 예전에 자주 사용한 소스
+
+-------------------------------------------------------------------------------
+
+ - Java (4주차/20.09.28)
+
+ Map 인터페이스
+
+  - 키 값은 Set 인터페이스로 저장됨
+  - 순서의 의미가 없음(key = Set)
+   -> 검색이 쉬움 <-> ArrayList (순차검색)
+
+  ex)
+
+	Map<Integer, String> telMap = new HashMap<Integer, String>();
+	
+	// 값넣기: Key, Value
+	telMap.put(1, "010-111-1234");
+	telMap.put(2, "010-222-1234");
+	telMap.put(3, "010-333-1234");
+	telMap.put(4, "010-444-1234");
+	telMap.put(5, "010-555-1234");
+	
+	// 단축번호
+	int short_number = 2;
+	
+	String tel = telMap.get(short_number);
+	
+	System.out.printf("단축번호 [%d]: %s\n", short_number, tel);
+
+	// 키 집합 얻어오기(Set)
+	
+	Set<Integer> keys = telMap.keySet();
+	
+	System.out.println("--전체출력--");
+	for(Integer key: keys) {
+		//System.out.println(key);
+		String value = telMap.get(key);
+		System.out.printf("단축번호 [%d]: %s\n", key, value);
+	}
+
+  
+  *스레드: 컴퓨터 소프트웨어의 작업 단위
+  *스레드 동기화: 한 작업에 한 작업자만 할당 가능
+  				 지원하지 않는다 -> 개발자 마음대로 할당 가능
+
+ 기타 Utils
+
+  Arrays
+
+   - sort 과정
+    - sort 기준 객체 생성
+     -> public class "이름Comp" implements Comparator<저장객체>{}
+     -> compare(o1, o2)
+      -> return 1: 오름차순, -1: 내림차순
+     -> main 에서 sort 기준 객체 생성
+
+     ex)
+
+     public class PersonComp implements Comparator<PersonVo>{
+
+	// Sort 기준 상수
+	public static final int SORT_FILED_NAME = 1;
+	public static final int SORT_FILED_AGE = 2;
+	public static final int SORT_FILED_ADDR = 3;
+	
+	// Sort 방법 상수
+	public static final int SORT_METHOD_ASC = 1;
+	public static final int SORT_METHOD_DESC = 2;
+	
+	int sort_field = SORT_FILED_NAME;
+	int sort_method = SORT_METHOD_ASC;
+	
+
+	
+	public int getSort_field() {
+		return sort_field;
+	}
+
+	public void setSort_field(int sort_field) {
+		this.sort_field = sort_field;
+	}
+
+	public int getSort_method() {
+		return sort_method;
+	}
+
+	public void setSort_method(int sort_method) {
+		this.sort_method = sort_method;
+	}
+
+	@Override
+	public int compare(PersonVo o1, PersonVo o2) {
+		// TODO Auto-generated method stub
+		
+		int ret = 0;
+		
+		if(sort_field == SORT_FILED_NAME) {
+			// 이름기준
+			if(o1.getName().compareTo(o2.getName())>0) ret = 1;
+			else if(o1.getName().compareTo(o2.getName())<0) ret = -1;
+		
+		}else if(sort_field == SORT_FILED_AGE) {
+		
+			// 나이기준
+			if(o1.getAge() > o2.getAge()) ret = 1;
+			else if(o1.getAge() < o2.getAge()) ret = -1;
+		
+		}else if(sort_field == SORT_FILED_ADDR) {
+		
+			// 나이기준
+			if(o1.getAddr().compareTo(o2.getAddr()) > 0) ret = 1;
+			else if(o1.getAddr().compareTo(o2.getAddr()) < 0) ret = -1;
+		
+		}
+		
+		// 내림차순
+		if(sort_method == SORT_METHOD_DESC) {
+		 ret = -ret;
+		}
+		
+		return ret;
+	}
+
+	=>
+
+	public class MyMain_Array_Sort {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		PersonVo [] p_array = {
+				new PersonVo("라길동", 35, "서울 관악 신림1"),
+				new PersonVo("가길동", 31, "서울 관악 신림2"),
+				new PersonVo("다길동", 39, "서울 관악 신림3"),
+				new PersonVo("나길동", 30, "서울 관악 신림4"),
+				new PersonVo("마길동", 33, "서울 관악 신림5")
+		};
+		
+		System.out.println("---before sort---");
+		for(PersonVo p: p_array)
+			System.out.println(p);
+		
+		// 소트 기준 객체 생성
+		PersonComp comp = new PersonComp();
+		
+		Arrays.sort(p_array, comp);
+		
+		System.out.println("---after sort(이름순 오름차순)---");
+		for(PersonVo p: p_array)
+			System.out.println(p);
+		
+		System.out.println("---after sort(나이순 내림차순)---");
+		comp.setSort_field(PersonComp.SORT_FILED_AGE);
+		comp.setSort_method(PersonComp.SORT_METHOD_DESC);
+		Arrays.sort(p_array, comp);
+		for(PersonVo p: p_array)
+			System.out.println(p);
+		
+		System.out.println("ABC".compareTo("AbC"));
+		
+	}	
+
+}
+	
+}
+
+   * String.compareTo("String") - 앞 문자열에서 뒷 문자열을 아스키코드로 뺀 값
+
+ - Properties
+
+ 	ex)
+ 	public class MyMain_Properties {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		try {
+			Properties prop = new Properties();
+			
+			// 외부파일로부터 속성값 읽어옴
+			FileReader fr = new FileReader("db.properties");
+			prop.load(fr);
+			fr.close();
+			// ${ driver }
+			String driver = prop.getProperty("driver");
+			String url = prop.getProperty("url");
+			String username = prop.getProperty("username");
+			String password = prop.getProperty("password");
+			
+			System.out.println("---DB 접속 정보---");
+			System.out.println(driver);
+			System.out.println(url);
+			System.out.println(username);
+			System.out.println(password);
+			
+			prop.list(System.out);
+			
+			// key 이름을 모르는 경우(Map과 동일)
+			Set keySet = prop.keySet();
+			System.out.println("---Set을 이용한 Key 정보 출력---");
+			for(Object ob : keySet) {
+				String key = (String) ob;
+				System.out.println(key);
+			} 
+			
+			System.out.println("--Enumeration 이용한 key정보 출력--");
+			
+			// Enumeration 이용
+			Enumeration keys = prop.propertyNames(); // = prop.keys();
+			while(keys.hasMoreElements()) {
+				
+				String key = (String) keys.nextElement();
+				System.out.println(key);
+			}
+			
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+		
+	}
+
+}
+
+ - Base64
+ 	ex)
+
+ 	public class MyMain_Base64 {
+
+		public static void main(String[] args) {
+			// TODO Auto-generated method stub
+			
+			
+			try {
+				
+				String pwd = "mypass.1234";
+				
+				//Encoding(암호화)
+				String asB64 = Base64.getEncoder().
+						encodeToString(pwd.getBytes("utf-8"));
+				
+				System.out.printf("Encoding: %s\n", asB64);
+				
+				//Decoding(복호화)
+				byte [] asBytes = Base64.getDecoder().decode(asB64);
+				
+				// byte[] -> String
+				String decode_pwd = new String(asBytes, "utf-8");
+				System.out.printf("Decoding: %s\n", decode_pwd);
+				
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}		
+			
+			
+			
+		}
+
+	}
+
+  * apache.org: 아파치 사이트(외부 라이브러리 다운로드)
+  * Project 오른쪽 클릭 -> Build Path -> Configure Build Path -> Libraries -> 
+  Add External JARs -> 파일 선택: 외부 라이브러리 업로드
+
+
+ - 스레드
+   : 작업 할당 단위
+
+ 	ex)
+ 	public class MyMain_Signal extends JFrame{
+	
+	private JButton jbt_red, jbt_yellow, jbt_green;
+	
+	// inner class: Outer class의 모든 정보를 이용할 수 있다. 
+	class SignalRunnable implements Runnable{
+
+		@Override
+		public void run() { // Thread Procedure(함수)
+			// TODO Auto-generated method stub
+			String name = Thread.currentThread().getName();
+			//System.out.println(name);
+			// 각 스레드가 이 코드를 자신 영역에 복사 후 수행
+			while(true) {
+				
+				System.out.println(name);
+				if(name.equals("R")) {
+					
+					synchronized (this) { // this: class SignalRunnable
+						
+						jbt_red.setBackground(Color.red);
+						jbt_yellow.setBackground(Color.gray);
+						jbt_green.setBackground(Color.gray);
+						
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}else if(name.equals("Y")) {
+					
+					synchronized (this) {
+						
+						jbt_red.setBackground(Color.gray);
+						jbt_yellow.setBackground(Color.yellow);
+						jbt_green.setBackground(Color.gray);
+						
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+					}
+				}else if(name.equals("G")) {
+					
+					synchronized (this) {
+						
+						jbt_red.setBackground(Color.gray);
+						jbt_yellow.setBackground(Color.gray);
+						jbt_green.setBackground(Color.green);
+						
+						try {
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
+					}
+				}
+			}
+			
+		}
+		
+	}
+
+	
+	public MyMain_Signal() {
+		// TODO Auto-generated constructor stub
+		super("신호등(쓰레드)");
+		
+		// 컴포넌트 배치                                           1행 3열
+		super.setLayout(new GridLayout(1, 3));
+		
+		// 신호등 버튼 생성해서 넣기
+		jbt_red = new JButton();
+		jbt_red.setBackground(Color.red);
+		
+		jbt_yellow = new JButton();
+		jbt_yellow.setBackground(Color.yellow);
+		
+		jbt_green = new JButton();
+		jbt_green.setBackground(Color.green);
+		
+		// Frame에 추가
+		this.add(jbt_red);
+		this.add(jbt_yellow);
+		this.add(jbt_green);
+		
+		
+		// Thread 수행객체 생성
+		SignalRunnable sr = new SignalRunnable();
+		
+		// Thread 구동
+		System.out.println(Thread.currentThread().getName());
+		
+		// 빨간불 켜기
+		Thread tRed = new Thread(sr, "R");
+		tRed.start(); // 구동 
+		
+		// 노란불 켜기
+		Thread tYellow = new Thread(sr, "Y");
+		tYellow.start(); // -> 대기방으로 들어감
+		
+		// 초록불 켜기
+		Thread tGreen = new Thread(sr, "G");
+		tGreen.start(); // 구동
+		
+		// 위치, 크기지정         x	  y    W    H
+		super.setBounds(200, 100, 300, 100);;
+		
+		// 크기 변경 불가
+		super.setResizable(false);
+		
+		// 보여주기
+		super.setVisible(true);
+		
+		// 종료
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
+	}
+	
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		new MyMain_Signal();
+		
+	}
+
+}
+
+
+ 	* inner class: Outer class의 모든 정보를 이용할 수 있다. 
+ 	* Thread가 누가 언제 실행되는지는 모름 
+ 	* Thread는 실행된 명령을 어디까지 했는지 저장
+ 	    -> 동기화를 하지 않으면 다른 영역으로가서 다른 코드 실행
+	* synchronized(this/Object 객체/..): Thread 동기화 (임계영역, 공유자원)
+					   - 진입시 lock 완료시 unlock
+   				       - 임계영역을 실행하면 다른 영역은 실행 X
+
+
+--------------------------------------------------------------------------
+
+ -Java (3주차/20.09.29)
+
+  A.java(coding) -> A.class(실행파일/프로그램) -> 
+                         JVM(프로그램 메모리 적재/프로세스) 
+                          <=> CPU(Processor) -> Primary Thread (+ Sub Thread)
+
+  내부 클래스
+   - 내부에서 사용할 목적으로 구현
+     (static 붙으면 외부클래스 구현하지 않고도 생성 가능)
+
+  ex)
+
+  public class MyMain_InnerTest extends JFrame{
+	
+	// Member로서의 내부클래스를 이용해서 이벤트 처리 객체 생성
+	// 맴버 내부 클래스
+	class MyButtonEventObject implements ActionListener{
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			// JFrame의 제목이 바뀜
+			setTitle("안녕하세요~~");
+		}
+		
+	}
+	
+
+	public MyMain_InnerTest() {
+		// TODO Auto-generated constructor stub
+	
+		super("여기에 인사말을 출력하세요");
+		super.setLayout(new GridLayout(6, 1));
+		
+		JButton jbt_kor = new JButton("한국어 인사말");
+		JButton jbt_eng = new JButton("영어 인사말");
+		JButton jbt_jpn = new JButton("일본어 인사말");
+		JButton jbt_chn = new JButton("중국어 인사말");
+		JButton jbt_fra = new JButton("불어 인사말");
+		JButton jbt_ger = new JButton("독일어 인사말");
+		
+		// 현재 Frame에 추가
+		this.add(jbt_kor);
+		this.add(jbt_eng);
+		this.add(jbt_jpn);
+		this.add(jbt_chn);
+		this.add(jbt_fra);
+		this.add(jbt_ger);
+		
+		// 버튼 이벤트 등록:  Event Delegation Model
+		// 이벤트소스.addXXXListener(처리 객체)
+		ActionListener listner = new MyButtonEventObject();
+		jbt_kor.addActionListener(listner);
+		
+		// 버튼 이벤트 처리 객체 선언
+		// 로컬 내부 클래스
+		class MyButtonEventObject2 implements ActionListener{
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				setTitle("Hi~~ Everyone!!");
+			}
+			
+		}
+		
+		// 영어인사말 버튼 클릭시
+		jbt_eng.addActionListener(new MyButtonEventObject2());
+		
+		// 익(무)명 내부 클래스 선언
+		ActionListener listener2 = new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				setTitle("gonnichiwa~");
+			}
+		};
+		
+		jbt_jpn.addActionListener(listener2);
+		
+		// 중국어 인사말
+		jbt_chn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				setTitle("nihao~");
+			}
+		});
+		
+		// 이벤트 공유
+		
+		ActionListener listener3 = new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				Object evt_src = e.getSource();
+				
+				if(evt_src == jbt_fra) {
+					setTitle("Bonjure~");
+				}else if(evt_src == jbt_ger) {
+					setTitle("Hallo~");
+				}
+				
+			}
+		};
+		
+		// 프랑스/독일어 버튼이 위의 이벤트 객체를 공유
+		// Event Source
+		jbt_fra.addActionListener(listener3);
+		jbt_ger.addActionListener(listener3);
+		
+		
+		// 위치/크기 지정
+		this.setBounds(200, 100, 400, 300);
+		
+		// 보여줘라
+		super.setVisible(true);
+		
+		// 종료
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	
+	}
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		
+		new MyMain_InnerTest();
+		
+	}
+
+}
+

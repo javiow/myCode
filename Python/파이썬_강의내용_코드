@@ -1,0 +1,7058 @@
+<Python 강의내용>
+
+  - Python 기본(12주차/20.11.25)
+
+    - 주피터 노트북
+
+  	  - Ctrl + Enter: 현재 줄 실행
+      - Alt + Enter: 다음 줄 넘어가기
+      - print("안녕하세요", end = '\t'): 끝에 탭 추가
+      - # ... : 주석문
+        - 드래그 하고 Ctrl + /: 드래그한 부분 주석처리 
+        					   (한번더 누르면 해제 -> 토글 방식)
+
+    - PyCharm
+
+      - 인터프리터 설정
+        상단 좌측 File -> Setting -> Project:... -> Python Interperter -> 오른쪽 상단 톱니바퀴 클릭 -> Add -> Base interpreter ->
+        Python 설치경로(ex) C:/ProgramData/Anaconda3/Python 3.6)
+
+      - 주석문
+        - 블록 단위: ''' ... ''' (' 세번)
+        - 행 단위: # ... 
+        - 드래그 하고 Ctrl + /: 드래그한 부분 주석처리 
+        					   (한번더 누르면 해제 -> 토글 방식)
+		* 함수 정의 후 설명문 출력 방법
+		print(lotto.__doc__)  # 도큐멘트 스트링 출력
+		help(lotto)  # 도움말 함수 사용
+
+      - 기본 사항
+
+      	* 폰트(font): Lucida sans ...
+
+        - 파일 생성: 프로젝트 오른쪽 클릭 -> new -> Python file
+
+        - 파일 실행: 오른쪽 상단 Run (최근에 실행됐던 파일로 실행)
+        			파일 오른쪽 클릭 -> Run ...
+
+        - 파이썬은 들여쓰기가 중요
+          -> 1. 타언어(Java, C, Javascript) 코드를 묶어서 실행시 {} 이용
+     		 2. Python은 들여쓰기로 모듈 묶는다
+
+		* def function(): => 함수정의
+
+		- 세미콜론은 쓰지 않아도 됌
+		  -> 한 줄에 두개 이상의 명령을 사용할 경우에는 앞 명령에 사용
+
+		- 1줄의 내용이 걸어서 여러줄로 타이핑해야 할 경우에는 \ or () 사용
+
+		ex)
+
+		# 긴 내용을 한줄인것 처럼 인식 시키기(\ 사용)
+		a = 1 + 2 + 3 + \
+		      4 + 5 + 6
+		print(a)
+		# 긴 내용을 한줄인것 처럼 인식 시키기(괄호 사용
+		b = (1 + 2 + 3 +
+		        4 + 5 + 6)
+		print(b)
+		#  파라메터를 넘기는 것이라면 콤마(comma) 뒤에서 그냥 엔터를 쓰면 됩니다.
+		print("Hello",  "Python",
+		          end="\n", sep="\t")
+
+		# 문자열 중간에 줄바꿈을 하면 자동으로 ""가 열고닫히며 1줄로 인식한다.
+		print("아주 아주 아주 긴 문자열이라고 가정하자 " 
+		         "한줄에 모두 타이핑이 힘들다면")
+
+		print('''
+		      동해물과
+		      백두산이
+		      마르고
+		      닳도록
+		      '''
+		      )
+		-> " ''' " 뺴고 내용 출력
+
+	  - int 나누기 결과는 float
+	    ex) 1/2 = 0.5 (0이 아님)
+
+	  - long -> int로 통일
+
+	  - print() 출력 함수
+
+	    - print(..., end, sep, file)
+	      : ... -> 출력내용
+	        end -> 마지막 처리, 기본값은 엔터 
+	        	   콤마로 출력값을 구분 할 경우 공백(" ")
+	        	   ex) end = "\t" -> 끝에 탭 추가
+	        sep -> 콤마로 출력값을 구분할 경우 사이에 넣을 문자열
+	        	   ex) sep='-' -> 출력값 사이 - 추가 
+	        file -> 오픈된 파일에다가 출력
+	        		ex) file = f -> 오픈된 'f' 파일에 출력
+
+	    - 문자열 출력
+	      -> ' ... ' , " ... " 둘다 사용가능
+	      -> ' ... ' 안에 " ... " 사용 가능
+	      -> " ... " 안에 ' ... ' 사용 가능
+	      -> ' ... ' 안에 ' ... ' 사용할 경우 \' ... \'
+	      -> " ... " 안에 " ... " 사용할 경우 \" ... \"
+
+	    - 출력형식
+	      print(" ... %s "%("값")) -> %s 에 값 출력
+	      print(" ... %s %d ... "%("값", n)) -> %s와 %d에 순서대로 값 출력
+	      * %d, %s, %f ... 사용가능
+
+	      print(" ... {} ... ".format("값")) -> {}에 값 출력
+	      print(" ... {0} {1} {2} ...".format("값1","값2","값3")) 
+	      									 -> 순서대로 출력
+	      print(" ... {2} {0} {1} ...".format("값1","값2","값3"))
+	      									 -> 값3, 값1, 값2 순서로 출력
+	      print(" ... {a} {b} {c} ...".format(a="값1", b=n, c=''))
+	      									 -> 출력할 이름 지정해서 값 출력
+	      print(" ... {} {} {} ...".format("값1","값2","값3"))
+	      						-> 순서를 지정하지 않으면 순서대로 출력
+
+	  - input() 입력 함수
+
+	    - 콘솔 창에서 입력 받음
+
+	  	ex) print('이름을 입력하세요', end="")
+			name = input()
+			-> 콘솔창에 입력받은 내용을 name에 저장
+
+			name = input('이름을 입력하세요 ');
+			print("이름 : {0}, type : {1}".format(name,type(name)))
+			-> 위와 동일
+
+		* Ctrl + D or Ctrl + Z + Enter: 프로그램 취소
+
+		- 입력받은 값은 전부 문자열
+		  -> 숫자로 입력 받을경우, 변환해주어야함
+
+		    ex)
+		  	data = eval(input("정수를 입력하시오 : "))
+			print(data, type(data), data + 1)
+
+			data = int(input("정수를 입력하시오 : "))
+			print(data, type(data), data + 1)
+
+			data = eval(input("실수를 입력하시오 : "))
+			print(data, type(data), data + 1.2)
+
+			data = float(input("정수를 입력하시오 : "))
+			print(data, type(data), data + 1.2)
+
+	  - for문
+	    -> for i in range:
+	    -> 괄호 없이 들여쓰기로 구분
+	    -> 반복만 할 경우 i 대신 _ 문자 사용가능
+	    -> range에는 값의 배열, 리스트, ...이 들어가야함
+	    ex)
+	       for i in range(1, 10):
+	       for _ in range(4):
+	       colors = ['red','green','yellow', 'blue']
+		   for color in colors:
+
+		- range() 함수
+		  -> range(a, b, n)
+		     : a부터 b-1까지 n 씩 증가
+		     ex)
+		     range(10): 0~9
+		     range(5, 10): 5~9
+		     range(1, 10, 2): 1, 3, 5, 7, 9
+
+    - Python 문법 참고사이트: https://wikidocs.net/book/2070
+
+--------------------------------------------------------------------------
+
+  - Python 클래스, 자료형(12주차/20.11.26)
+
+    - 모듈
+      : 내장, 외부 라이브러리 사용 (패키지)
+      	파일명.py으로 작성된 파일 사용
+        import 모듈
+        import 모듈1, 모듈2 ...
+        import 모듈 as 별명
+        from 모듈 import 변수,함수..
+        -> 모듈안에 있는 변수, 상수, 함수 사용
+        -> 모듈명 생략 가능 (다른 모듈의 함수와 겹치지 않게 주의)
+
+      - 함수 생성
+        -> def 함수명(변수):
+             내용
+             return 결과값
+
+      - 상수 선언
+        -> 상수명 = 상수값
+           ex) pi = 3.141592
+
+    - None
+      : 값이 없음(= null)
+        -> False X
+        -> [] X
+        -> "" X
+        -> 0 X
+
+    * 산수연산자는 다른 언어와 동일
+      곱하기연산(/)에서 몫만 구하기 -> a // b
+      a ** b -> a의 b승
+
+    - 식별자 표기법 & 코드 작성 권고사항
+	  -> https://wikidocs.net/20559 참고
+
+	- 클래스 작성
+
+	class Person:
+    # 생성자
+    # Person(name, age, tel)로 초기화
+    # 내부변수 이름은 "_변수" 로 사용하길 권장
+    def __init__(self, name, age, tel):
+        self._name = name
+        self._age = age
+        self._tel = tel
+
+    # self는 생략가능(클래스 안에서는 항상 들어감) == this (Java)
+    def display(self):
+        print("-" * 30)
+        print("이름: {}".format(self._name))
+        print("나이: {}".format(self._age))
+        print("전화: {}".format(self._tel))
+        print("-" * 30)
+
+    # 내부변수를 외부로 호출할 때
+    # getter
+    @property
+    def name(self):
+        return self._name
+
+    # setter
+    @name.setter # getter가 선언되어야 사용 가능
+    def name(self, name):
+        self._name = name
+
+    - 클래스 사용
+
+    from myperson import Person
+
+	# 객체 생성
+	p = Person("일길동", 20, "010-111-1234")
+	p.display()
+
+	# 내부변수 접근 (getter)
+	name = p.name
+	print("p's name = {}".format(name))
+
+	# setter 이용 이름 변경
+	p.name = '개명길동'
+	p.display()
+
+	- 변수
+	  - 파이썬에서는 변수 선언 필요 X
+	  - 변수 타입 지정 X
+	  - 한번에 같은 값, 다른 값 초기화
+	    ex) a=b=c = "같은 값"
+			d,e,f = "값", a, b
+
+	  - 변수 값 교환
+	    ex) # 일반 언어의 경우 두 변수값 교환
+			g,h = 100,200
+			t = g;
+			g = h;
+			h = t;
+
+			# 파이선의 경우 두 변수값 교환
+			g,h = 100,200
+			g,h = h,g
+
+ 	* 리터럴 -> 값
+
+	- 논리값 리터럴
+	  True == 1
+	  False == 0
+	  -> 산술연산 가능
+	  	 ex) 5 + True = 6
+	  	 	 5 + False = 5
+
+	- 컬렉션 리터럴
+	  - 튜플(tuple): 레코드, 하나의 행(데이터베이스)
+	    -> (a, b, c) 
+	       -> 값의 타입이 다를수도 있음, 불변객체
+
+	  - 리스트(list): 배열 (값의 타입이 같은), 가변객체
+	    -> [a, b, c]
+
+	  - 딕셔너리(dictionary): 키 & 값 형태 (Map)
+	    -> {'a':'apple', 'b':'ball', ...}
+
+	  - 셋(set): 순서, 중복이 없음 (Java의 Set)
+	    -> {'a', 'b', 'f', ...} 
+	       -> 출력하면 이 순서대로 나오진 않음
+
+	  - 컬렉션 출력
+	    ex)
+
+	    fruits = ["apple", "mango", "orange"]  # list
+		numbers = (1, 2, 3)  # tuple
+		alphabets = {'a': 'apple', 'b': 'ball', 'c': 'cat'}  # dictionary
+		vowels = {'a', 'e', 'i', 'o', 'u'}  # set
+
+		print(fruits)
+		print(numbers)
+		print(alphabets)
+		print(vowels)
+
+		# tuple과 list는 순서가 있음
+		print(fruits[0])
+		print(numbers[1])
+
+		# dictionary는 키로 값 접근
+		print(alphabets['a'])
+
+		# set은 순서가 없음 -> 출력할 때마다 다르게 나옴
+		for w in vowels:
+		    print(w)
+
+	- 자료형
+
+	  - 정수형
+	    -> int로 통일(8byte)
+
+	  - 실수형
+	    -> float(소수점 15자리까지 정확)
+
+	  - 숫자형 출력
+
+	    # 출력만
+		number = 12345
+		# 0: -> 첫번째 순서에
+		# , -> 3자리마다 , 출력
+		print("{0:,}".format(number))
+
+		# 문자열로 변경
+		numberString = format(number, ',')
+		print(numberString)
+
+	    # > : 오른쪽 정렬
+		# ^ : 중앙 정렬
+		# < : 왼쪽 정렬
+		#  0, @, ... : 남는 공간을 값으로 채우기
+		print(format(12345.56789, ">-12,.2f"))
+		print(format(12345.56789, "^-012,.2f"))
+		print(format(12345.56789, "<-012,.2f"))
+		print(format(12345.56789, "@>12,.2f"))
+		print(format(-12345.56789, "12,.2f"))
+		print(format(-12345.56789, "-12,.2f"))
+		print(format(12345.56789, "+12,.2f"))
+
+		# 소수점 -> 퍼센트 출력
+		print(format(0.1234, ".1%"))
+
+	  - 문자열
+
+	    -> '...', "...", '''...''', """...""" 로 표현
+	    -> 주석문 형태로도 넣을수 있음
+	       ex)
+	       str3 = '''첫번째 줄
+					두번째 줄
+					세번째 줄
+					'''
+			str4 = """첫번째 줄
+					두번째 줄
+					세번째 줄
+					"""
+		-> 한줄이 길어질 경우 여러줄로 나누어서 쓸때 \ 를 해줘야 함
+		-> 불변 객체
+		   -> 자신이 변경되는것이 아니라 항상 새로운 객체를 만들어 리턴
+
+		* print(함수.__doc__): 함수의 주석문(설명) 출력
+		  help(함수): 함수의 형식(입력인자, ..)을 포함한 주석문 출력
+
+		- 문자열 처리 함수
+
+		  - len(문자열): 문자열의 길이를 구하는 함수
+		  				 공백, 특수문자도 1글자로 인식
+
+		  - 숫자 -> 문자: str(n)
+		    문자 -> 숫자: int(str)
+
+		  - 연결: 문자열1 + 문자열2
+		          -> 문자열과 숫자를 더하면 에러
+		             -> 숫자를 문자형으로 바꿔야함 ex) str(n)
+
+		  - 반복: 문자열 * n
+
+		  - 문자열 잘라내기
+
+		 	문자열[n] : 1글자 잘라내기
+			문자열[n:m] : n부터 m-1까지 문자열을 리턴
+			문자열[:m] : 앞의 숫자를 생략하면 0부터 시작
+			문자열[n:] : 뒤의 숫자를 생략하면 끝 글자까지
+			문자열[:] : 모두 생략하면 전체
+			문자열[-n] : 음수 값을 지정하면 뒤에서부터 카운팅
+
+		  - 공백 없애기
+
+		    문자열.strip() : 앞, 뒤 공백 모두 없애기
+			문자열.lstrip() : 왼쪽 공백 없애기
+			문자열.rstrip() : 오른쪽 공백 없애기
+
+		  - 문자열에서 지정 문자열 개수새기: 문자열.count(지정문자열)
+
+		  - 대/소문자 변경: 문자열.upper(), 문자열.lower() 
+
+		  - 첫글자만 대문자로 변경: 문자열.capitalize()
+
+		  - 문자열 찾기
+
+		    문자열.find(찾는문자열)
+			문자열.index(찾는문자열)
+			-> 문자열의 인덱스를 반환(중복된 경우 첫번째 인덱스)
+			-> 두개의 차이점은 find()는 없으면 -1을 리턴하고 
+							  index()는 에러를 발생
+
+		  - 문자열 바꾸기
+
+		  	문자열.replace('원본문자열', '바뀔문자열', 바꿀개수 = n)
+
+		  - 문자열 나누기: 문자열.split(sep=None, maxsplit=-1)
+		  	-> list로 리턴
+
+		  - 문자열 합치기: 합칠문자열.join(list)
+		    -> list를 합칠문자열로 결합해서 하나의 문자열로 리턴
+
+		  - 문자의 아스키 코드값을 리턴: ord(문자)
+
+		  - 아스키 코드값에 해당하는 문자를 리턴: chr(아스키코드)
+
+		  # 1자리 숫자 문자열을 숫자로 변환
+			ord(문자) - ord('0')
+			
+		  # 1자리 숫자를 숫자 문자열로 변환
+			chr(n + ord('0'))
+
+	  - 튜플(Tuple)
+
+	    : 데이터의 목록
+		콤마(,)로 데이터를 나열하면 tuple
+		괄호()안에 ,로 나열해도 tuple
+		길이 1개짜리 tuple을 만들려면 반드시 뒤에 콤마(,)를 붙여야 함
+		tuple은 다른 자료형들로 만들 수 있음
+		tuple은 tuple을 가질 수 있음
+
+		ex)
+		tuple1 = 1, 2, 3, 4, 5
+		tuple2 = (6, 7, 8, 9, 10)
+		tuple3 = 1,
+		tuple4 = (6,)
+		tuple5 = '회원목록', ('한놈','두식이'),(33,25), (True, False)
+
+		- len(tuple)로 요소의 개수를 알아낼 수 있음
+		  [n:m]으로 요소에 접근이 가능 (문자열과 동일)
+	 	  반복문을 이용하여 접근이 가능
+		  +연산을 이용하여 결합이 가능
+		  *연산을 이용하여 반복 가능
+		  
+		- Tuple은 불변 객체
+		  -> tuple의 요소 값 변경 불가
+		     tuple의 요소 삭제 불가
+		  ex)
+
+		  tuple1 = 1, 2, 3, 4
+			
+		  # 첫번째 값을 변경하려면 : 새로운 객체를 만들어야 함
+		  tuple1 = ('A',) + tuple1[1:]
+			
+		  # 세번째 값을 변경하려면
+		  tuple1 = tuple1[:2] + ('C',) + tuple1[3:]
+		
+		  # 두번째 값을 삭제하려면
+		  tuple1 = (tuple1[0],) + tuple1[2:]
+		
+--------------------------------------------------------------------------
+
+  - Python 자료형, 연산자(12주차/20.11.27)
+
+    - Set
+
+    : set 자료형은 중복을 허용 X
+	set은 입력된 순서는 중요 X
+	set() 생성자 함수를 이용해서 만들 수 있음
+	{}를 이용해서 만들 수 있음
+
+	add() 메서드를 이용하여 추가가 가능함(한개만)
+	 -> ex) set1.add(5)
+
+	update() 메서드를 이용하여 동시에 여러개 추가가 가능
+	 -> ex) set1.update(1, "2", {3, 4, "5"})
+
+	remove() 메서드를 이용하여 삭제가 가능
+	 -> remove(값): 값에 해당되는 set안의 값을 제거
+
+	copy() 메서드를 이용하여 복사가 가능 (깊은 복사 -> 객체값이 복사)
+	* 얕은 복사할 경우 복사된 객체, 복사한 객체 둘다 변경
+
+	clear() 메서드를 이용하여 모든 요소 삭제가 가능
+
+	  - set1 = set("문자열") -> 각 문자로 분할해서 중복제거 후 순서없이 저장
+	    set1 = {1, True} -> True == 1 이기때문에 1만 저장
+	    set() 생성자 안에는 한 값만 들어가야함 
+	    	ex) set(1, {2, "3"}) => X
+	    set은 다양한 자료형 저장 가능
+	  		ex) set1 = {1, "2", 3.4, True}
+	  - 중복을 제거한 단어 갯수를 세는데 활용
+
+	  * random.randint(a, b): a ~ b사이 숫자 추출
+
+	  - sorted(set) -> set을 정렬해서 list로 반환
+
+	- List
+
+	: list는 자료들의 모임
+	입력된 순서가 유지
+	list()생성자나 []로 리스트를 만듬
+	set과 다르게 1개짜리 리스트도 만들 수 있음
+	어떤 자료 형도 저장이 가능
+	len() 함수를 이용하여 요소 개수를 얻을 수 있음
+	[n:m] 값을 이용하여 접근이 가능
+
+	append() 메서드를 이용하여 추가가 가능(뒤에 붙는 것)
+	 -> append(값): 리스트의 맨 뒤에 값 추가
+
+	insert() 메서드를 이용하여 삽입이 가능(중간에 추가)
+	 -> insert(n, 값): n번째 자리에 값을 추가
+
+	remove() 메서드를 이용하여 삭제가 가능
+	 -> list1.remove(값): 값에 해당하는 리스트의 값을 삭제
+
+	clear() 메서드를 이용하여 모든 요소 삭제가 가능
+
+	  - list 값을 삭제할때 주의사항
+
+	 	# 삭제 : 인덱스가 변하므로 주의해야 함
+		for i in list1:
+		    if i > 50:
+		        list1.remove(i)
+		print(list1)
+
+		# 인덱스는 동일한데 리스트 구조가 바뀜
+		# -> 앞에서 부터 빼면 리스트가 앞으로 땡겨짐
+		# -> 건너뛰는 값이 발생
+
+		# 차례대로 삭제 -> 뒤에서 부터 해야함
+		for index in range(len(list1)-1, -1, -1):
+		    if list1[index] > 50:
+		        list1.remove(list1[index])
+
+		* range 기능
+		  -> range(10, -1, -1): 10부터 시작, 1씩 빼서 -1이 되면 정지
+
+	  - list1.reverse(): 뒤집기, 리스트 자신이 변경
+	  
+	  - list1.sort(): 정렬, 리스트 자신이 변경 (기본값: 오름차순)
+	  				  list1.sort(reverse=True) -> 내림차순 정렬
+	  
+	  - sorted() 함수를 이용하여 정렬
+	  	-> list1 = sorted(list2)
+	  	           sorted(list2, reverse=True) -> 내림차순 정렬
+	  
+	  - copy(): 복사 ex) list1 = list2.copy()
+
+	  * 얕은복사: 주소가 복사
+	  	깊은복사: 값이 복사
+
+	  	# 얕은복사 : 주소가 복사됨 -> 가리키는 곳이 같음
+		list2 = list1
+		list2[0] = 999  # 1개변경
+		# 둘다 변경됌 : 같은 객체
+
+		# 깊은복사 : 객체(값)가 복사됨
+		list2 = list1.copy()
+		list2[0] = 777  # 1개 변경
+		# 1개만 변경 : 서로 다른 객체이다.
+
+	* 순서있는 자료형: Tuple, List -> [] 로 접근 가능
+					  -> Tuple은 수정 불가능, List는 수정 가능
+	  순서없는 자료형: Set, Dictionary -> [] 로 접근 불가능
+	  				  -> Set은 중복 제거, Dictionary는 키&값 형태(Map)
+
+	- Dictionary
+
+	: dictionary는 "키(Key)/값(Value)" 쌍을 요소로 갖는 자료형 (Map) 
+	키(Key)로 신속하게 값(Value)을 찾아내는 해시테이블(Hash Table) 구조
+	파이썬에서 dictionary는 "dict" 클래스로 구현
+	dictionary의 키(key)는 그 값을 변경할 수 없는 Immutable 타입이어야 하며, dictionary 값(value)은 Immutable과 Mutable 모두 가능 
+	-> 키(key)로 문자열이나 Tuple은 사용가능 (불변객체), 
+	   리스트는 키로 사용될 수 없음 (가변객체)
+	dictionary의 요소들은 {} 를 사용하여 생성 (여러개일 경우 콤마(,)로 구분)
+	{}를 이용하여 만들 수 있음
+	dict() 생성자를 이용하여 만들 수 있음
+
+	ex)
+
+	dict1 = {}
+	-> set은 set1 = set()으로 초기화
+
+	dict2 = {'name':'한사람','age':22, 'gender': True}
+
+	# dict 요소 표현
+	print(dict2['name'])
+	print(dict2['age'])
+	print(dict2['gender'])
+
+	tuple1 = ('이름','나이','성별')
+	dict3 = {tuple1 : ('한사람', 22, True)}
+	print(dict3[tuple1])
+
+	# dict3[tuple1] = ('한사람', 22, True)
+	for index in range(0,3):
+	    print(tuple1[index],":", dict3[tuple1][index])
+
+	dict4 = dict(kor=87, eng=80, mat=85, edps=99)
+	print(dict4['kor'])
+
+	- dict.keys(): 키 값만 얻음 (dict_keys 타입)
+
+	- dict.values(): 값들만 얻음 (dict_values 타입)
+
+	- dict[키] = 값: 새로운 키&값 추가 가능
+
+	- dict.update({...}): 한번에 여러 요소를 추가/수정 가능
+					 ex) dict.update({'a':1, 'b':2})
+
+	- 같은 키에 다른값을 넣으면 수정
+	  -> dict['a'] = [1, 2]
+	  	 dict['a'] = [3, 4, 5]
+
+	- del dict[키]: 요소 삭제 ex) del dict['a']
+
+	- dict.items(): (key,value)쌍 얻을 수 있음 
+					(dict_items 타입) -> Tuple
+		ex)
+		for data in dict1.items():
+	    print(data[0], ':', data[1])
+
+		for (key, value) in dict1.items():
+	    print(key,':',value)
+
+	* 파이썬 E-book 참고: https://wikidocs.net/book/1
+
+	- 연산자
+
+	  - 산술연산자
+	    : 다른 언어와 거의 동일
+
+	    * divmod(a, b): a를 b로 나눈 몫과 나머지를 튜플로 반환
+
+	    - math.floor(f): 실수 f를 내림
+	    - math.ceil(f): 실수 f를 올림
+
+	    * while문 (조건이 참일동안 실행)
+	      -> while 조건:
+	      		...
+
+	      -> while True:
+	      		...
+	         => 무한 반복 (break를 써야 종료)
+
+	  - 3항연산자: 참일 경우 if 조건 else 거짓일 경우
+	               조건문에서 number타입을 조건으로 지정하면 
+	                					0은 거짓 그 외의 숫자는 참
+	               ex)
+	               print("참" if -1.0 else "거짓") -> 참
+				   print("참" if 0.0 else "거짓") -> 거짓
+				   print("참" if 0.1 else "거짓") -> 참
+		* 윤년구하기
+		while True:
+		    year = int(input('년도를 입력하시오(0은 종료)'))
+		    if not year:
+		        break
+		    print('윤년' if year%400==0 or year%4==0 and year%100!=0 else '평년')
+		    # == 
+		    print('윤년' if year%400==0 or year%4==0 and year%100 else '평년')
+
+	  - 멤버연산자: 포함여부를 검사하는 연산자 (in, not in)
+	    -> 1 in [1, 2, 3, 4]: True
+	    -> "참" if 1 in list1 else "거짓"
+	    -> 회원 검색에 주로 사용
+
+	  - 아이디연산자: 동일한 객체 여부를 판별하는 연산자 (is, is not)
+	    id(객체): 객체의 고유값(레퍼런스)을 반환하는 함수
+	              -> 파이썬이 객체를 구별하기 위해서 부여하는 일련번호
+	              -> 숫자는 아님
+	              -> 동일한 객체 여부를 판별할 때 사용
+	              -> 복사하거나 값이 같을 경우 동일
+	              -> a is b => 참 or 거짓 반환
+
+	              ex)
+
+	              a = 10
+				  b = 10
+				  c = 11
+
+				  '같은 객체' if a is b else '다른 객체' -> 같은 객체
+				  '같은 객체' if a is c else '다른 객체' -> 다른 객체
+
+	- if문
+
+	  - 조건이 참일 경우에만 실행
+	    -> if 조건:
+	    	...
+	  
+	  - 숫자형 : 0은 거짓, 그외의 숫자는 참
+		문자열 : 빈문자열만 거짓
+		컬렉션 : {}, [], ()만 거짓
+		None : 거짓
+
+	  - 조건이 참 또는 거짓일 경우
+	    -> if 조건:
+	    	...
+	       else:
+	        ...
+
+	  - 조건이 많을 경우
+	    -> if 조건:
+	    	...
+	       elif 조건:
+	        ...
+	       elif 조건:
+	        ...
+	       else:
+	        ...
+
+	- for문
+
+	  - range(): for문에서 자주 사용되는 범위 추출 함수
+	   			 list(range(n)): 리스트로 생성
+	   			 set(range(n)): 셋으로 생성
+	   			 tuple(range(n)): 튜플로 생성
+
+	  - enumerate(): 리스트가 있는 경우 순서와 리스트의 값을 전달하는 기능\
+					 “열거하다”
+					 자료형(list, set, tuple, dictionary, string)을 입력으로 받아 인덱스 값을 포함하는 enumerate 객체를 리턴
+					 보통 enumerate 함수는 for문과 함께 자주 사용
+		
+		-> enumerate(string)
+		-> enumerate(tuple)
+		-> enumerate(list)
+		-> enumerate(dictionary)
+		-> enumerate(set)
+		=> 각 값에 인덱스를 메겨 반환
+
+		ex)
+
+		# i = 인덱스, value = 값
+		data = enumerate((1, 2, 3))
+		for i, value in data:
+		    print(i, ":", value)
+
+		data = enumerate({1, 2, 3})
+		for i, value in data:
+		    print(i, ":", value)
+
+		data = enumerate([1, 2, 3])
+		for i, value in data:
+		    print(i, ":", value)
+
+		dict1 = {'이름': '한사람', '나이': 33}
+		data = enumerate(dict1)
+		for i, key in data:
+		    print(i, ":", key, dict1[key])
+
+		data = enumerate("재미있는 파이썬")
+		for i, value in data:
+		    print(i, ":", value)
+
+	  - list 만들기
+
+	  [식 for 변수 in Collection_Data]
+	  [식 for 변수 in Collection_Data if 조건]
+	   4       1            2             3    => 실행순서
+
+	  ex)
+	  list0 = [i for i in range(1,11)]
+
+	  list1 = [i**2 for i in range(1,11)]
+
+	  list2 = [i for i in range(1,11) if i%2]
+
+	  list3 = [i for i in range(1,11) if not i%2]
+
+	  # 중첩이 가능합니다. 구구단표입니다.
+	  list4 = [i*j for i in range(1,10)
+	               for j in range(1,10)]
+
+--------------------------------------------------------------------------
+
+  - Python 함수(13주차/20.11.30)
+
+    - 함수 (function)
+
+      - 함수 선언 방법
+
+     	- 방법1
+		def f_1(a, b, c):
+		    print(a, b, c)
+
+		# 호출방법
+		f_1(1, 2, 3)        # position argument (실인자)
+		f_1(a=1, b=2, c=3)  # keyword argument
+		f_1(1, b=2, c=3)
+		# f_1(a=1, 2, c=3) -> 실행 에러 (첫번째 인자만 생략가능)
+		f_1(1, 2, c=3)
+		f_1(b=1, a=2, c=3)  # 실행은 되나 혼동이 올 수 있음
+		
+		- 방법2
+		def f_2(a=0, b=0, c=0):     #default parameter (가인자)
+		    print(a, b, c, sep="-")
+
+		f_2(1, 2, 3)
+		f_2()
+		f_2(1)
+		f_2(1, 2)
+		f_2(a=1, b=2, c=3)
+		f_2(c=3)
+
+		- 방법3: 가변인자(인자정보가 정해지지 않음)
+		def f_3(*args):
+		    print(args)     # tuple 형태
+		    print(*args)    # unpack(포장해체)
+		    for v in args:
+		        print(v, end = " ")
+		    print()
+
+		f_3()
+		f_3(1)
+		f_3(1, 2)
+		f_3(1, 2, 3)
+
+		- 방법4: keyword parameter -> 딕셔너리로 인식
+		def f_4(**keywords):
+		    print(keywords)
+		    print(*keywords)    # unpack
+		    # 튜플로 반환
+		    for k, v in keywords.items(): 
+		        print(k, v)
+		    for k in keywords:
+		        print(k, ":", keywords[k])
+
+		f_4(a=1, b=2, c=3)
+		f_4(name = "홍길동", age = 20, tel = "010-111-1234")
+
+
+    - 람다식 (익명함수)
+
+      - 일반 함수 생성 방법
+
+	    def myDouble(n):
+		return n*2
+
+		# 호출방법
+		print(myDouble(10))
+
+		# 함수명을 변수처럼 저장가능
+		f1 = myDouble
+		print(f1(20))
+
+	  - 람다식 생성 방법
+
+		# lambda => 익명함수
+		# 위의 함수를 동일하게 작성한 람다식
+		f2 = lambda n: n*2
+		print(f2(30))
+		print((lambda n: n*2)(40))
+
+	  - 람다식 활용
+
+		def add(a, b):
+		    return a+b
+
+		def sub(a, b):
+		    return a-b
+
+		# 인자를 함수로 사용가능
+		def proxy(f, a, b):
+		    return f(a,b)
+
+		print("---함수 Proxy를 이용---")
+		print(proxy(add, 3, 5))
+		print(proxy(sub, 3, 5))
+
+		print("---lambda 이용---")
+		print(proxy(lambda a,b: a+b, 3, 5))
+		print(proxy(lambda a,b: a*b, 3, 5))
+
+		# random수
+		def makeRandom():
+		    a = []
+		    for _ in range(10):
+		        a.append(random.randrange(100))
+		    return a
+
+		a = makeRandom()
+		print("-" * 30)
+		print(a)
+
+		print(sorted(a)) #asc
+		print(sorted(a, reverse=True)) #desc
+
+		# 나머지 구하기 함수
+		def under10(n):
+		    return n%10
+
+		# key = 함수명 => 각 요소에 함수를 적용하고 그 결과를 기준으로 sort
+		print(sorted(a, key = under10))
+		print(sorted(a, key = lambda n: n%10))
+		print(sorted(a, key = lambda n: n%10, reverse=True))
+
+		colors = ['Yellow', 'green', 'RED', 'bLuE', 'WHITe']
+		print("---알파벳 정렬---")
+		print(sorted(colors))
+		print(sorted(colors, reverse=True))
+
+		# 대소문자 구분하지 않고 정렬
+		print(sorted(colors, key=lambda s: s.lower()))
+
+		# 문자의 길이순 정렬
+		print(sorted(colors, key=lambda s: len(s)))
+		print(sorted(colors, key=lambda s: len(s), reverse=True))
+
+		print("-----tuplie list-----")
+		items = [('kim', 10), ('han', 20), ('han', 50), ('kim', 20),
+		            ('kim', 70), ('kim', 50), ('han', 80), ('han', 20)]
+
+		# 이름 정렬 후 이름별로 나이순 정렬
+		print(sorted(items))
+
+		# tuple중 나이순으로 정렬
+		print(sorted(items, key=lambda i: i[1]))
+
+	- Random 모듈
+
+	import random
+
+	  - 1. random.random(): 0이상 1미만 실수출력
+		# 0.0 <= x < 1.0
+		x = random.random()
+		print("1. random.random(): ", str(x))
+
+	  - 2. random.uniform(a, b): a이상 b미만 실수출력
+		# a <= x < b
+		x = random.uniform(0, 1)
+		print("2. random.uniform(0, 1): ", str(x))
+
+	  - 3. random.randint(a, b): a이상 b이하 정수출력
+		# a <= x <= b
+		x = random.randint(10, 20)
+		print("3. random.randint(10, 20): ", str(x))
+
+	  - 4. random.randrange(a, b): a이상 b미만 정수출력
+		#     random.randrange(n): 0이상 n미만 정수출력
+		x = random.randrange(10, 20)
+		print("4. random.randrange(10, 20): ", str(x))
+
+		x = random.randrange(10)
+		print("4. random.randrange(10): ", str(x))
+
+	  - 5. random.choice(seq): sequence data(순서있는 데이터) or 
+	  글자중에서 임의의 글자를 선택
+		x = random.choice("Hi Python!")
+		print("5. random.choice(\"Hi Python!\"): ", x)
+
+		
+	  * 빈값 -> 에러발생 -> 예외처리
+		try:
+		    x = random.choice("")
+		except IndexError:
+		    print("random.choice(' ')'s IndexError")
+		finally:
+		    print('예외와 상관없이 무조건 실행되는 구문')
+
+	  - 6. random.sample(seq or set, cnt): 순서있는 데이터 or String or Set에서 n개 추출 -> 리스트로 반환
+	  	# 인덱스를 이용해 추출
+	  	# 데이터수 >= 추출할 개수
+		x = random.sample("Hi Python!", 3)
+		print("6. random.sample(\"Hi Python!\"): ", x)
+
+	  - 7. random.shuffle(list): 섞기
+		a = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+		print("before: ", str(a))
+		random.shuffle(a)
+		print("after: ", str(a))
+
+	- 예외처리(try-except)
+
+		a = [1, 6, 8]
+
+		try:
+		    a = None 				 # Unknown Error
+		    print(a[3])				 # IndexError
+		    b = random.sample(a, 4)  # ValueError
+		except IndexError:
+		    print("IndexError")
+		except ValueError:
+		    print("ValueError")
+		except:
+		    print("Unknown Error")
+		else:
+		    print("else")
+		finally:
+		    print("finally")
+
+	- 파일 불러오기
+
+		filename = 'Data/song1.txt'
+
+	  - 방법1
+		f = open(filename, "r", encoding="utf-8")
+		# 파일내용을 리스트로 읽어오기
+		# 한번에 읽기
+		lines = f.readlines()
+		# print(lines)
+		for line in lines:
+		    print(line, end='')
+
+		# 파일을 오픈하면 꼭 닫아야함
+		f.close()
+
+	  - 방법2
+		f = open(filename, "r", encoding="utf-8")
+
+		while True:
+		    # 한줄씩 읽기
+		    line = f.readline()
+		    # if len(line) == 0:
+		    if not line:
+		        break
+		    # strip() -> 공백, 엔터 제거
+		    print(line.strip())
+
+		f.close()
+
+	  - 방법3
+		f = open(filename, "r", encoding="utf-8")
+
+		for line in f:
+		    print(line.strip())
+		f.close()
+
+	  - 방법4
+		# with내에서 사용된 자원은 자동 close()
+		with open(filename, "r", encoding="utf-8") as f:
+		    for line in f:
+		        print(line.strip())
+
+	- 파일 쓰기, 덮어쓰기
+
+	  - 파일쓰기
+		f = open("Data/write.txt", "w", encoding="utf-8")
+		f.write("hello\n")
+		f.write("python"+"\n")
+		f.write("hi~~")
+		f.write("\n")
+		f.close()
+
+	  - 덮어쓰기
+		f = open("Data/write.txt", "a", encoding="utf-8")
+		f.write("추가내용\n")
+		f.close()
+		    
+	- 정규식 처리 모듈
+
+		# Regular Expression
+		
+		import re
+
+	    data = '''1 Alice 33
+		2 Brian 27
+		3 Cathy 19
+		4 David 31
+		5 Eddie 28 
+		6 Atom 28
+		7 Adams 38'''
+
+	  - 정규식 이용해서 숫자만 얻어오기
+		# r"..." -> raw 데이터(역슬래시, 엔터.. 모두 포함)
+		n_list = re.findall(r'[0-9]+', data)
+		print(n_list)
+		
+	  - 정규식을 이용해서 알파벳 얻어오기
+		s_list = re.findall(r'[A-Za-z]+', data)
+		print(s_list)
+		
+	  - 이름중에서 A로 시작되는 이름만 추출
+		a_list = re.findall(r'A[A-Za-z]+', data)
+		print(a_list)
+		
+		data1 = '''
+		동해물과 I am Tom
+		123 백두산이 You are a Jane
+		456 마르고 닮도록 Jaskson'''
+
+	  - 한글만 추출해본다
+		h_list = re.findall(r'[가-힣]+', data1)
+		print(h_list)
+		
+--------------------------------------------------------------------------
+
+  - Python 크롤링(13주차/20.12.01)
+
+    - 날씨 조회(크롤링)
+
+      - url = "http://www.weather.go.kr/weather/forecast/mid-term-rss3.jsp"
+        -> Ctrl + 마우스 왼쪽클릭: url로 이동
+
+      - 필요 라이브러리: request, re
+
+      - 라이브러리 install (파이썬 환경)
+        -> 왼쪽 상단 File - Settings - Project.. - Python Interpreter
+        -> 왼쪽 메뉴 "+" 버튼 클릭
+        -> 다운로드할 패키지 검색 후 Install Package
+
+      - 파이썬 라이브러리 -> 아나콘다 라이브러리 변경 (아나콘다 환경설정)
+        - 왼쪽 상단 File - Settings - Project.. - Python Interpreter
+          -> 왼쪽 상단 톱니바퀴 아이콘 클릭 -> Show all
+          -> Python ... 제거 -> 추가 버튼 클릭
+          -> 왼쪽 메뉴 - Conda Environment
+          -> Existing environment -> Interpreter
+          -> Anaconda3 폴더의 파이썬 실행 파일 경로 클릭
+             (C:\Users\HongJinWon\Anaconda3\python.exe)
+          -> OK
+        -> 사용하지 않은 라이브러리들도 다운로드돼 느려질 수도 있음
+
+      - URL 페이지 정보 읽어오기
+      	- requests.get(url, params, kwargs) 
+	        -> kwargs(keyword arguments: 딕셔너리)
+	        -> 지정한 url을 읽어옴
+
+		recvd = requests.get(url)
+		print(recvd.text)
+		* recvd.text -> reguests.get으로 가져온 데이터의 텍스트 정보        
+
+      - re 모듈을 통해 필요한 데이터 선택
+
+      	# 정규식
+        #  . : 모든 값 한자리
+		#  + : 1...n
+		# .+ : 하나 이상의 모든 값 (모든 데이터) 
+		#    -> 모든 데이터 안에서 중복된 구간이 있어도 처음과 끝까지 다 읽어옴
+		#    -> greedy (탐욕적)
+		#  ? : 0 또는 1
+		#.+? : 모든 데이터 안에서 중복된 구간이 있으면 그 구간을 하나로 침 
+		#    -> non-greedy(비탐욕적)
+		#(.+?): 괄호안에 값만 가져옴
+
+		locations = re.findall(r'<location wl_ver="3">.+?</location>', recvd.text, re.DOTALL)
+
+	  - 지역별 날씨 데이터 읽기
+		
+		for loc in locations:
+	    	# province / city 읽어오기
+		    prov = re.findall(r'<province>(.+)</province>', loc)
+		    city = re.findall(r'<city>(.+)</city>', loc)
+		    # *prov, *city -> 리스트로 반환된 데이터 unpacking 
+		    # print(*prov, *city, sep=": ")
+
+		    # 하위 xml 태그가 1개 이상일 경우(엔터가 들어갈 경우) -> re.DOTALL
+		    data_list = re.findall(r'<data>(.+?)</data>', loc, re.DOTALL)
+		    for data in data_list:
+		        mode = re.findall(r'<mode>(.+)</mode>', data)
+		        tmEf = re.findall(r'<tmEf>(.+)</tmEf>', data)
+		        wf = re.findall(r'<wf>(.+)</wf>', data)
+		        tmn = re.findall(r'<tmn>(.+)</tmn>', data)
+		        tmx = re.findall(r'<tmx>(.+)</tmx>', data)
+
+		        row = '{},{},{},{},{}'.format(*prov, *city, *mode, *tmEf, *wf, *tmn, *tmx)
+		        # row = '{},{},{},{},{},{},{}'.format(prov[0], city[0], mode[0], tmEf[0], wf[0], tmn[0], tmx[0])
+		        print(row)
+
+	  - CSV 플러그인 (.csv 파일을 보기쉽게 해주는 플러그인)
+
+	  File - Settings - Plugins - CSV Plugin -> Install
+
+	  - 조회한 데이터 파일 쓰기(CSV, Excel)
+
+	 	# 날씨정보 저장(Comma Seperator Values)
+	 	# 파이썬에서 확인 가능
+		f = open("Data/kma.csv", "w", encoding="utf-8")
+
+		# Excel에서 확인하려면 인코딩 맞춰줘야 안깨짐(CP949)
+		# 파이썬에서는 깨짐
+		f1 = open("Data/kma_949.csv", "w", encoding="cp949")
+
+		...
+
+		f.close()
+		f1.close()
+
+	* list 형식 unpacking -> value[0]
+
+    - 네이버 검색 API로 검색된 데이터 작성하기
+
+  	import requests
+	import re
+	import datetime
+
+	query = "notebook"
+	start = 101
+	display = 100
+
+	clientID = "iS4OW8fwoKgVsfTJHt_8"
+	clientSecret = "3n1dbxRWtx"
+
+	headers = {
+	    'Content-Type':'application/xml; charset=utf-8',
+	    'X-Naver-Client-Id':clientID,
+	    'X-Naver-Client-Secret':clientSecret
+	}
+
+	url = "https://openapi.naver.com/v1/search/shop.xml?query={}&start={}&display={}".format(query,start,display)
+	resp = requests.get(url, headers=headers)
+	# print(resp.text)
+	# 0. lastBuildDate(날짜) -> 2020-Dec-1
+	# 1. item parse(<item>(.+?)</item>)
+	# 2. 각 항목 추출: lastBuildDate
+	#                 > title, lprice, hprice, mallName
+	# 3. csv저장: shop.csv
+	#   형식) Tue, 01 Dec 2020 14:41:25 +0900, iphone, 1200000, 1500000, 네이버몰
+	#         2020-12-1, iphone, 1200000, 1500000, 네이버몰
+
+	item_list = re.findall(r'<item>(.+?)</item>', resp.text, re.DOTALL)
+	date = re.findall(r'<lastBuildDate>(.+)</lastBuildDate>', resp.text)
+
+	date = date[0].split(" ")
+	date = "-".join([date[3], date[2], date[1]])
+	date = datetime.datetime.strptime(date, "%Y-%b-%d").strftime("%Y-%m-%d")
+
+	f = open("Data/shop.csv", "w", encoding="utf-8")
+
+	for item in item_list:
+	    title = re.findall(r'<title>(.+)</title>', item)
+	    lprice = re.findall(r'<lprice>(.+)</lprice>', item)
+	    hprice = re.findall(r'<hprice>(.+)</hprice>', item)
+	    mallName = re.findall(r'<mallName>(.+)</mallName>', item)
+	    row = "{},{},{},{},{}".format(date, *title, *lprice, *hprice, *mallName)
+	    f.write(row)
+	    f.write("\n")
+
+	f.close()
+
+
+--------------------------------------------------------------------------
+
+  - Python CSV, SQLite(13주차/20.12.02)
+
+
+    - CSV 파일 읽기&쓰기
+
+     import csv
+
+	 # CSV: Comma Seperated Values
+
+	  - CSV 파일 읽기1
+
+		rows = []
+		f = open("Data/kma.csv", "r", encoding="utf-8")
+		for line in f:
+	    	row = line.strip().split(',') # split의 결과 -> list
+	    	# print(row)
+	    	rows.append(row)
+		f.close()
+		print(rows)
+		print(len(rows))
+
+	  - CSV 파일 읽기2
+
+		rows = []
+		f = open("Data/kma.csv", 'r', encoding='utf-8')
+		# csv.reader(): row.strip().split(',') 해주는 역할
+		for row in csv.reader(f):
+	    	rows.append(row)
+	
+		f.close()
+		print(rows)
+
+	  - CSV 파일 쓰기
+
+		person_rows = [
+		               [1, '일길동', 31, '서울시 관악구 신림1동'],
+		               [2, '이길동', 32, '서울시 관악구 신림2동'],
+		               [3, '삼길동', 33, '서울시 관악구 신림3동'],
+		               [4, '사길동', 34, '서울시 관악구 신림4동'],
+		               [5, '오길동', 35, '서울시 관악구 신림5동'],
+		               [6, '육길동', 36, '서울시 관악구 신림6동']
+		              ]
+
+		f = open("Data/person.csv", 'w', encoding="utf-8", newline='')
+		writer = csv.writer(f, quoting=csv.QUOTE_ALL, delimiter=',')
+
+		# 다수의 행 한번에 쓰기
+		writer.writerows(person_rows)
+
+		# 한 행씩 쓰기 (튜플)
+		writer.writerow((7, '칠길동', 37, '서울시 관악구 신림7동'))
+		# 한 행씩 쓰기 (리스트)
+		writer.writerow([8, '팔길동', 38, '서울시 관악구 신림8동'])
+
+		f.close()
+	    
+	- SQLite
+
+		import sqlite3
+
+		# 저장할 데이터베이스 이름
+		filename = "Data/person.db"
+
+		- DB 생성
+		# 1. Connection 얻어오기
+		conn = sqlite3.connect(filename)
+		# 2. Cursor(명령 처리 객체) 얻어오기 == Oracle의 Statement
+		cur = conn.cursor()
+		# 3. 명령처리
+		# autoincrement: 자동증가 필드 -> 직접 입력하면 안됌
+		sql = "create table person(idx integer primary key autoincrement, name text not null, age integer, addr text)"
+
+		cur.execute(sql)
+		conn.close()
+
+		- 데이터 추가
+
+	    # 1. Connection 얻어오기
+	    conn = sqlite3.connect(filename)
+
+	    # 2. Cursor(명령 처리 객체) 얻어오기 == Oracle의 Statement
+	    cur = conn.cursor()
+
+	    # 3. 명령처리
+	    #                                                 1  2  3
+	    sql = "insert into person(name, age, addr) values(?, ?, ?)"
+
+	    # 들어갈 파라미터가 있을시 튜플 or 리스트로 값 지정
+	    cur.execute(sql, ('일길동', 20, '서울시 관악구 신림동'))
+
+	    # DML명령 -> transaction 처리: commit or rollback
+	    conn.commit()
+	    conn.close()
+
+		- DB 조회
+
+		# 1. Connection 얻어오기
+		conn = sqlite3.connect(filename)
+
+		# 2. Cursor(명령 처리 객체) 얻어오기 == Oracle의 Statement
+		cur = conn.cursor()
+
+		# 3. 명령처리
+		sql = "select * from person"
+		cur.execute(sql)
+
+		# fetch: 한라인씩 실행
+		rows = cur.fetchall()
+
+		for row in rows:
+		      print(row[1], row, sep=':')
+
+		# 결과 -> 튜플의 리스트 형태
+		conn.close()
+
+		- 데이터 삭제
+
+		# 1. Connection 얻어오기
+		conn = sqlite3.connect(filename)
+
+		# 2. Cursor(명령 처리 객체) 얻어오기 == Oracle의 Statement
+		cur = conn.cursor()
+
+		# 3. 명령처리
+		sql = "delete from person where idx = ?"
+		# sql = "delete from person where idx = 1"
+
+		# delete 명령의 파라미터엔 리스트로 값 지정
+		cur.execute(sql, [1])
+
+		# transaction 처리: commit or rollback
+		conn.commit()
+		conn.close()
+
+		- 데이터 한번에 여러개 추가
+
+		def insertAllDB(filename, rows):
+		      # 1. Connection 얻어오기
+		      conn = sqlite3.connect(filename)
+		      # 2. Cursor(명령 처리 객체) 얻어오기 == Oracle의 Statement
+		      cur = conn.cursor()
+		      # 3. 명령처리
+		      for row in rows:
+		            sql = "insert into person(name, age, addr) values(?, ?, ?)"
+		            # 들어갈 파라미터가 있을시 튜플 or 리스트로 값 지정
+		            cur.execute(sql, row)
+
+		      conn.commit()
+		      conn.close()
+
+		person_rows = [
+		                ['일길동', 31, '서울시 관악구 신림1동'],
+		                ['이길동', 32, '서울시 관악구 신림2동'],
+		                ['삼길동', 33, '서울시 관악구 신림3동'],
+		                ['사길동', 34, '서울시 관악구 신림4동'],
+		                ['오길동', 35, '서울시 관악구 신림5동'],
+		                ['육길동', 36, '서울시 관악구 신림6동']
+		              ]
+		
+		insertAllDB(filename, person_rows)
+
+		- 조건 조회
+
+		def select2DB(filename, where):
+		    
+		    # 1. Connection 얻어오기
+		    conn = sqlite3.connect(filename)
+		    
+		    # 2. Cursor(명령 처리 객체) 얻어오기 == Oracle의 Statement
+		    cur = conn.cursor()
+		    
+		    # 3. 명령처리
+		    sql = "select * from person where {}".format(where)
+		    cur.execute(sql)
+		    
+		    # fetch: 한라인씩 실행
+		    rows = cur.fetchall()
+		    
+		    # for row in rows:
+		    #       print(row[1], row, sep=':')
+		    # 결과 -> 튜플의 리스트 형태
+		    
+		    conn.close()
+		    return rows
+
+		where = "age <= 30"
+		rows = select2DB(filename, where)
+		for row in rows:
+		      print("{}-{}-{}-{}".format(row[0], row[1], row[2], row[3]))
+
+		* auto commit
+		  -> conn = sqlite3.connect(filename, isolation_level=None)
+
+		- 데이터 수정
+
+		def updateDB(filename, row):
+
+		    # 1. Connection 얻어오기
+		    conn = sqlite3.connect(filename, isolation_level=None)
+
+		    # 2. Cursor(명령 처리 객체) 얻어오기 == Oracle의 Statement
+		    cur = conn.cursor()
+
+		    # 3. 명령처리
+		    sql = "update person set name = ?, age = ?, addr = ? where idx = ?"
+
+		    cur.execute(sql, row)
+		    conn.close()
+
+		row = ('원길동', 31, '서울시 관악구 신림4동', 20)
+		updateDB(filename, row)
+
+		- 외부에서 명령문을 만들어 수행
+
+		# 모든 명령문 수행
+		def executeDB(filename, sql):
+		    # 1. Connection 얻어오기
+		    conn = sqlite3.connect(filename, isolation_level=None)
+
+		    # 2. Cursor(명령 처리 객체) 얻어오기 == Oracle의 Statement
+		    cur = conn.cursor()
+		    
+		    # 3. 명령처리
+		    cur.execute(sql)
+		    conn.close()
+
+
+		name = "둘길동"
+		idx = 11
+		sql = "update person set name = '{}' where idx = {}".format(name, idx)
+		executeDB(filename, sql)
+
+		rows = selectDB(filename)
+		for row in rows:
+		      print("{}-{}-{}-{}".format(row[0], row[1], row[2], row[3]))
+
+	* 파이썬 CMD창으로 DB확인
+	  -> 하단 메뉴 - Terminal 클릭
+	  -> sqlite3 데이터베이스.db 입력
+	  -> sql 명령문 실행 (뒤에 세미콜론';' 붙여야 실행)
+
+	    - 날씨 CSV 파일 조회후 DB 작성
+
+	    import sqlite3
+
+		# 1. kma.csv 읽는다
+		# 2. kma 정보를 저장할 데이터베이스 생성
+		# 3. CSV->DB 저장
+		# 4. 검색식 작성(지역별, 조건별.. 검색)
+
+		filename = "Data/kma.db"
+
+		# DB 생성
+		def createDB(filename):
+		    conn = sqlite3.connect(filename, isolation_level=None)
+		    cur = conn.cursor()
+		    sql = "create table kma(province text, city text, mode text, tmEf text, wf text, tmn int, tmx int)"
+		    cur.execute(sql)
+		    conn.close()
+
+		# createDB(filename)
+
+		# CSV 파일 열기
+		f = open("Data/kma.csv", "r", encoding="utf-8")
+
+		# CSV 파일 읽기
+		rows = []
+		for line in f:
+		    # print(line.strip())
+		    row = line.strip().split(",")
+		    # print(row)
+		    rows.append(row)
+		# print(rows)
+
+		# CSV 데이터 입력
+		def insertToDB(filename, rows):
+		    conn = sqlite3.connect(filename, isolation_level=None)
+		    cur = conn.cursor()
+		    sql = "insert into kma values(?, ?, ?, ?, ?, ?, ?)"
+		    cur.executemany(sql, rows)
+		    conn.close()
+
+		# insertToDB(filename, rows)
+		f.close()
+
+		# 전체 조회
+		def selectAll(filename):
+		    conn = sqlite3.connect(filename, isolation_level=None)
+		    cur = conn.cursor()
+		    sql = "select * from kma"
+		    cur.execute(sql)
+		    data = cur.fetchall()
+		    conn.close()
+		    return data
+
+		# data = selectAll(filename)
+		# for row in data:
+		#     print(row)
+		# print(len(data))
+
+		# 조건별 검색
+		def selectCond(filename, where):
+		    conn = sqlite3.connect(filename, isolation_level=None)
+		    cur = conn.cursor()
+		    sql = "select * from kma where {}".format(where)
+		    cur.execute(sql)
+		    data = cur.fetchall()
+		    conn.close()
+		    return data
+
+		# 지역별 검색
+		# where = "city = '서울'"
+		# condData = selectCond(filename, where)
+		# for row in condData:
+		#     print(row)
+
+		# 시간대별 검색
+		# where = "substr(tmEf, 12, 2) = '00'"
+		# condData = selectCond(filename, where)
+		# for row in condData:
+		#     print(row)
+
+		# 지역 & 시간대별 검색
+		where = "substr(tmEf, 12, 2) = '00' and city = '서울'"
+		condData = selectCond(filename, where)
+		for row in condData:
+		    print(row)
+
+
+--------------------------------------------------------------------------
+
+  - Python 웹툰 크롤링 (13주차/20.12.03)
+
+    - 크롬 브라우저 -> F12 - 왼쪽 상단 - Select an element... 클릭
+      -> 마우스로 찾고 싶은 부분 갖다대면 해당 html 소스 표시
+
+    - re 모듈을 통해 웹 크롤링
+
+    import re
+	import requests
+	import os
+	# 파일 저장, 삭제하는 패키지: os
+
+    url = "https://comic.naver.com/webtoon/weekday.nhn"
+	resp = requests.get(url)
+
+	html = resp.text
+
+	# re.findall()의 결과는 list
+	# div가 반복돼서 </div> 대신 </ul>
+	weekdays = re.findall(r'<div class="col_inner">.+?</ul>', html, re.DOTALL)
+
+	items = []
+
+	for index, day in enumerate(weekdays):
+	    # print('-'*30)
+	    # print(day)
+	    # print(index)
+	    # print('-' * 30)
+
+	    # < img
+	    # src = "https://shared-comic.pstatic.net/thumb/webtoon/733078/thumbnail/thumbnail_IMAG10_2bef81ae-5a7e-4973-b2df-ddd498fc9dac.jpg"
+	    # title = "정보전사 202"
+	    # >
+
+	    #                          1               2
+	    # 결과 -> [(src, title), (src, title), ...]
+	    item = re.findall(r'src="(.+?)".+?title="(.+?)"', day, re.DOTALL)
+
+	    week_names = ["월", "화", "수", "목", "금", "토", "일"]
+	    
+	    for i, (img, title) in enumerate(item):
+	        items.append((week_names[index], title, img))
+
+	# Webtoon 폴더가 없으면 생성
+	if not os.path.exists('Webtoon'):
+	    # 폴더 생성
+	    os.mkdir("Webtoon")
+
+	# 수집된 정보를 출력
+	for (day, title, url) in items:
+	    print(day, title, sep = ":")
+	    saveImage(title, url)
+
+	# 이미지를 저장하는 함수
+	def saveImage(title, url):
+
+	    # 특수문자 중 "?"는 파일이름으로 사용 X
+	    # title의 ? 제거
+	    # re.sub(패턴, 바꿀문자열, 데이터): replace
+	    # r'?' -> 0 또는 1로 인식
+	    title = re.sub(r'\?', '', title)
+	    # title = title.replace('?', '')
+
+	    # print(title, 'saved')
+	    filename = "Webtoon/{}.jpg".format(title)
+	    img_data = requests.get(url)
+
+	    # jps, image => binary data(2진 데이터)
+	    # "w": 텍스트 모드, "wb": 바이너리 모드
+	    f = open(filename, "wb")
+	    f.write(img_data.content) # binary data 저장방식
+	    f.close()
+
+	- 데이터 CSV/DB로 저장
+
+	# items => csv/sqlite3 저장
+
+	# CSV 파일로 저장
+	def saveWebtoonCSV(items):
+
+	    # print(items)
+	    f = open("Data/Webtoon.csv", "w", encoding="utf-8")
+	    writer = csv.writer(f, quoting=csv.QUOTE_ALL, delimiter=',')
+	    writer.writerows(items)
+	    f.close()
+
+	saveWebtoonCSV(items)
+
+	# DB 파일로 저장
+	# DB 파일 생성
+	def createWebtoonDB():
+	    conn = sqlite3.connect("Data/Webtoon.db", isolation_level=None)
+	    cur = conn.cursor()
+	    sql = "create table webtoon(weekday text, title text, url text)"
+	    cur.execute(sql)
+	    conn.close()
+
+	createWebtoonDB()
+
+	# DB 데이터 입력
+	def insertWetoon(items):
+	    conn = sqlite3.connect("Data/Webtoon.db", isolation_level=None)
+	    cur = conn.cursor()
+	    sql = "insert into webtoon values(?, ?, ?)"
+	    cur.executemany(sql, items)
+	    conn.close()
+
+	insertWetoon(items)
+
+	# 입력된 데이터 전체 조회
+	conn = sqlite3.connect("Data/Webtoon.db", isolation_level=None)
+	cur = conn.cursor()
+	sql = "select * from webtoon"
+	cur.execute(sql)
+	datas = cur.fetchall()
+	conn.close()
+
+	for data in datas:
+	    print(data)
+
+	- BeautifulSoup 모듈을 통해 웹 크롤링
+
+	import re
+	import requests
+	import os
+	# 파일 저장, 삭제하는 패키지: os
+	import csv
+	import sqlite3
+	from bs4 import BeautifulSoup
+
+	def saveImage(title, url):
+
+	    # 특수문자 중 "?"는 파일이름으로 사용 X
+	    # title의 ? 제거
+	    # re.sub(패턴, 바꿀문자열, 데이터): replace
+	    # r'?' -> 0 또는 1로 인식
+	    title = re.sub(r'\?', '', title)
+	    # title = title.replace('?', '')
+
+	    filename = "Webtoon1/{}.jpg".format(title)
+	    img_data = requests.get(url)
+
+	    # jps, image => binary data(2진 데이터)
+	    # "w": 텍스트 모드, "wb": 바이너리 모드
+	    f = open(filename, "wb")
+	    f.write(img_data.content) # binary data 저장방식
+	    f.close()
+
+	url = "https://comic.naver.com/webtoon/weekday.nhn"
+	resp = requests.get(url)
+	html = resp.text
+
+	weekdays = re.findall(r'<div class="col_inner">.+?</ul>', html, re.DOTALL)
+	items = []
+
+	# BeautifulSoup 이용해서 정보를 추출
+	soup = BeautifulSoup(html, 'html.parser')
+
+	# select(): 해당 클래스를 전부 가져오기
+	# 각 요일별 정보: <div class='col_inner'>
+	# 결과 -> 텍스트, 리스트가 아닌 beautifulsoup 객체
+	col_items = soup.select('.col_inner')
+	# imgs = soup.select('.col_inner > ul > li > div.thumb > a > img')
+	# -> 한번에 img 태그에 접근해서 정보 추출
+
+	week_dic = {'mon':'월', 'tue':'화', 'wed':'수', 'thu':'목', 'fri':'금', 'sat':'토', 'sun':'일'}
+
+	for col in col_items:
+	    # col이 관리하는 html문서에서 h4태그 찾아 속성값이 class 인 데이터
+	    day = col.find('h4')['class']
+	    week_day = day[0]
+
+	    # col의 자식 요소를 모두 검색 -> 리스트로 반환
+	    imgs = col.findChildren('img')
+	    for img in imgs:
+	        items.append((week_dic[week_day], img['title'], img['src']))
+
+	# Webtoon 폴더가 없으면 생성
+	if not os.path.exists('Webtoon1'):
+	    # 폴더 생성
+	    os.mkdir("Webtoon1")
+
+	# 수집된 정보를 출력
+	for (day, title, url) in items:
+	    print(day, title, sep = ":")
+	    saveImage(title, url)
+
+
+	- Selenium 을 통한 웹 크롤링
+
+	- 환경설정
+	  - File - Settings - Python Project - Python Interpreter .. - 오른쪽 메뉴 "+" 버튼 클릭 - selenium 검색 후 install
+
+	   * 만약에 Anaconda lib 설치환경에서 설치가 안돼면 터미널에서 
+	    pip install selenium update로 설치
+
+	  - Chrome 오른쪽 상단 -> 도움말 -> Chrome 정보 -> 버전 확인
+
+	  - 구글에 chromedriver 설치 검색 -> https://chromedriver.chromium.org/downloads -> 크롬 버전에 맞는 드라이버 클릭 후 다운로드 -> 압축풀기 후
+	  파이썬 폴더안에 Program 폴더 생성 후 붙여넣기 (chromedriver.exe)
+
+	import re
+	import requests
+	import os
+	# 파일 저장, 삭제하는 패키지: os
+	import csv
+	import sqlite3
+	from selenium import webdriver
+	# 만약에 Anaconda lib 설치환경에서 설치가 안돼면 터미널 에서 pip install selenium update로 설치
+	import time
+
+	def saveImage(title, url):
+
+	    # 특수문자 중 "?"는 파일이름으로 사용 X
+	    # title의 ? 제거
+	    # re.sub(패턴, 바꿀문자열, 데이터): replace
+	    # r'?' -> 0 또는 1로 인식
+	    title = re.sub(r'\?', '', title)
+	    # title = title.replace('?', '')
+
+	    # print(title, 'saved')
+	    filename = "Webtoon3/{}.jpg".format(title)
+	    img_data = requests.get(url)
+
+	    # jps, image => binary data(2진 데이터)
+	    # "w": 텍스트 모드, "wb": 바이너리 모드
+	    f = open(filename, "wb")
+	    f.write(img_data.content) # binary data 저장방식
+	    f.close()
+
+
+	url = "https://comic.naver.com/webtoon/weekday.nhn"
+
+	week_dic = {'mon':'월', 'tue':'화', 'wed':'수', 'thu':'목', 'fri':'금', 'sat':'토', 'sun':'일'}
+	items = []
+
+	# Selenium 이용한 parsing -> 브라우저를 제어해서 크롤링
+	# 브라우저를 관리하는 객체
+	browser = webdriver.Chrome("Program/chromedriver.exe")
+	browser.get(url)
+
+	# 클래스 이름을 찾아 데이터 받음
+	# 요일별: 결과값 list = [ WebElement, WebElement... ]
+	col_inners = browser.find_elements_by_class_name("col_inner")
+
+	for col_inner in col_inners:
+	    # print(col_inner): col_inner을 관리하는 WebElement자료형
+
+	    # 요일 정보 가져오기
+	    # h4 태그중 class 속성을 가지는 데이터 가져옴
+	    day = col_inner.find_element_by_tag_name("h4").get_attribute("class")
+
+	    # img 정보 가져오기
+	    # 결과는 같음
+	    # li_tags = col_inner.find_element_by_tag_name("ul").\
+	    #                     find_elements_by_tag_name("li")
+	    li_tags = col_inner.find_elements_by_tag_name("li")
+
+	    for li_tag in li_tags:
+	        img_tag = li_tag.find_element_by_tag_name("img")
+	        # img 태그안에 title속성값과 src속성값을 얻어옴
+	        title = img_tag.get_attribute("title")
+	        src = img_tag.get_attribute("src")
+	        items.append((week_dic[day], title, src))
+
+	time.sleep(3)
+	# browser 종료
+	browser.quit()
+
+	# Webtoon 폴더가 없으면 생성
+	if not os.path.exists('Webtoon3'):
+	    # 폴더 생성
+	    os.mkdir("Webtoon3")
+
+	# 수집된 정보를 출력
+	for (day, title, url) in items:
+	    print(day, title, sep = ":")
+	    saveImage(title, url)
+
+--------------------------------------------------------------------------
+
+  - Python (13주차/20.12.04)
+
+    - Selenium PhantomJS
+      : 브라우저를 띄우지 않고 크롤링
+
+      - 드라이버 다운로드
+        -> https://phantomjs.org/download.html
+        -> 압축 풀기 후 파이썬 폴더안에 Program 폴더에 붙여넣기
+
+      - 코드는 Selenium과 동일, 드라이버만 바꿈
+
+      browser = webdriver.Chrome("Program/chromedriver.exe")
+      ->
+      browser = webdriver.PhantomJS("Program/phantomjs.exe")
+
+    - JSON
+
+		import json
+
+		# network 통해서 전달 -> String
+		p = '{"name":"일길동", "age":30, "addr":"서울시 관악구 시흥대로"}'
+
+		# String -> Object 변환: json.loads() => dict
+		# Object -> String 변환: json.dumps() => String
+		# 파이썬에서 json은 dictionary로 사용
+		# p_json = {"name":"일길동", "age":30, "addr":"서울시 관악구 시흥대로"}
+		p_json = json.loads(p)
+		pp = json.dumps(p_json)
+
+		print("p", type(p), sep=": ")
+		print("p_json", type(p_json), sep=": ")
+		print("pp", type(pp), sep=": ")
+
+		print("이름:", p_json['name'])
+		print("나이:", p_json['age'])
+		print("주소:", p_json['addr'])
+
+		# dict구조를 모를경우 사용할 수 있음
+		print("-----key, value 추출-----")
+		for k, v in p_json.items():
+		    print(k, v, sep="=")
+
+
+		# JSON안에 JSON 또는 배열 추출
+
+		p2 = '{"name":{"family_name":"홍", "given_name":"길동"}, "hobby":["낚시", "여행", "독서"], ' \
+		     ' "tel":{"cell_phone":"010-111-1234", "home_tel":"02-111-1234"}}'
+
+		'''
+		이름: 홍길동
+		취미: 독서 낚시 여행
+		휴대전화: 010-111-1234
+		집전화: 02-111-1234
+		'''
+		
+
+		p2_json = json.loads(p2)
+		name = "{}{}".format(p2_json['name']['family_name'], p2_json['name']['given_name'])
+		print("-" * 50)
+		print("이름", name, sep=": ")
+		print("취미: ", end="")
+		for hobby in p2_json['hobby']:
+		    print(hobby, end=" ")
+		print()
+		print("휴대전화:", p2_json['tel']['cell_phone'])
+		print("집전화:", p2_json['tel']['home_tel'])    
+
+
+	- 카카오 API를 통한 장소의 키워드 검색
+
+	  - 카카오 API 얻어오기
+	    -> https://developers.kakao.com/
+	    -> 내 어플리케이션
+	    -> 어플리케이션 추가
+	    -> REST API키
+
+      - 위도, 경도 구하기
+        -> map.google.com에서 위치검색
+        -> url에서 https://www.google.com/maps/.../
+        	@37.4826418,126.7820567,16.34z/...
+      		   [위도/x]   [경도/y]
+
+      - 검색 API를 활용하기 위한 데이터 설정
+
+     	# 검색할 위치
+		x = 126.7820567
+		y = 37.4826418
+
+		# API 키
+		kakaoAK = "KakaoAK ..."
+		keyword = "약국"
+
+		# 요청 헤더
+		headers = {
+		    'Content-Type':'application/json; charset=utf-8',
+		    'Authorization': kakaoAK
+		}
+
+		url = "https://dapi.kakao.com/v2/local/search/keyword.json?y={}&x={}&query={}".format(y, x, keyword)
+
+	* JSON viewer: JSON 파일을 보기쉽게 나타내주는 뷰어
+	  -> http://jsonviewer.stack.hu/
+
+
+	  - Kakao API를 통해 데이터를 얻어온 후 저장
+
+	  	resp = requests.get(url, headers=headers)
+		data = resp.text
+
+		json_data = json.loads(data)
+
+		# print("검색된 가용한 데이터 수", 	
+						json_data['meta']['pageable_count'], sep=":")
+
+		# 검색된 위치정보: list
+		items = json_data['documents']
+		
+		rows = []
+
+		f = open("Data/kakao.csv", "w", encoding="utf-8")
+
+		for item in items:
+		    
+		    # 1. 상호/전화/거리/주소1(지번)/주소2(도로명)/위치(위도/경도)
+		    # 2. 튜플로 포장 ('진커피', '02-111-1234'...)
+		    # 3. rows 추가
+		    # 4. rows -> csv파일 저장
+		    # print("{},{},{},{},{},{},{}".format(item['place_name'], item['phone'], item['distance'], item['address_name'], item['road_address_name'], item['x'], item['y']))
+
+		    place = item['place_name']
+		    tel = item['phone']
+		    dist = item['distance']
+		    addr1 = item['address_name']
+		    addr2 = item['road_address_name']
+		    x = item['x']
+		    y = item['y']
+
+		    row = (place, tel, dist, addr1, addr2, x, y)
+		    rows.append(row)
+
+		writer = csv.writer(f, quoting=csv.QUOTE_ALL, delimiter=',')
+		writer.writerows(rows)
+
+		f.close()
+
+	- 페이지를 1부터 n 까지 돌려서 실행
+
+		import requests
+		import json
+		import csv
+		import datetime
+
+		# 현재 내위치
+		x = 126.7820567
+		y = 37.4826418
+
+		# API 키
+		kakaoAK = "KakaoAK ..."
+		# keyword = "커피"
+
+		page = 1        # 페이지
+		size = 15       # 최대요청갯수
+		radius = 5000  # 검색반경
+
+		keyword = input("검색할 키워드를 입력하세요: ")
+
+		# 요청 헤더
+		headers = {
+		    'Content-Type':'application/json; charset=utf-8',
+		    'Authorization': kakaoAK
+		}
+
+		url = "https://dapi.kakao.com/v2/local/search/keyword.json" \
+		      "?x={}&y={}&query={}&radius={}&page={}&sort=distance".format(x, y, keyword, radius, page)
+
+		resp = requests.get(url, headers=headers)
+		data = resp.text
+
+		json_data = json.loads(data)
+
+		total_count = int(json_data['meta']['pageable_count'])
+		total_page = total_count // size # 몫
+		if total_page % size:
+		    total_page += 1
+
+		if total_page > 45:
+		    total_page = 45
+
+		# print("검색된 가용한 데이터 수", json_data['meta']['pageable_count'], sep=":")
+
+		rows = []
+
+		# data 수집
+		for p in range(1, total_page+1):
+		    url = "https://dapi.kakao.com/v2/local/search/keyword.json" \
+		          "?x={}&y={}&query={}&radius={}&page={}&sort=distance".format(x, y, keyword, radius, p)
+
+		    resp = requests.get(url, headers=headers)
+		    data = resp.text
+
+		    json_data = json.loads(data)
+
+		    # 검색된 위치정보: list
+		    items = json_data['documents']
+
+		    for item in items:
+		        # print(item)
+		        # 1. 상호/전화/거리/주소1(지번)/주소2(도로명)/위치(위도/경도)
+		        # 2. 튜플로 포장 ('진커피', '02-111-1234'...)
+		        # 3. rows 추가
+		        # 4. rows -> csv파일 저장
+		        # print("{},{},{},{},{},{},{}".format(item['place_name'], item['phone'], item['distance'], item['address_name'], item['road_address_name'], item['x'], item['y']))
+
+		        place = item['place_name']
+		        tel = item['phone']
+		        dist = item['distance']
+		        addr1 = item['address_name']
+		        addr2 = item['road_address_name']
+		        x = item['x']
+		        y = item['y']
+
+		        row = (dist, place, tel, addr1, addr2, x, y)
+		        rows.append(row)
+
+
+		for i, row in enumerate(rows):
+		    print(i, row, sep=":")
+
+		#  rows -> csv저장
+		today = datetime.datetime.now().strftime("%Y%m%d")
+		filename = "Data/{}_{}.csv".format(today, keyword)
+		f = open(filename,"w",encoding="utf-8", newline='')
+		writer = csv.writer(f , quoting=csv.QUOTE_ALL , delimiter=',')
+		writer.writerows(rows)
+		f.close()
+
+--------------------------------------------------------------------------
+
+  - Python Flask(14주차/20.12.07)
+
+    - Flask
+      : 파이썬에서 제공하는 웹 서비스 
+
+	    from flask import Flask, render_template
+		import random
+
+		# Flask(Web Server) 객체 생성
+		app = Flask(__name__)
+
+		# URL 요청코드
+		# 웹 서블릿
+		@app.route('/')
+		def home():
+		    return "안녕하세요"
+
+		# 갯수와 최대값 설정
+		def makeRandoms(count, limit):
+		    return [ random.randrange(limit)+1 for _ in range(count) ]
+
+		@app.route('/randoms') # 요청 url
+		def randoms():         # 처리함수
+		    return str(makeRandoms(6, 45))
+
+		# parameter 사용방법
+		@app.route('/randoms/<int:count>') # 요청 url
+		def randomCount(count):         # 처리함수
+		    return str(makeRandoms(count, 45))
+
+		# parameter 사용방법
+		@app.route('/randoms/<int:count>/<int:limit>') # 요청 url
+		def randomCountLimit(count, limit):         # 처리함수
+		    return str(makeRandoms(count, limit))
+
+		# 현재 myapp 시작위치
+		# debug=True => 내용변경시 Reloading
+		# 웹서비스 포트 => 5000
+		if __name__ == '__main__':
+		    app.run(debug=True, port=5000)
+
+	- HTML 파일을 불러서 반환
+
+		- html을 직접 return에 작성
+		@app.route('/html')
+		def html():
+		    return '''
+		    <html>
+		        <head><title>Flask 연습</title></head>
+		        <body>
+		            <h3>반갑다 Flask야!!</h3>
+		        </body>
+		    </html>
+		    '''
+
+		- html파일을 작성해서 반환
+		# 메인폴더(Flask_app)/templates/hello.html
+		@app.route('/hello')
+		def hello():
+		    return render_template('hello.html')
+
+		(templates/hello.html)
+		<!DOCTYPE html>
+		<html lang="en">
+		<head>
+		    <meta charset="UTF-8">
+		    <title>Render_Templates</title>
+		</head>
+		<body>
+		    Render_Template에 의해서 참조된 내용 <br>
+		    안녕 반가워!!
+		</body>
+		</html>
+
+		- html파일에 파라미터 전달
+		@app.route('/hi/<name>')
+		def hi(name):
+		    #                                 전달인자(irum으로 binding)
+		    return render_template('hi.html', irum=name)
+
+		(templates/hi.html)
+		<!DOCTYPE html>
+		<html lang="en">
+		<head>
+		    <meta charset="UTF-8">
+		    <title>Title</title>
+		</head>
+		<body>
+		    {#  {{ render_template에서 넘어온 변수명 }} #}
+		    {{ irum }}님 반갑습니다.
+		</body>
+		</html>
+
+		* 파이썬 html에서의 표현식(EL -> ${...} (Java) )
+		  -> {{ ... }} 
+
+		  주석문 ( <!-- ... --> (Java) )
+		  -> {# ... #}
+
+		  JSTL( <c:forEach> ... </forEach> (Java) )
+		  -> {% for i in list %} ... {% endfor %}
+
+		# 현재 myapp 시작위치
+		# debug=True => 내용변경시 Reloading
+		# 웹서비스 포트 => 5000
+		if __name__ == '__main__':
+		    app.run(debug=True, port=5000)
+
+	- HTML 파일에 딕셔너리, 튜플 리스트 전달(binding)
+
+		- 딕셔너리 리스트로 전달
+
+		@app.route('/persons')
+		def persons():
+		    p_list = [
+		              #  key : value
+		              {'name':'일길동', 'age':21, 'tel':'010-111-1234'}, # dict
+		              {'name':'이길동', 'age':22, 'tel':'010-222-1234'},
+		              {'name':'삼길동', 'age':23, 'tel':'010-333-1234'}
+		             ]
+		    return render_template("person.html", p_list = p_list)
+
+
+		(templates/person.html)
+
+		* 똑같이 css, 붓스트랩 라이브러리 사용 가능
+
+		<!DOCTYPE html>
+		<html lang="en">
+		<head>
+		    <meta charset="UTF-8">
+		    <title>Title</title>
+		    <style>
+		        #box{
+		            width: 500px;
+		        }
+		    </style>
+		    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+		</head>
+		<body>
+
+		<!-- table에 p_list 정보를 출력 -->
+		<div id = box>
+		<table border = "1" class = "table">
+		    <!-- 타이틀 -->
+		    <tr>
+		        <th>이름</th>
+		        <th>나이</th>
+		        <th>전화</th>
+		    </tr>
+
+		    <!-- Data출력 -->
+		    {% for person in p_list %}
+		    <tr>
+		        <td> {{ person['name'] }} </td>
+		        <td> {{ person['age'] }} </td>
+		        <td> {{ person['tel'] }} </td>
+		    </tr>
+		    {% endfor %}
+		</table>
+		</div>
+		</body>
+		</html>
+
+		- 튜플 리스트로 전달
+
+		@app.route('/board')
+		def board():
+		    b_list = [
+		             #  번호    제목     작성자      작성일자    조회수
+		                (1, '내가 1등', '일길동', '2020-12-07', 10),
+		                (2, '잘했다', '이길동', '2020-12-07', 11),
+		                (3, '다음엔 내가 1등 해야지', '삼길동', '2020-12-07', 6),
+		                (4, '잘들한다', '사길동', '2020-12-07', 22),
+		                (5, '그래라', '오길동', '2020-12-07', 40)
+		             ]
+		    return render_template("board.html", b_list = b_list)
+
+
+		(templates/board.html)
+
+		<!DOCTYPE html>
+		<html lang="en">
+		<head>
+		    <meta charset="UTF-8">
+		    <title>Title</title>
+		    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+			<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+			<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+		</head>
+
+		<body>
+
+		<table class = "table" >
+		    <tr>
+		        <th>번호</th>
+		        <th>제목</th>
+		        <th>작성자</th>
+		        <th>작성일자</th>
+		        <th>조회수</th>
+		    </tr>
+
+		    {% for b in b_list %}
+		    <tr>
+		        <td> {{ b[0] }} </td>
+		        <td> {{ b[1] }} </td>
+		        <td> {{ b[2] }} </td>
+		        <td> {{ b[3] }} </td>
+		        <td> {{ b[4] }} </td>
+		    </tr>
+		    {% endfor %}
+		</table>
+
+		</body>
+		</html>
+
+	- css,img 파일 따로 작성해서 적용
+
+	  - templates폴더 <- view(html, jsp..)
+	    static폴더 <- resources(css, img, js ...)
+
+	  - 이클립스에서 작성한 코드랑 같음
+	    - css 파일 참조
+	    -> <head>
+	       	 <link rel="stylesheet" href="static/css/main.css">
+	       </head>
+
+	    - image 파일 참조
+	    -> <body>
+	    <img src = "{{ url_for('static',filename='image/갓물주.jpg') }}">
+	       </body>
+
+	- 파라미터 전달 (GET, POST)
+
+	  - 입력폼 띄우기
+
+	  	@app.route('/hi_msg_form')
+		def hi_msg_form():
+		    return render_template("hi_msg_form.html")
+
+		(hi_msg_form.html)
+
+        <!DOCTYPE html>
+		<html lang="en">
+		<head>
+		    <meta charset="UTF-8">
+		    <title>Title</title>
+		<script>
+		    function send_get(f){
+		        var name = f.name.value.trim();
+		        var msg = f.msg.value.trim();
+
+		        if(name == ''){
+		            alert("이름을 입력하세요");
+		            f.name.value = "";
+		            f.name.focus();
+		            return;
+		        }
+
+		        if(msg == ''){
+		            alert("메세지를 입력하세요");
+		            f.msg.value = "";
+		            f.msg.focus();
+		            return;
+		        }
+
+		        f.method = "GET";
+		        f.action = "hi_msg";
+		        f.submit();
+		    }
+
+		    function send_post(f){
+		        var name = f.name.value.trim();
+		        var msg = f.msg.value.trim();
+
+		        if(name == ''){
+		            alert("이름을 입력하세요");
+		            f.name.value = "";
+		            f.name.focus();
+		            return;
+		        }
+
+		        if(msg == ''){
+		            alert("메세지를 입력하세요");
+		            f.msg.value = "";
+		            f.msg.focus();
+		            return;
+		        }
+
+		        f.method = "POST";
+		        f.action = "hi_msg";
+		        f.submit();
+		    }
+		</script>
+
+		</head>
+		<body>
+		    <form>
+		        이름: <input name = "name" value = "홍길동"><br>
+		        내용: <input name = "msg" value = "Hi"><br>
+		        <input type = "button" value = "GET 전송" onclick = "send_get(this.form);">
+		        <input type = "button" value = "POST 전송" onclick = "send_post(this.form);">
+		    </form>
+		</body>
+		</html>
+
+	  - 파라미터값 받기
+
+	    @app.route('/hi_msg', methods = ["GET", "POST"])
+		def hi_msg():
+
+		    # 요청방식 확인
+		    # print(request.method)
+
+		    name = ''
+		    msg = ''
+
+		    # 요청 ip구하기
+		    ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+		    
+		    if(request.method == "GET"):
+		        name = request.args.get("name", "아무게")
+		        msg = request.args.get("msg", "없음")
+		    else:
+		        name = request.form['name']
+		        msg = request.form['msg']
+
+		    return "[{}({})]님이 전달한 메세지: [{}]".format(name, ip, msg)
+
+
+	  - redirect 방식으로 반환
+
+	  	@app.route('/list')
+		def list():
+		    return render_template("list.html")
+
+		@app.route('/insert')
+		def insert():
+		    # 입력완료 후 => 리스트로 이동
+		    name = request.args.get("name", "아무게")
+		    age = request.args.get("age", "0")
+
+		    # redirect:list.do
+		    return redirect(url_for("list"))
+
+--------------------------------------------------------------------------
+
+  - Python map, zip, filter, Numpy(14주차/20.12.08)
+
+    - 방명록 글쓰기 엑션
+
+	@app.route('/insert', methods = ["GET", "POST"])
+	def insert():
+
+	    name = ''
+	    subject = ''
+	    content = ''
+	    pwd = ''
+	    ip = request.environ.get('HTTP_X_REAL_IP', request.remote_addr)
+
+	    if request.method == "GET":
+	        subject = request.args.get("subject", "")
+	        name = request.args.get("name", "")
+	        content = request.args.get("content", "")
+	        pwd = request.args.get("pwd", "")
+	    else:
+	        subject = request.form["subject"]
+	        name = request.form["name"]
+	        content = request.form["content"]
+	        pwd = request.form["pwd"]
+
+	    # 줄바꿈 처리
+	    content = content.replace('\n', "</br>")
+
+	    row = (name, subject, content, pwd, ip)
+	    db.insertDB(row)
+
+	    return redirect(url_for("list"))
+
+	-> board_list에서
+
+	<th>내용</th>
+    <td><div style="min-height:100px;">{{ board[3]|safe }}</div></td>
+                  
+    * {{ text|safe }} -> 문자열 그대로 읽음 ( <br>처리가능 )
+
+    - 방명록 비밀번호 체크
+
+    -> board_view.html
+
+     <script>
+        function del(idx){
+
+            var c_pwd = $("#c_pwd").val();
+            if(c_pwd == ''){
+                alert("삭제할 비밀번호를 입력하세요");
+                $("#c_pwd").val("");
+                $("#c_pwd").focus();
+                return;
+            }
+
+            $.ajax({
+                url:'check_pwd',
+                data:{'idx':idx, 'c_pwd':c_pwd},
+                dataType: 'json',
+                success: function(result_data){
+                    // 입력받은 데이터 -> result_data = {'result':true}
+                    // alert(result_data.result);
+                    // eval(): string -> object
+                    // result_data = eval(result_data)
+
+                    if(result_data.result == 'no'){
+                        alert('비밀번호가 틀립니다');
+                        return;
+                    }
+
+                    // 비밀번호가 맞는경우
+                    if(!confirm("정말 삭제하시겠습니까?")) return;
+
+                    location.href = "delete?idx=" + idx;
+
+                },
+                error: function(err){
+                    alert(err.responseText);
+                }
+            });
+        }
+
+    </script>
+
+    -> myapp.py
+
+    # 비밀번호 체크 액션
+    @app.route('/check_pwd', methods = ["GET", "POST"])
+	def check_pwd():
+	    idx = int(request.args.get("idx"))
+	    c_pwd = request.args.get("c_pwd")
+
+	    # selectOne의 결과는 리스트 -> unpacking
+	    board = db.selectOne(idx)[0]
+	    #print(board)
+	    pwd = board[4]
+
+	    # result = '{"result":"no"}'
+	    # # 비밀번호가 같으면
+	    # if c_pwd == pwd:
+	    #     result = '{"result":"yes"}'
+
+	    res = 'no'
+	    if c_pwd == pwd:
+	        res = 'yes'
+
+	    # jsonify 모듈 -> json객체로 간편하게 만들어주는 모듈
+	    return jsonify(result=res)
+
+	# 방명록 삭제
+	@app.route('/delete', methods = ["GET", "POST"])
+	def delete():
+	    idx = int(request.args.get("idx"))
+
+	    db.deleteDB(idx)
+	    return redirect(url_for('list'))
+
+	- Map, Zip, Filter 함수
+
+	def add_1(n):
+    return n+1
+
+	target = [1, 2, 3, 4, 5, 6]
+
+	result = []
+
+	# map을 적용하지 않은 상태
+	for value in target:
+	    result.append(add_1(value))
+
+	print("no map -> result: ", result)
+
+	# map을 적용했을때
+	result = []
+	# map(func, sec) -> 순서 데이터에 함수를 적용
+	result = list(map(add_1, target))
+	# 결과는 map object -> 리스트나 다른 자료형으로 변환
+	print("map -> result: ", result)
+
+	# lambda map 적용했을때
+	result = []
+	result = list(map(lambda x : x + 1, target))
+	print("lambda map -> result: ", result)
+
+	# filter 기능
+	# filter(func, sec) -> 순서 데이터에 함수를 적용해 조건에 맞는 값만 출력
+	# 필터링한 값만 가져오기
+	a = [1, 2, 3, 4, 5, 10]
+	b = list(filter(lambda y: y > 1, a))
+	print("b: ", b)
+
+	# zip
+	# 두 개의 순서있는 데이터를 각각 결합
+	b = [30, 20, 10, 50]
+	print("b: ", b)
+	# 리스트 내에서 for을 통해 생성
+	bb = [ x*x for x in b]
+	print("bb: ", bb)
+
+	for b1 in zip(b, bb):
+	    print("zip(b, bb): ", b1)
+	# 튜플 리스트로 반환
+	print(list(zip(b, bb)))
+
+	b[3] = 2501
+	bbb = [x > y for x, y in zip(b, bb)]
+	print("bbb: ", bbb)
+
+	# 튜플 리스트 -> 각 튜플의 값을 가져와서 함수 적용
+	xxx = list(filter(lambda x : x[0]<x[1], zip(b, bb)))
+	print(xxx)
+
+	- Numpy
+
+	import numpy as np
+
+	# numpy: 배열 관리하는 객체
+	# list
+	A = list(range(10))
+	print(type(A))
+	print(A)
+
+	# np.array
+	A2 = np.array(A)
+	# A2.shape -> A2의 형태 (행, 열)
+	print(A2.shape)
+	print(type(A2))
+	print(A2)
+
+	# 2차원 배열
+	#       0       1     => 행
+	#      0 1 2   0 1 2  => 열
+	AA = [[1,2,3],[4,5,6]]
+	print("AA[1][1]", AA[1][1], sep=":")
+	print("len(AA):", len(AA))
+	print("len(AA)[0]:", len(AA[0]))
+	print("type(AA):", type(AA))
+	print("AA:", AA)
+
+	AA2 = np.array(AA)
+	print("type(AA2):", type(AA2))
+	print("AA2.shape:", AA2.shape)
+	print("---AA2---")
+	print(AA2)
+
+	# numpy reshape -> 차원변경
+	B = np.array(range(24))
+	print("B.shape:", B.shape)
+	# shape[0] -> 튜플의 첫번째 요소 -> 행 수(개수)
+	print("B.shape[0]:", B.shape[0])
+	print("B:",B)
+
+	# 1차원 -> 2차원
+	# reshape(n, m) -> n행 m열로 변환
+	# B2 = B.reshape((6, 4))
+	# reshape(-1, n) : 자동으로 n개의 열로 나누어줌
+	B2 = B.reshape((-1, 4))
+	print("B2.shape:", B2.shape)
+	print("--B2--")
+	print(B2)
+
+	# 3차원으로 추출
+	B3 = B.reshape((-1,4,3))
+	print("B3.shape:", B3.shape)
+	print("--B3--")
+	# print(B3)
+
+	data = B2
+	print("----data----")
+	print(data.shape, type(data))
+	print(data)
+	# data[n]: n번째 행
+	print("data[0]:", data[0])
+	# data[n][m], data[n,m]: n행의 m열의 값
+	print("data[0][2]:", data[0][2])
+	print("data[0,2]:", data[0,2])
+	# data[n:m]: n행부터 m-1행까지 (n 생략하면 0)
+	print("data[0:2]:", data[0:2])
+	print("data[:2]:", data[:2])
+	# data[n:m, a:b]: n행부터 m행, a열부터 b열의 겹치는 부분
+	print("data[:2,0]:", data[:2,0])
+	print("data[:2,-2:]:", data[:2, -2:]) # -2: -> 뒤에서 두개
+
+	# 연산
+	A = np.array(range(20))
+	# 배열에 한번에 연산
+	AA = A/10
+	# 논리값
+	AAA = A < 10
+
+	print("A: ", A)
+	print("AA: ", AA)
+	print("AAA: ", AAA)
+
+--------------------------------------------------------------------------
+
+  - Python Pandas(14주차/20.12.09)
+
+    - Pandas
+
+    import pandas as pd # DataFrame기반의 데이터관리용 패키지
+	from Python_Analysis.MyUtil import print_line
+
+	# DataFrame: Series(필드, 속성, 컬럼..)의 집합
+
+	# Pandas CSV(TSV) 
+	# read_csv -> 파일읽기: sep = "," 생략시 기본값
+	df = pd.read_csv("Data/class1.csv", encoding="utf-8")
+	print_line('[전체데이터]')
+	print(df)
+
+	print_line('[df : type/index/columns]')
+	print("type(df): ", type(df))
+	print("df.index: ", df.index) # index -> 행번호 (문자로 변경가능)
+	print("df.columns: ", df.columns)
+
+	# column별 데이터 추출
+	print_line('[이름, 국어]')
+	print(df[['이름', '국어']])
+
+	# type check
+	kor1 = df[['국어']]
+
+	# DataFrame내의 Series 표현방법
+	kor2 = df.국어
+	# => kor2 = df['국어']
+
+	# kor1 -> 결과값이 데이터프레임
+	print_line('[kor1]')
+	print(type(kor1))
+	print(kor1)
+
+	# kor2 -> 결과값이 Series
+	print_line('[kor2]')
+	print(type(kor2))
+	print(kor2)
+
+	# cf) DataFrame 생성해보기
+	mydata = {'no':[1, 2, 3],
+	          'name':['Tom', 'John', 'Jame'],
+	          'kor':[77, 88, 99],
+	          'eng':[67, 88, 69],
+	          'mat':[87, 88, 69]
+	          }
+	mydf = pd.DataFrame(mydata)
+	print_line('[mydf]')
+	print(mydf)
+
+	# 행단위 조회
+	print_line('[df[0:4]]')
+	print(df[0:4])
+
+	# start index = 0 이면 생략가능
+	print_line('[df[:4]]')
+	print(df[:4])
+
+	# iloc[n]: n번째행 선택
+	# iloc[n:m]: n에서 m-1번째행 선택
+	print('df.iloc[1]')
+	print(df.iloc[1])
+
+	# 조건별 조회
+	# 국어점수가 50보다 작은 데이터
+	print(df['국어'] < 50)
+	# -> 행별로 논리값 반환
+
+	# print_line("df[df['국어'] < 50]")
+	print(df[df.국어 < 50])
+	# => print(df[df['국어'] < 50])
+
+	# 국어 >= 70 이거나 영어 >= 70: or 연산자 => |
+	# 조건별로 괄호로 묶어야함
+	print_line("df[ (df.국어 >= 70) | (df.영어 >= 70) ]")
+	print(df[ (df.국어 >= 70) | (df.영어 >= 70) ])
+
+	# 국어 >= 70 이면서 영어 >= 70: and 연산자 => &
+	print_line("df[ (df.국어 >= 70) & (df.영어 >= 70) ]")
+	print(df[ (df.국어 >= 70) & (df.영어 >= 70) ])
+
+	# 단위 항목별 통계
+	print_line("국어: sum()/mean()/count()")
+	print("sum:", df['국어'].sum())
+	print("mean:", df['국어'].mean())
+	print("count:", df['국어'].count())
+
+	# 항목별 통계
+	subjects = ['국어', '영어', '수학', '과학']
+	# sum(axis=0): 열의 합
+	# sum(axis=1): 행의 합
+	# 합계
+	print_line("df[subjects].sum(axis=0)")
+	print(df[subjects].sum(axis=0))
+
+	# 평균
+	print_line("df[subjects].mean(axis=0)")
+	# 인원수
+	# count = df.국어.count()
+	# print(df[subjects].sum(axis=0)/count)
+	print(df[subjects].mean(axis=0))
+
+	# 최고/최저
+	print_line("df[subjects].max(axis=0)")
+	print(df[subjects].max(axis=0))
+	print_line("df[subjects].min(axis=0)")
+	print(df[subjects].min(axis=0))
+
+	# DataFrame에 Series(Column) 추가
+	df['총점'] = df[subjects].sum(axis=1)
+	df['평균'] = df[subjects].mean(axis=1)
+	df['최고점'] = df[subjects].max(axis=1)
+	print(df)
+
+	# 정렬
+	# 이름순 오름차순
+	print_line("df.sort_values(['이름'], ascending=True)")
+	print(df.sort_values(['이름'], ascending=True))
+
+	# 영어 Desc, 수학 Desc
+	print_line("df.sort_values(['영어','수학'], ascending=[False,False])")
+	print(df.sort_values(['영어', '수학'], ascending=[False, False]))
+
+	# 정렬 후 선택된 열만 조회
+	# DataFame[[ column목록 ]]
+	print(df.sort_values(['과학', '수학'], 
+	ascending=[False, False])[['이름','과학','수학']])
+
+	# sort결과의 새로운 DataFrame생성
+	df2 = df.sort_values(['총점'], ascending=False)
+
+	# index 초기화: 추가/삭제 옵션 설정
+	# inplace=True -> 데이터 추가
+	# drop=True -> 데이터 삭제
+	df2.reset_index(inplace=True, drop=True)
+	print(df2)
+
+	# 추가되었던 총점필드 삭제
+	# axis=1 -> 열
+	df2.drop(['총점'], axis=1, inplace=True)
+	print_line("df2.drop(['총점'])")
+	print(df2)
+
+	import pandas as pd
+	from Python_Analysis.MyUtil import print_line
+
+	c1 = pd.read_csv("Data/class1.csv")
+	c2 = pd.read_csv("Data/class2.csv")
+
+	# c1, c2의 각각의 수학점수의 평균
+	print_line("c1.수학.mean(), c2.수학.mean()")
+	print("c1.수학.mean(): ",c1.수학.mean())
+	print("c2.수학.mean(): ",c2.수학.mean())
+
+	# 수학의 최고점
+	print_line("c1.수학.max(), c2.수학.max()")
+	print("c1.수학.max(): ",c1.수학.max())
+	print("c2.수학.max(): ",c2.수학.max())
+
+	# 각 과목별 우수반을 추출
+	print_line("과목별 우수반")
+	subjects = ['국어', '영어', '수학', '과학']
+	for s in subjects:
+	    if c1[s].mean() > c2[s].mean():
+	        print(s, '-> 1반 우수')
+	    elif c1[s].mean() < c2[s].mean():
+	        print(s, '-> 2반 우수')
+	    else:
+	        print(s, '-> 1, 2반 동점')
+
+	# 2개의 DataFrame 합치기
+	# 반 추가
+	c1['반']=1
+	c2['반']=2
+
+	print_line("pd.concat([c1, c2])")
+	# ignore_index=True -> 인덱스 무시 -> 인덱스 재설정
+	all_c = pd.concat([c1, c2], ignore_index=True)
+	print(all_c)
+
+	# 정규분포 = (영어점수-영어평균)/영어표준편차
+	all_c['영어_norm'] = ( all_c.영어 - all_c.영어.mean())/ all_c.영어.std()
+	print(all_c)
+
+	# 영어점수 >= 90
+	print_line("all_c[all_c.영어 >= 90]")
+	print(all_c[all_c.영어 >= 90])
+
+	# 영어 >= 90 & 수학 >= 90
+	print_line("all_c[ (all_c.영어 >= 90) & (all_c.수학 >= 80) ]")
+	print(all_c[ (all_c.영어 >= 90) & (all_c.수학 >= 80) ])
+
+	# query 함수 이용
+	print_line("all_c.query('영어 >= 90 & 수학 >= 80')")
+	print(all_c.query("영어 >= 90 & 수학 >= 80"))
+	a = all_c.query("영어 >= 90 & 수학 >= 80")
+	print(type(a))
+	print(a)
+
+	# 컬럼추출하기
+	print_line("all_c[ all_c['영어'] >= 90][['이름', '영어']]")
+	print( all_c[ all_c['영어'] >= 90][['이름', '영어']])
+
+	print_line("all_c.query('영어 >= 90 & 수학 >= 80')[['이름', '영어', '수학]]")
+	print(all_c.query("영어 >= 90 & 수학 >= 80")[['이름', '영어', '수학']])
+
+	# slice
+	print_line("all_c[:3]")
+	print(all_c[:3])
+
+	print_line("all_c[4:7]")
+	print(all_c[4:7])
+
+	# 열의 값만 추출
+	# result -> Series
+	print(all_c.수학)
+
+	# result -> Numpy
+	print(all_c.수학.values)
+
+	print_line("type(all_c.수학) & type(all_c.수학.values)")
+	print(type(all_c.수학))
+	# -> Series로 반환
+
+	print(type(all_c.수학.values))
+	# -> numpy로 반환
+
+	np_mat = all_c.수학.values
+	print("np_mat.max():", np_mat.max()) # Numpy 기능
+	print("all_c.수학.max():", all_c.수학.max())
+	print(np_mat)
+
+	# all_c.수학.values => numpy.ndarray
+	# -> numpy 기능 사용
+	print(all_c.수학.values[:3])
+
+	# numpy함수에 Pandas객체 넣어봄
+	# ndim() -> 몇차수인지 구함(2차수->n x m 행렬, 데이터프레임..)
+	print("np.ndim(all_c):", np.ndim(all_c))
+	print("np.ndim(all_c.국어):",np.ndim(all_c.국어))
+
+	# 1행의 집합
+	# 한 행 선택
+	print(all_c.iloc[0])
+	print(type(all_c.iloc[0]))
+
+	# 한 행의 값만 가져옴
+	print(all_c.iloc[0].values)
+	print(type(all_c.iloc[0].values))
+
+	# 한 행의 항목 갯수
+	print(all_c.iloc[0].values.shape)
+	print(all_c.iloc[0].values.shape[0])
+
+	# 데이터프레임 -> 배열로 반환
+	print_line("all_c.values")
+	print(type(all_c.values))
+	# -> 2차원 배열
+	print(all_c.values.shape)
+	# 행 수
+	print(all_c.values.shape[0])
+	print(all_c.values)
+
+	# 행 -> index: 3 부터 count: 3개 가져오기
+	print_line("all_c.values[3:6]")
+	print(all_c.values[3:6])
+
+	# 행 -> index: 1 부터 count: 3개 가져오기
+	# 열 -> 이름 국어 영어 수학
+	print_line("all_c.values[1:4, 1:5]")
+	print(all_c.values[1:4, 1:5])
+
+--------------------------------------------------------------------------
+
+  - Python 가게 매출 통계분석(14주차/20.12.10)
+
+    - Chipolte 데이터 분석 (한 가게의 주문 데이터)
+
+    import pandas as pd
+	import numpy as np
+	import matplotlib.pyplot as plt
+	from Python_Analysis.MyUtil import print_line
+
+	# TSV: Tab Separator Values
+	filename = "Data/chipotle.tsv"
+	chipo = pd.read_csv(filename, encoding="utf-8", sep="\t")
+
+	# step1
+	# 데이터 구성/정보 확인
+	print(type(chipo))
+	print(chipo.shape)
+
+	print_line("chipo.info()")
+	# info(): 데이터타입, 인덱스범위, 행/열갯수, 각 열의 값개수, 각 열의 데이터 타입...
+	print(chipo.info())
+
+	# step2
+	# head(): 상위 n개 데이터 추출
+	# 데이터가 많으면 내용이 생략 -> 주피터 노트북에서 확인 가능
+	print_line("chipo.head(10)")
+	print(chipo.head(10))
+
+	# feature(필드)
+	print(chipo.columns)
+	# 'order_id': 주문번호
+	# 'quantity': 주문수량
+	# 'item_name': 메뉴명
+	# 'choice_description': 주문설명
+	# 'item_price': 가격
+
+	# 메뉴수 / 주문건수
+	# Pandas -> unique(): 중복제거
+	print("전체건수: ", len(chipo['order_id']))
+	print("주문건수: ", len(chipo['order_id'].unique()))
+	print("메뉴개수: ", len(chipo['item_name'].unique()))
+	print(type(chipo['item_name']))
+
+	# 가장 많이 팔린 메뉴를 추출
+	# -> value_counts(): 출현횟수 카운트
+	# print(chipo['item_name'].value_counts())
+	print(chipo['item_name'].value_counts()[:10])
+
+	# 상위 10까지의 메뉴 목록
+	item_count = chipo['item_name'].value_counts()[:10]
+	# print(type(item_count))
+	# -> Series 타입
+
+	# 상위 10개 메뉴에 순위를 매김
+	# enumerate(data, n): n -> 시작인덱스
+	# iteritems(): value_counts() 함수의 결과 값 -> name(변수), count(개수)
+	for rank, (name,count) in enumerate(item_count.iteritems(), 1):
+	    print("Top", rank, ":", name, "({})".format(count))
+
+	# Series -> DB의 필드(하나의 속성을 갖는 집합)
+	#        -> 값마다 인덱스를 갖고있음
+	print_line("s1")
+	s1 = pd.Series([1, 2, 3])
+	print(s1)
+
+	# 인덱스 이름 수정가능
+	s1.index = ['one', 'two', 'three']
+	print_line("index수정")
+	print(s1)
+
+	# 인덱스 이름 지정가능
+	print_line("s2")
+	s2 = pd.Series([1, 2, 3], index=['하나', '둘', '셋'])
+	print(s2)
+
+	# value_counts() -> Series: index ,count(value)
+	print(chipo['item_name'].value_counts().index)
+	# tolist(): 리스트 형태로 출력
+	# 메뉴 목록만 추출
+	print(chipo['item_name'].value_counts().index.tolist())
+
+	# 전처리: order_id (숫자형) -> (문자형)
+	# astype(): 자료형 변환
+	chipo['order_id'] = chipo['order_id'].astype(str)
+
+	# describe(): 수량형 변수에 대한 전체 통계정보
+	print_line("chipo.describe()")
+	print(chipo.describe())
+
+	# Pandas -> groupby(그룹으로 묶을 열)[계산할 열].통계함수()
+	# item당 주문갯수 / 총갯수
+
+	# item당 주문이 몇번 들어갔는지 (각 주문당 주문수량 포함 X)
+	# item별 주문건수
+	order_count = chipo.groupby('item_name')['order_id'].count()
+	print("item별 주문건수")
+	print(order_count)
+
+	# item당 총 주문수량
+	# item별 총 주문량
+	print_line("item별 총 주문량")
+	item_quantity = chipo.groupby('item_name')['quantity'].sum()
+	print(item_quantity)
+	# print( item_quantity.sort_index(ascending=True) )
+	# -> 인덱스로 정렬 (주문메뉴 알파벳순)
+
+	# sort_index(): 인덱스로 정렬
+	# sort_values(): 값으로 정렬
+
+	# 주문량을 내림차수로 정렬
+	print( item_quantity.sort_values(ascending=False) )
+
+	# bar 그래프 그리기
+	# 각 메뉴에 인덱싱
+	item_name_list = item_quantity.index.tolist()
+	x_pos = np.arange(len(item_name_list))
+	print(x_pos)
+
+	# 총주문량을 따로 추출
+	order_cnt = item_quantity.values.tolist()
+	print(order_cnt)
+
+	# bar 그래프
+	plt.bar(x_pos, order_cnt, align = "center")
+	plt.ylabel("ordered_item_count")
+	plt.title("Distribution of all ordered item")
+	plt.show()
+
+	# 가격(item_price) 전처리 작업: $1.24(string) -> 1.24(float)
+	# Pandas: apply(Python의 map함수)
+	# item_price: '$1.25' -> 1.25로 변환해야함
+	# print(chipo.describe())
+	chipo['item_price'] = chipo['item_price'].apply( lambda x : float(x[1:]))
+	# print(chipo.describe())
+
+	# 주문당 합계금액
+	# print(chipo[['order_id', 'item_price']])
+	print_line("order_sum")
+	order_sum = chipo.groupby('order_id')['item_price'].sum()
+	print(order_sum)
+	print(chipo.groupby('order_id')['item_price'].sum().sort_values(ascending=False).head(10))
+
+	# 주문당 평균 계산금액
+	print_line("평균 계산 금액")
+	# 주문당 평균 금액
+	order_mean1 = chipo.groupby('order_id')['item_price'].mean()
+
+	# 전체 주문 금액의 평균
+	order_mean = chipo.groupby('order_id')['item_price'].sum().mean()
+	print(order_mean)
+
+	# 주문당 합계에 대한 통계
+	print_line("order_sum.describe()")
+	print(order_sum.describe())
+
+	# 한 주문당 20달러이상 사용한 order_id 출력
+	print(order_sum[order_sum.values > 20].index.tolist())
+	# groupby(그룹열)[계산열].통계함수 -> 계산열 생략할 경우 모든 숫자형 필드에 대해 함수적용
+	# 두 개이상의 열이 들어가면 결과 데이터 타입은 데이터 프레임
+	chipo_orderid_group = chipo.groupby('order_id').sum()
+	print(chipo_orderid_group)
+
+	result = chipo_orderid_group[ chipo_orderid_group.item_price >= 20 ]
+	print(result)
+
+	# 각 메뉴당 단가
+	# 주문수량이 1개인 데이터 추출
+	chipo_one_item = chipo[chipo.quantity == 1]
+	print(chipo_one_item[['order_id', 'item_name', 'quantity']])
+
+	price_per_item = chipo_one_item.groupby('item_name').min()
+	print(price_per_item)
+	print(price_per_item.sort_values(by="item_price", ascending=False))
+
+	# 메뉴당 단가에 대한 그래프
+	item_name_list = price_per_item.index.tolist()
+	print(item_name_list)
+	# x 좌표 -> 각 메뉴에 대한 인덱스
+	# np.range() == range()
+	x_pos = np.arange(len(item_name_list))
+	# Series -> list로 변환
+	item_price = price_per_item.item_price.tolist()
+	# print(item_price)
+
+	# 가격 리스트: 히스토그램
+	print(item_price)
+	plt.hist(item_price)
+	plt.ylabel('count')
+	plt.title('Histogram of item price')
+	plt.show()
+
+	# 가장 비싼 주문에서 item 총 몇개 팔렸는지
+	order_sum = chipo.groupby('order_id').sum()
+	print(type(order_sum))
+	print(order_sum[:5])
+
+	high_price = order_sum.sort_values('item_price', ascending=False)
+	print(high_price[:4])
+	print(high_price[:1][['quantity']])
+
+	# 'Chicken Salad Bowl'이 몇번 주문되었는지
+	print(chipo[chipo.item_name == 'Chicken Salad Bowl'])
+	chipo_salad = chipo[chipo.item_name == 'Chicken Salad Bowl']
+	# drop_duplicates() -> 중복 제거
+	chipo_salad = chipo_salad.drop_duplicates(['item_name', 'order_id'])
+	print(len(chipo_salad))
+
+	# 'Chicken Bowl'을 2개이상 주문한 횟수
+	print(chipo[chipo.item_name == 'Chicken Bowl'])
+	order_cb = chipo[chipo.item_name == 'Chicken Bowl']
+	print(order_cb[order_cb.quantity >= 2][['order_id', 'quantity']])
+	print(len(order_cb[order_cb.quantity >= 2]))
+	order_cb = order_cb.drop_duplicates('order_id')
+	print(len(order_cb[order_cb.quantity >= 2]))
+	print(order_cb[order_cb.quantity >= 2].quantity.sum())
+
+--------------------------------------------------------------------------
+
+  - Python 전세계 주류 소비량 분석(14주차/20.12.11)
+
+    - Drinks 데이터 분석 (각 국가당 알코올 섭취량)
+
+    * print() 생략되는 내용 없애기
+
+    import pandas as pd
+
+    # 최대 줄 수 설정
+	pd.set_option('display.max_rows', 500)
+	# 최대 열 수 설정
+	pd.set_option('display.max_columns', 500)
+	# 표시할 가로의 길이
+	pd.set_option('display.width', 1000)
+
+	import pandas as pd
+	import numpy as np
+	import matplotlib.pyplot as plt
+
+	from Python_Analysis.MyUtil import print_line
+
+	filename = "Data/drinks.csv"
+	drinks = pd.read_csv(filename)
+
+	# 최대 줄 수 설정
+	pd.set_option('display.max_rows', 500)
+	# 최대 열 수 설정
+	pd.set_option('display.max_columns', 500)
+	# 표시할 가로의 길이
+	pd.set_option('display.width', 1000)
+
+	print_line("drinks.info()")
+	print(drinks.info())
+
+	# 목록확인
+	print_line("drinks.head(10)")
+	print(drinks.head(10))
+
+	# 전체통계
+	print_line("drinks.describe()")
+	print(drinks.describe())
+
+	# 상관분석: 단일상관 / 다중상관
+	# beer 와 wine 상관관계
+	# pearson 방식
+
+	# 단일상관
+	corr = drinks[['beer', 'wine']].corr(method="pearson")
+	print_line("drinks[['beer', 'wine']].corr(method='pearson')")
+	print(corr)
+
+	# 다중상관
+	cols_name = ['beer', 'spirit', 'wine', 'total_pure_alcohol']
+	corr = drinks[cols_name].corr(method="pearson")
+	print_line("drinks[cols_name].corr(method='pearson')")
+	print(corr)
+
+	# 상관관계를 도표로 표현: seaborn 모듈
+	import seaborn as sns
+	cols_view = ['beer', 'spirit', 'wine', 'alcohol']
+
+	# 폰트 사이즈 설정
+	sns.set(font_scale=1.5)
+
+	# 히트맵의 옵션 설정
+	# cbar: 색상에 대한 수치 바를 오른쪽에 표현
+	# annot: 상관계수를 표현
+	# square: 사각형으로 표현
+	# fmt: 표현 방식 (소수점)
+	# annot_kws: 상관계수 출력 설정
+	# yticklabels: y축 이름
+	# sticklabels: x축 이름
+	hm = sns.heatmap( corr.values,
+	                  cbar=True,
+	                  annot=True,
+	                  square=True,
+	                  fmt=".2f",
+	                  annot_kws={'size':15},
+	                  yticklabels=cols_view,
+	                  xticklabels=cols_view
+	                  )
+	plt.tight_layout()
+	plt.show()
+
+	# 산점도
+	# seaborn -> scatter plot
+	sns.set(style="whitegrid", context="notebook")
+	sns.pairplot(drinks[cols_name])
+	plt.show()
+
+	# 결측치에 대한 전처리: NA or NaN(Not a Number)
+	# -> 통계에 포함 X
+
+	# 결측치 확인
+	# isnull(): 각 값에 대해 결측치(NA)인지 논리값 반환 ( == is.na() )
+	# isnull().sum(): 데이터프레임의 각 열에 대한 결측치 합
+	na_data = drinks.isnull().sum()
+	print_line("na_data")
+	print(na_data)
+
+	# 결측치 전처리 작업: NaN -> 'OT'(기타)
+	# fillna(): NA값을 대체
+	drinks['continent'] = drinks['continent'].fillna('OT')
+	print_line("drinks[drinks['continent']=='OT']")
+	print(drinks[drinks['continent']=='OT'])
+
+	print_line("결측치 다시 확인")
+	print(drinks.isnull().sum())
+
+	# 차트에서 한글폰트를 사용하려면
+	import matplotlib.font_manager as fm
+	# C:\Windows\Fonts 에 기본 한글 폰트 복사
+	# 폰트 경로
+	font_path = "Font/NGULIM.TTF"
+	# 폰트 설정
+	fontprop = fm.FontProperties(fname=font_path, size=16)
+
+	# 대륙별 분포를 pie를 이용해서 시각화
+	labels = drinks.continent.value_counts().index.tolist()
+	# 한글폰트 적용
+	labels[0] = '아프리카'
+	plt.rc('font', family=fontprop.get_name())
+	print(labels)
+
+	count = drinks.continent.value_counts().values.tolist()
+	print(count)
+	# pie 그래프의 이탈정도 -> 그래프에서 필드를 해당 수치만큼 뺌
+	# 첫번째 인덱스부터 반시계 방향
+	# explode: 이탈정도
+	explode = (0, 0.1, 0, 0.25, 0, 0)
+	# labels: 각 필드의 속성명
+	# autopct: 해당 값의 퍼센트 출력 설정
+	# shadow: 그림자 유무
+	plt.pie(count, explode=explode, labels=labels, autopct='%.1f%%', shadow=True)
+	plt.title("대륙별 분포(%)", fontproperties=fontprop)
+	plt.show()
+
+	# agg / apply
+	beer_mean = drinks.groupby('continent')['beer'].mean()
+	beer_sum = drinks.groupby('continent')['beer'].sum()
+	beer_count = drinks.groupby('continent')['beer'].count()
+	beer_min = drinks.groupby('continent')['beer'].min()
+	beer_max = drinks.groupby('continent')['beer'].max()
+
+	# beer의 기초통계량 -> agg(): 통계함수를 리스트로 지정해줘야함
+	# print(beer_mean, beer_sum, beer_count, beer_max, sep="\n")
+	# print(drinks.groupby('continent')['beer'].describe())
+	total = drinks.groupby('continent').beer.agg(['mean', 'sum', 'count', 'max'])
+	print(total)
+
+	# 전체평균보다 많은 알코올을 섭취하는 대륙
+	# 전체평균
+	total_mean = drinks.total_pure_alcohol.mean()
+	# 대륙평균
+	continent_mean = drinks.groupby('continent')['total_pure_alcohol'].mean()
+	print(total_mean)
+	print(continent_mean)
+
+	continent_over_mean = continent_mean[continent_mean.values > total_mean]
+	print_line("전체평균 알코올 소비량보다 많은 대륙")
+	print("전체평균: ", total_mean)
+	print(continent_over_mean)
+
+	# 평균 beer 소비량이 가장 높은 대륙
+	continent_beer_mean = drinks.groupby('continent').beer.mean()
+	print(continent_beer_mean)
+
+	# idxmax(): value값이 가장 큰 index구하기
+	# idxmin(): value값이 가장 작은 index
+	max_beer_continent = continent_beer_mean.idxmax()
+	print("맥주 소비량이 가장 많은 대륙:", max_beer_continent)
+	print("맥주 소비량이 가장 적은 대륙:", continent_beer_mean.idxmin())
+
+	# 대륙별 spirit의 평균, 최소, 최대, 합계를 시각화
+	# groupby를 한 열은 인덱스로 들어감
+	result = drinks.groupby('continent').spirit.agg(['mean', 'min', 'max', 'sum'])
+	print(result)
+
+	n_groups = len(result.index)
+	mean_list = result['mean'].tolist()
+	min_list = result['min'].tolist()
+	max_list = result['max'].tolist()
+	sum_list = result['sum'].tolist()
+
+	# 대륙의 갯수를 인덱싱
+	index = np.arange(n_groups)
+	# 바의 크기
+	bar_width = 0.1
+
+	plt.bar(index, mean_list, bar_width, color='r', label='Mean')
+	# index가 같으면 같은위치에 출력 -> bar_width만큼 옆에서 그림
+	plt.bar(index+bar_width, min_list, bar_width, color='g', label='Min')
+	plt.bar(index+bar_width*2, max_list, bar_width, color='b', label='Max')
+	plt.bar(index+bar_width*3, sum_list, bar_width, color='y', label='Sum')
+	plt.xticks(index, result.index.tolist())
+	# 범례표시
+	plt.legend()
+	plt.show()
+
+	# 대륙별 알코올의 소비량을 시각화
+	# 전체 평균
+	total_mean = drinks.total_pure_alcohol.mean()
+	# 대륙별 평균
+	continent_mean = drinks.groupby('continent')['total_pure_alcohol'].mean()
+
+	continents = continent_mean.index.tolist()
+	continents.append("MEAN")
+	print(continents)
+
+	x_pos = np.arange(len(continents))
+	alcohol = continent_mean.tolist()
+	alcohol.append(total_mean)
+
+	# 한글 폰트 적용
+	apply_font()
+	# 변수에 저장하면 각 바를 컨트롤할 수 있음
+	bar_list = plt.bar(x_pos, alcohol, align="center", alpha = 0.8)
+	# 마지막바(평균) 색 -> 빨강
+	# bar_list[6].set_color('r')
+	bar_list[len(continents)-1].set_color('r')
+	# 선긋기 (가로줄)
+	#         x 범위          y 범위           색상+모양
+	plt.plot([0, 6], [total_mean, total_mean], "b--")
+	plt.xticks(x_pos, continents)
+	plt.title("대륙별 알코올 평균 소비량")
+	plt.show()
+
+	# 대륙별 beer 소비량합계 시각화 (가장 많은 소비량을 갖는 대륙에 Red로 표시)
+	beer_group = drinks.groupby('continent')['beer'].sum()
+	continents = beer_group.index.tolist()
+	x_pos = np.arange(len(continents))
+	alcohol = beer_group.tolist()
+
+	apply_font()
+	bar_list = plt.bar(x_pos, alcohol, align = "center", alpha = 0.5)
+
+	# EU의 Bar 색상 -> Red
+	max_idx = beer_group.idxmax()
+	bar_list[ continents.index(max_idx) ].set_color('r')
+
+	plt.xticks(x_pos, continents)
+	plt.title("대륙별 맥주 소비량의 합")
+	plt.ylabel("beer")
+	plt.show()
+
+	# 대한민국: 독한 술을 먹는 나라중 순위
+	# 전체 음주량:
+	drinks['total'] = drinks['beer'] + drinks['spirit'] + drinks['wine']
+
+	# 술소비량 대비 알코올 비율
+	drinks['alcohol_rate'] = drinks['total_pure_alcohol']/drinks['total']
+
+	# 만약 결측값이 나오면 0으로 대체
+	drinks['alcohol_rate'] = drinks['alcohol_rate'].fillna(0)
+
+	# 순위정보 추출
+	country_with_rank = drinks[['country', 'alcohol_rate']]
+	country_with_rank = country_with_rank.sort_values(by = "alcohol_rate", ascending=False)
+	print(country_with_rank[:10])
+
+	apply_font()
+	# 시각화
+	# 국가명 목록 추출
+	country_list = country_with_rank.country.tolist()
+	x_pos = np.arange(len(country_list))
+	alcohol_rate_list = country_with_rank.alcohol_rate.tolist()
+	bar_list = plt.bar(x_pos, alcohol_rate_list)
+
+	# 대한민국의 bar 검색(index): country='South Korea'
+	# kor_index: 우리나라의 순위
+	kor_index = country_list.index("South Korea")
+	print(kor_index)
+	bar_list[kor_index].set_color('r')
+
+	# annotation 달기
+	kor_rate_value = alcohol_rate_list[kor_index]
+	# xy: annoation 위치
+	# xytext: text 위치
+	# arrowprops: 화살표 설정
+	ann_text = 'South Korea: {}({})'.format(kor_index+1, kor_rate_value)
+	plt.annotate(ann_text,
+	             xy=(kor_index, kor_rate_value),
+	             xytext=(kor_index+10, kor_rate_value+0.05),
+	             arrowprops=dict(facecolor='red', shrink=0.05)
+	             )
+
+	plt.ylabel("alcohol rate")
+	plt.title("국가별 소비알코올 비율 순위")
+	plt.show()
+
+--------------------------------------------------------------------------
+
+  - Python 텍스트 마이닝(15주차/20.12.14)
+
+    - 나무위키 텍스트 마이닝
+
+      - 크롤링 후 csv 파일로 저장
+
+	    import requests
+		from bs4 import BeautifulSoup
+
+		import pandas as pd
+		import matplotlib.pyplot as plt
+		import re
+
+		from Python_Analysis.MyUtil import print_line, print_all
+
+		print_all()
+
+		# 크롤링할 대상
+		source_url = "https://namu.wiki/RecentChanges"
+
+		# 제목부분부터 크롤링
+		req = requests.get(source_url)
+		html = req.content
+
+		# print(html)
+		# html parsing
+		soup = BeautifulSoup(html, 'lxml')
+
+		# find_all() -> html 태그를 찾음
+		# select() -> css select를 찾음
+		# 둘 다 기능은 거의 동일
+		# table 태그를 찾음
+		# table - thead(테이블 제목), tbody(테이블 내용)으로 구성
+		content_table = soup.find(name = "table")
+		table_body = content_table.find(name = "tbody")
+		table_rows = table_body.find_all(name = "tr")
+
+		# print(len(table_rows))
+		# 테이블의 내용의 각 요소로 접근하기 위한 베이스 url
+		page_url_base = 'https://namu.wiki'
+		page_urls = []
+
+		for index in range(0, len(table_rows)):
+		    # 테이블의 여러 td태그 중 첫번째 td
+		    first_td = table_rows[index].find_all('td')[0]
+		    td_url = first_td.find_all('a')
+		    # a tag가 1개 이상 있으면
+		    if len(td_url) > 0:
+		        # 나무위키의 최근 변경 목록에 있는 각 url을 읽어옴
+		        page_url = page_url_base + td_url[0].get('href')
+		        # print(page_url)
+		        if 'png' not in page_url:
+		            page_urls.append(page_url)
+
+
+		print("중복배제전: ", str(len(page_urls)))
+		# 중복값 처리 -> set -> list포장
+		page_urls = list(set(page_urls))
+		print("중복배제후: ", str(len(page_urls)))
+
+		# page_urls 연결된 문서 전체 파싱(title, category, content)
+		# 크롤링 결과 -> 데이터프레임으로 저장
+		columns = ['title', 'category', 'content_text']
+		df = pd.DataFrame(columns=columns)
+		print(df)
+
+		# 각 페이지별 작업 수행
+		for page_url in page_urls:
+		    # 각 링크 사이트별 크롤링
+		    req = requests.get(page_url)
+		    html = req.content
+		    soup = BeautifulSoup(html, 'lxml')
+		    content_article = soup.find(name = 'article')
+		    title = content_article.find_all('h1')[0]
+		    # category 있는 경우 or 없는 경우에 대한 처리
+		    if len(content_article.find_all('ul')) > 0:
+		        # 있는 경우
+		        category = content_article.find_all('ul')[0]
+		    else:
+		        # 없는 경우
+		        category = None
+
+		    # 내용 읽어오기
+		    content_paragraphs = content_article.find_all(name = 'div', attrs = {'class':'wiki-paragraph'})
+		    # 말뭉치 목록 저장
+		    content_corpus_list = []
+
+		    # title에 대한 전처리: \n => ' '
+		    # 타이틀이 있으면
+		    if title is not None:
+		        row_title = title.text.replace('\n', ' ')
+		    else:
+		        row_title = ''
+
+		    # category에 대한 전처리: \n => ' '
+		    # 타이틀이 있으면
+		    if category is not None:
+		        row_category = category.text.replace('\n', ' ')
+		    else:
+		        row_category = ''
+
+		    # content_corpus에 대한 전처리: \n => ' '
+		    # 데이터가 존재하면
+		    if content_paragraphs is not None:
+		        for paragraphs in content_paragraphs:
+		            if paragraphs is not None:
+		                content_corpus_list.append(paragraphs.text.replace('\n', ' '))
+		            else:
+		                content_corpus_list.append(' ')
+		    else:
+		        content_corpus_list.append(' ')
+
+		    # 1 site(page)의 내용을 DataFrame에 저장
+		    # 저장할 행 생성
+		    row = [row_title, row_category, ''.join(content_corpus_list)]
+		    series = pd.Series(row, index=df.columns)
+		    # 데이터프레임에 행 삽입
+		    df = df.append(series, ignore_index=True)
+
+		# print(df)
+		# 데이터프레임 -> csv 파일 저장
+		df.to_csv("Data/namuwiki2.csv", index = False)
+
+	  - 크롤링한 CSV 데이터를 읽어 텍스트마이닝(워드클라우드)
+
+		import pandas as pd
+		import matplotlib.pyplot as plt
+
+		import requests
+		from bs4 import BeautifulSoup
+		import re
+
+		from Python_Analysis.MyUtil import print_line, print_all
+
+		# 출력초기화
+		print_all()
+
+		df = pd.read_csv("Data/namuwiki2.csv", encoding="utf-8")
+		# print(df.info())
+		# print_line("df.head()")
+		print_line("before cleaning: df.head()")
+		print(df.head())
+
+		# 한글 범위
+		# ㄱ -> ㅎ
+		# ㅏ -> ㅣ
+		# 가 -> 힣
+		# 각각의 데이터를 전처리: 한글 외 문자를 제외
+		def text_cleaning(text):
+		    # 정규식 ^ : ~ 가 아니면
+		    hangul = re.compile('[^ ㄱ-ㅣ가-힣]+')
+		    # sub(): 정규식을 해당 문자열로 대체
+		    result = hangul.sub('', str(text))
+		    return result
+
+		# 각 칼럼별 한글만 남김
+		df['title'] = df['title'].apply(lambda x : text_cleaning(x))
+		df['category'] = df['category'].apply(lambda x : text_cleaning(x))
+		df['content_text'] = df['content_text'].apply(lambda x : text_cleaning(x))
+		print_line("after cleaning: df.head()")
+		print(df.head())
+
+		# Series -> list 변환
+		title_corpus = ''.join(df.title.tolist())
+		category_corpus = ''.join(df.category.tolist())
+		content_corpus = ''.join(df.content_text.tolist())
+
+		# print("title_corpus:", title_corpus)
+		# print("category_corpus:", category_corpus)
+		# print("content_corpus:", content_corpus)
+
+		# KoNLPy: 한글관련 라이브러리
+		from konlpy.tag import Okt
+		from collections import Counter
+
+		# konlpy 이용해서 형태소 분석기를 이용한 명사추출
+		# Okt(): 단어 관리 객체
+		# Counter(): 단어 개수 관리 객체
+		nouns_tagger = Okt()
+		nouns = nouns_tagger.nouns(content_corpus)
+		count = Counter(nouns)
+
+		# for c in count:
+		#     print(c)
+
+		# 1글자 단어는 제외
+		remove_char_counter = Counter({ x : count[x] for x in count if len(x) > 1})
+
+		# 불용어 제외 (사용하지 않는 문자/의미없는 문자)
+		korean_stopwords_path = "Data/korean_stopwords.txt"
+
+		# f.close()가 자동으로 처리
+		with open(korean_stopwords_path, encoding="utf-8") as f:
+		    stopwords = f.readlines()
+
+		# 읽어온 불용어에서 엔터 공백을 제거
+		stopwords = [ x.strip() for x in stopwords]
+
+		# 만약에 추가할 불용어가 있으면
+		namu_wiki_stopwords = ['상위', '줄거리', '설명', '이름', '인물']
+		for sw in namu_wiki_stopwords:
+		    stopwords.append(sw)
+
+		# 불용어에 있는 단어는 제외
+		remove_char_counter = Counter({ x : remove_char_counter[x] for x in count if x not in stopwords})
+
+		# 단어 -> 구름이미지
+		# pip install pytagcloud pygame simplejson
+
+		# wordcloud -> 한글 폰트 처리해야 한글이 안깨짐
+		# 폰트 다운로드: http://hangeul.naver.com/webfont/NanumGothic/NanumGothic.ttf
+		# Anaconda 환결설정파일 : C:\Users\HongJinWon\Anaconda3\Lib\site-packages\pytagcloud\fonts
+		#                       -> 이 경로에다 한글 폰트를 넣어야함
+		# 1. 원하는 폰트파일 복사 후 붙여넣기
+		# 2. 폰트정보 등록(font.json)
+		# ->
+		# {
+		#     "name": "NanumGothic",
+		#     "ttf": "NanumGothic.ttf",
+		#     "web": "http://fonts.googleapis.com/css?family=Nanum+Gothic"
+		# },
+
+		import pytagcloud
+		import pygame
+		import simplejson
+		import matplotlib.image as img
+
+		# 빈도수 가장 많은 단어 40개 정도 추출
+		# -> most_common()
+		ranked_tags = remove_char_counter.most_common(40)
+
+		# 단어 출력의 크기는 80으로 제한
+		taglist = pytagcloud.make_tags(ranked_tags, maxsize = 80)
+
+		# ranked_tags 정보를 이용해서 wordcloud 이미지 생성
+		filename = "image/wordcloud.jpg"
+		pytagcloud.create_tag_image(taglist, filename, size = (900, 600), fontname = "NanumGothic")
+
+		# 화면에 띄우기
+		image1 = img.imread(filename)
+		plt.imshow(image1)
+		plt.show()
+
+		## title wordcloud
+		# title 부분에 해당되는 wordcloud
+		nouns_tagger = Okt()
+		nouns = nouns_tagger.nouns(title_corpus)
+		count = Counter(nouns)
+
+		# 글자 1개 / 불용어 제거
+		remove_char_counter = Counter({ x : count[x] for x in count if len(x) > 1})
+		remove_char_counter = Counter({ x : remove_char_counter[x] for x in count if x not in stopwords})
+
+		ranked_tags = remove_char_counter.most_common(40)
+
+		# 단어 출력의 크기는 80으로 제한
+		taglist = pytagcloud.make_tags(ranked_tags, maxsize = 80)
+
+		# ranked_tags 정보를 이용해서 wordcloud 이미지 생성
+		filename = "image/title_wordcloud.jpg"
+		pytagcloud.create_tag_image(taglist, filename, size = (900, 600), fontname = "NanumGothic")
+
+		# 화면에 띄우기
+		image1 = img.imread(filename)
+		plt.imshow(image1)
+		plt.show()
+
+		## category wordcloud
+		# title 부분에 해당되는 wordcloud
+		nouns_tagger = Okt()
+		nouns = nouns_tagger.nouns(category_corpus)
+		count = Counter(nouns)
+
+		# 글자 1개 / 불용어 제거
+		remove_char_counter = Counter({ x : count[x] for x in count if len(x) > 1})
+		remove_char_counter = Counter({ x : remove_char_counter[x] for x in count if x not in stopwords})
+
+		ranked_tags = remove_char_counter.most_common(40)
+
+		# 단어 출력의 크기는 80으로 제한
+		taglist = pytagcloud.make_tags(ranked_tags, maxsize = 80)
+
+		# ranked_tags 정보를 이용해서 wordcloud 이미지 생성
+		filename = "image/category_wordcloud.jpg"
+		pytagcloud.create_tag_image(taglist, filename, size = (900, 600), fontname = "NanumGothic")
+
+		# 화면에 띄우기
+		image1 = img.imread(filename)
+		plt.imshow(image1)
+		plt.show()
+
+--------------------------------------------------------------------------
+
+  - Python 트위터 연관분석 (15주차/20.12.15)
+
+    - 트위터 API키 발급
+
+      1. twitter 회원가입
+        : twitter.com
+
+      2. openapi key 발급
+        : https://apps.twitter.com
+          or
+          https://developer.twitter.com/en/apply-for-access
+
+      3. 발급키
+        : CUNSUMER_KEY: ...
+          CUNSUMER_SECRET: ...
+          ACCESS_TOKEN_KEY: ...
+          ACCESS_TOKEN_SECRET: ...
+
+    - 연관분석 (Apriori)
+
+    from apyori import apriori
+	from Python_Analysis.MyUtil import print_line, print_all
+
+	# 연관분석 라이브러리 설치
+	# pip install apriori apyori
+
+	# 1. 지지도(support): item이 포함된 횟수 / 전체 건수 
+	     -> 전체 거래중 해당 규칙(항목)이 포함될 확률
+	# 2. 신뢰도(confidence): (A와 B가 포함된 건수) / A가 포함된 건수 
+	     -> 조건을 포함하는 규칙 중 조건과 결과가 포함될 확률
+	# 3. 향상도(lift):A와 B가 포함된 건수 / (A가 포함된 건수*B가 포함된 건수) 
+	     -> 조건과 결과가 우연으로 인한 규칙인지
+
+	# 장바구니 데이터( 총 데이터수: 3건)
+	transactions = [
+	    ['커피', '설탕'],
+	    ['커피', '프림'],
+	    ['커피', '프림', '우유'],
+	    ['프림', '우유']
+	]
+
+	# 연관분석 실행
+	results = list(apriori(transactions))
+	print_line("연관분석 결과")
+	# items_base: 조건 규칙
+	# items_add: 결과 규칙
+	for result in results:
+	    print(result)
+
+	# 연관분석 필터링
+	# min_support: 최소 지지도
+	# min_confidence: 최소 신뢰도
+	# min_lift: 최소 향상도
+	# max_length: 규칙에 포함될 최대 항목 개수
+	results = list(apriori(transactions, min_support=0.5, min_confidence=0.6, min_lift=1.0, max_length=2))
+	print_line("연관분석 결과(support: 0.5, confidence: 0.6, lift: 1.0)")
+	for result in results:
+	    print(result)
+
+	- 트위터 크롤링
+
+	import pandas as pd
+	import time
+
+	import tweepy
+
+	# CUNSUMER_KEY: ...
+	# CUNSUMER_SECRET: ...
+	# ACCESS_TOKEN_KEY: ...
+	# ACCESS_TOKEN_SEKRET: ...
+
+	CONSUMER_KEY = "..."
+	CONSUMER_SECRET = "..."
+	ACCESS_TOKEN_KEY = "..."
+	ACCESS_TOKEN_SECRET = "..."
+
+	# 개인 인증처리
+	auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
+
+	# 인증요청
+	auth.set_access_token(ACCESS_TOKEN_KEY, ACCESS_TOKEN_SECRET)
+
+	# api 사용준비
+	api = tweepy.API(auth)
+
+	# test: 검색
+	# keyword = "손흥민"
+	# tweets = api.search(keyword)
+	# for tweet in tweets:
+	#     print("-"*30)
+	#     print(tweet.text)
+	#     print(tweet.entities['user_mentions'])
+	#     print(tweet.entities['hashtags'])
+	#     # 작성날짜
+	#     print(tweet.created_at)
+
+	# 크롤링 데이터 저장할 DataFrame 생성
+	#          작성날짜      트윗내용
+	columns = ['created', 'tweet_text']
+	df = pd.DataFrame(columns=columns)
+
+	keyword = "손흥민"
+	# 100회 반복 (100페이지 분량)
+	for i in range(1, 100):
+
+	    try:
+	        # 진행률
+	        print("Get data {:.2f}% complete..".format(i))
+	        tweets = api.search(keyword)
+	        for tweet in tweets:
+	            tweet_text = tweet.text
+	            created = tweet.created_at
+	            row = [created, tweet_text]
+	            series = pd.Series(row, index = df.columns)
+	            df = df.append(series, ignore_index = True)
+
+	        # 수집속도가 빨라 시간을 조금 늦춤
+	        time.sleep(0.1)
+
+	    except tweepy.TweepError as e:
+	        print("error: " + str(e))
+	        break
+	print("Get data 100% complete..")
+
+	# Dataframe -> csv 파일로 저장
+	df.to_csv("Data/tweet_data_{}.csv".format(keyword))
+
+	- 트위터 데이터를 연관분석 후 네트워크 그래프 시각화
+
+	import pandas as pd
+	import matplotlib.pyplot as plt
+	import re
+	from apyori import apriori
+	from konlpy.tag import Okt
+	from collections import Counter
+
+	from Python_Analysis.MyUtil import print_line, print_all
+
+	print_all()
+
+	def text_cleaning(text):
+	    # 정규식 -> 한글이 아니면 지우기
+	    hangul = re.compile(r'[^ ㄱ-ㅣ가-힣]+')
+	    result = hangul.sub('', str(text))
+	    return result
+
+	# 검색자료 읽어오기
+	# OSError: Initializing from file failed
+	# -> engine='python', encoding='utf-8' 옵션 써야함
+	df = pd.read_csv("Data/tweet_data_코로나.csv", engine='python', encoding='utf-8')
+	print_line("df.info()")
+	print(df.info())
+
+	print_line("before cleaning: df.head()")
+	print(df.head())
+
+	# 한글을 제외한 문자 제거
+	df['ko_text'] = df['tweet_text'].apply(lambda x : text_cleaning(x))
+
+	print_line("after cleaning")
+	print(df.head())
+
+	# 불용어 제거
+	# 불용어 제외 (사용하지 않는 문자/의미없는 문자)
+	korean_stopwords_path = "Data/korean_stopwords.txt"
+
+	# f.close()가 자동으로 처리
+	with open(korean_stopwords_path, encoding="utf-8") as f:
+	    stopwords = f.readlines()
+
+	# 읽어온 불용어에서 엔터 공백을 제거
+	stopwords = [ x.strip() for x in stopwords]
+
+	# 명사추출 함수 선언
+	def get_nouns(x):
+	    nouns_tagger = Okt()
+	    nouns = nouns_tagger.nouns(x)
+	    # filter: 1글자 이상 & 불용어 제거
+	    nouns = [noun for noun in nouns if len(noun) > 1]
+	    nouns = [noun for noun in nouns if noun not in stopwords]
+	    return nouns
+
+	# 명사 추출한 데이터를 새로운 컬럼에 삽입
+	df['nouns'] = df['ko_text'].apply(lambda x : get_nouns(x))
+	print(df.shape)
+
+	# 명사 리스트
+	print_line("nouns list")
+	print(df[['nouns']])
+
+	## 연관분석
+	transactions = df.nouns.tolist()
+
+	## 공백제거: False => 0, None, '',
+	# 공백 -> '' 있는 데이터 제외
+	transactions = [ transaction for transaction in transactions if transaction]
+
+	# # 출력
+	# print_line("transaction data")
+	# print(transactions[:4])
+
+	# 조건별 연관분석
+	results = list(apriori(transactions,
+	                       min_support=0.1,
+	                       min_confidence=0.2,
+	                       min_lift=1,
+	                       max_length=2))
+	print(results)
+
+	# 연관검색된 결과를 다시 Dataframe 저장
+	#            조건       결과       지지도
+	columns = ['source', 'target', 'support']
+	network_df = pd.DataFrame(columns=columns)
+
+	for result in results:
+	    if len(result.items) == 2:
+	        # print(result)
+	        items = [x for x in result.items]
+	        row = [ items[0], items[1], result.support]
+	        # print(row)
+	        series = pd.Series(row, index=network_df.columns)
+	        network_df = network_df.append(series, ignore_index = True)
+
+	print(network_df.head())
+
+	# 노드를 생성하기 위한 데이터 추출
+	# 말뭉치: 한글데이터만 있는 자료
+	tweet_corpus = "".join(df['ko_text'].tolist())
+
+	# 명사 추출
+	nouns_tagger = Okt()
+	nouns = nouns_tagger.nouns(tweet_corpus)
+	count = Counter(nouns)
+
+	# 한글자 제거
+	remove_char_counter = Counter({ x : count[x] for x in count if len(x) > 1})
+
+	# Dataframe 저장(keyword, count)
+	node_df = pd.DataFrame(list(remove_char_counter.items()), columns=['node', 'nodesize'])
+
+	# keyword의 count >= 50
+	node_df = node_df[node_df.nodesize >= 50]
+
+	print_line("node_df")
+	print(node_df)
+
+	## 시각화: node_df / network_df
+	# pip install networkx
+
+	import networkx as nx
+
+	# 그래프 사이즈 설정
+	plt.figure(figsize=(20, 20))
+
+	# network 그래프 객체 생성
+	G = nx.Graph()
+
+	# 그래프에 node 추가
+	# iterrows(): index를 추가한 행별로 반환
+	for index, row in node_df.iterrows():
+	    G.add_node(row['node'], nodesize=row['nodesize'])
+
+	# 그래프에 node 선 추가
+	# 입력값 -> 튜플 리스트
+	for index, row in network_df.iterrows():
+	    G.add_weighted_edges_from([(row['source'], row['target'], row['support'])])
+
+	# 그래프 파라미터 설정
+	# k: 네트워크 노드 간 응집도 (0에 가까울 수록 한 곳에 모임)
+	# iterations: 노드 사이 거리 정도 (값이 커질수록 서로 멀어짐)
+	pos = nx.spring_layout(G, k=0.2, iterations=10)
+	# 노드 사이즈의 목록
+	sizes = [G.nodes[node]['nodesize']*10 for node in G]
+	nx.draw(G, pos=pos, node_size=sizes)
+
+	# font label 설정
+	nx.draw_networkx_labels(G, pos=pos, font_family='Malgun Gothic', font_size=15)
+
+	# 그래프 출력
+	ax = plt.gca()
+	plt.show()
+
+
+--------------------------------------------------------------------------
+
+  - Python 선형회귀분석(15주차/20.12.16)
+
+    - Manhattan 부동산 임대료 회귀 분석
+
+    from sklearn.linear_model import LinearRegression
+	from sklearn.model_selection import train_test_split
+	import matplotlib.pyplot as plt
+	import pandas as pd
+	import seaborn as sns
+
+	from Python_Analysis.MyUtil import print_line, print_all
+
+	print_all()
+
+	# data 읽어오기
+	df = pd.read_csv("Data/manhattan.csv")
+
+	print_line("info")
+	print(df.info())
+	print(df.head())
+	print(df.isnull().sum())
+
+	# rent비 결정요인 정보만 가져옴
+	# 독립변수
+	x = df[['bedrooms', 'bathrooms', 'size_sqft', 'min_to_subway', 'floor', 'building_age_yrs',
+	        'no_fee', 'has_roofdeck', 'has_washer_dryer', 'has_doorman', 'has_elevator', 'has_dishwasher',
+	        'has_patio', 'has_gym']]
+
+	y = df[['rent']]
+
+	# 데이터 분할 -> train, test
+	# train_test_split(): 훈련/테스트 데이터 분할
+	x_train, x_test, y_train, y_test = train_test_split(x, y, train_size=0.8, test_size=0.2)
+	# print(len(x), len(x_train), len(x_test), sep=":")
+	mlr = LinearRegression()
+	mlr.fit(x_train, y_train)
+
+	# 내가 원하는 방정보에 따른 임대료를 구해봄
+	my_apartment = [[3, 2, 1000, 5, 1, 80, 1, 1, 1, 1, 1, 1, 1, 1]]
+	my_predict = mlr.predict(my_apartment)
+	# 결과값 -> 데이터프레임 객체 -> predict[0][0]
+	print("my_predict: {:.0f}".format(my_predict[0][0]))
+
+	# test_set을 이용해서 모델 검증
+	# 테스트 셋
+	y_predict = mlr.predict(x_test)
+
+	# 전체정보
+	y_predict_full = mlr.predict(x)
+
+	# test_set과 예측한 y_predict 비교
+	# 흩뿌려진 점 그래프
+	plt.scatter(y_test, y_predict, alpha = 0.4)
+	plt.xlabel("Real Rent")
+	plt.ylabel("Predicted Rent")
+	plt.title("Real vs Predict Regression")
+	plt.show()
+
+	# Weight 확인
+	# 회귀계수
+	print("Weight: ", mlr.coef_)
+	# 절편
+	print("bias: ", mlr.intercept_)
+
+	# 주택 가격과 면적을 scatter
+	plt.scatter(df[['size_sqft']], df[['rent']], alpha = 0.4)
+	plt.show()
+
+	# 주택 지어진 년도와 가격과의 관계 scatter
+	plt.scatter(df[['building_age_yrs']], df[['rent']], alpha = 0.4)
+	plt.show()
+
+	cols_name = ['rent', 'bedrooms', 'bathrooms', 'size_sqft', 'min_to_subway', 'floor', 'building_age_yrs',
+	        'no_fee', 'has_roofdeck', 'has_washer_dryer', 'has_doorman', 'has_elevator', 'has_dishwasher',
+	        'has_patio', 'has_gym']
+	corr = df[cols_name].corr(method = "pearson")
+	hm = sns.heatmap(corr.values,
+	                 cbar = True,
+	                 annot = True,
+	                 fmt = ".2f",
+	                 annot_kws={'size':10},
+	                 yticklabels=cols_name,
+	                 xticklabels=cols_name)
+	plt.tight_layout()
+	plt.show()
+
+	# 회귀계수가 크다고 해서 상관계수가 높지 않음
+	# -> 단위가 다 다르기 때문
+
+--------------------------------------------------------------------------
+
+  - Python 야구 선수 연봉 예측(15주차/20.12.17)
+
+    - 표준화 & 정규화
+
+    import numpy as np
+
+	# scikit learn: 분석도구
+	from sklearn.preprocessing import MinMaxScaler
+	from sklearn.preprocessing import StandardScaler
+
+	# 표준화 & 정규화: 각 피쳐간 단위 표준화 (통일)
+
+	# 2차원 배열
+	train_array = np.arange(0, 11).reshape(-1, 1)
+	test_array = np.arange(0, 6).reshape(-1, 1)
+
+	# MinMaxScaler
+	# 정규화
+	# scaler = MinMaxScaler()
+
+	# 표준화
+	scaler = StandardScaler()
+
+	scaler.fit(train_array)
+	train_scaled = scaler.transform(train_array)
+
+	print("----- train_array -----")
+	print("원본: ", np.round(train_array.reshape(-1), 2))
+	print("scaled된 데이터: ", np.round(train_scaled.reshape(-1), 2))
+
+	print("----- test_array -----")
+	# fitting된 스케일러로 test셋 변환
+	test_scaled = scaler.transform(test_array)
+
+	print("원본: ", np.round(test_array.reshape(-1), 2))
+	print("scaled된 데이터: ", np.round(test_scaled.reshape(-1), 2))
+
+	- 야구 선수 연봉 회귀분석 후 그래프화
+
+	import pandas as pd
+	import matplotlib.pyplot as plt
+	import matplotlib.font_manager as fm
+
+	from Python_Analysis.MyUtil import print_line, print_all, apply_font
+
+	print_all()
+	apply_font()
+
+	# Data 읽어오기
+	pitcher = pd.read_csv("Data/picher_stats_2017.csv")
+	batter = pd.read_csv("Data/batter_stats_2017.csv")
+
+	print_line("pitcher Dataset 정보확인")
+	print(pitcher.info())
+	print(pitcher.head())
+
+	print_line("연봉(2018)")
+	print(pitcher['연봉(2018)'].describe())
+
+	## 2018 연봉의 분포
+	# pitcher['연봉(2018)'].hist(bins=100)
+	# plt.show()
+
+	# boxplot으로 연봉확인
+	# pitcher.boxplot(column=['연봉(2018)', '연봉(2017)'])
+	# plt.show()
+
+	# 예측모델에 사용될 feature(column) 선택
+	# pitcher_features_df = pitcher[['승', '패', '세', '홀드', '블론', '경기', '선발', '이닝', '삼진/9', '볼넷/9', '홈런/9', 'BABIP'
+	#     , 'LOB%', 'ERA', 'RA9-WAR', 'FIP', 'kFIP', 'WAR', '연봉(2018)', '연봉(2017)']]
+	pitcher_features_df = pitcher.iloc[:, 2:]
+
+	# 각 피쳐간 histogram 출력 -> 각 피쳐간 수치에 대한 단위차가 큼
+	# -> 정규화 or 표준화 필요
+	# 정규화: 0 ~ 1 사이 실수로 표현 (min-max)
+	# 표준화: 평균 0, 표준편차가 1인 정규분포 형태
+
+	def plot_hist_each_column(df):
+	    # 출력되는 창크기 설정 [가로크기, 세로크기]
+	    plt.rcParams['figure.figsize'] = [10, 8]
+	    flg = plt.figure()
+
+	    # df 컬럼의 갯수만큼 subplot 배치 -> 출력
+	    for i in range(len(df.columns)):
+	        # add_subplot(n, m, i): n행 m열에 i번째 그래프를 넣음
+	        ax = flg.add_subplot(4, 5, i + 1)
+	        plt.hist(df[df.columns[i]], bins=50)
+	        # n행 m열에 i번째 그래프 이름을 넣음
+	        ax.set_title(df.columns[i])
+
+	    plt.show()
+
+
+	## 각 피쳐관련 hist 호출
+	# plot_hist_each_column(pitcher_features_df)
+
+	# 피쳐에 대한 스케일링 작업
+
+	# pandas 형태로 정의된 데이터를 출력할때 scientifiec-notation이 아닌 float모양으로 출력되게 설정
+	pd.options.mode.chained_assignment = None
+
+	# 각 피쳐를 스케일링하기 위한 함수
+	def standard_scaling(df, scale_columns):
+	    for col in scale_columns:
+	        # 컬럼의 평균
+	        series_mean = df[col].mean()
+	        # 컬럼의 표준편차
+	        series_std = df[col].std()
+	        # 표준화
+	        df[col] = df[col].apply(lambda x : (x - series_mean) / series_std)
+	    return df
+
+	# scaling할 컬럼 목록
+	# scale_columns = ['승', '패', '세', '홀드', '블론', '경기', '선발', '이닝', '삼진/9', '볼넷/9', '홈런/9', 'BABIP'
+	#                    , 'LOB%', 'ERA', 'RA9-WAR', 'FIP', 'kFIP', 'WAR', '연봉(2017)']
+
+	scale_columns = pitcher_features_df.columns.tolist()
+	scale_columns.remove("연봉(2018)")
+
+	# scaling 실행
+	pitcher_df = standard_scaling(pitcher, scale_columns)
+	print(pitcher_df.head())
+
+	# 컬럼명 변경: 연봉(2018) -> y
+	# df.rename(): 열 이름 변경
+	pitcher_df = pitcher_df.rename(columns={'연봉(2018)':'y'})
+	print(pitcher_df.head())
+
+	# 팀명을 one-hot-encoding으로 변경
+	# one-hot-encoding: 더미변수화 (이진변수)
+	# test = ['one', 'two', 'three']
+	# test_one_hot_result = pd.get_dummies(test)
+	# print(test_one_hot_result)
+
+	# 팀명 컬럼 더미변수화
+	team_encoding = pd.get_dummies(pitcher_df.팀명)
+	print(team_encoding)
+
+	# 팀명 컬럼 삭제
+	pitcher_df = pitcher_df.drop('팀명', axis=1)
+
+	# 팀명(one-hot): team_encoding
+	pitcher_df = pitcher_df.join(team_encoding)
+
+	print_line("팀명(-) One-hot(+)")
+	print(pitcher_df.head())
+
+	## 회귀분석
+	from sklearn.linear_model import LinearRegression
+	from sklearn.model_selection import train_test_split
+	from sklearn.metrics import mean_squared_error
+	from math import sqrt
+
+	# train / test data 분리
+	# 독립변수 추출(제거할 피쳐: 선수명, y)
+	# df[df.columns.difference([...])]
+	# X -> 데이터프레임 객체
+	X = pitcher_df[pitcher_df.columns.difference(['선수명', 'y'])]
+
+	# 종속변수 추출
+	# y -> 시리즈 객체
+	y = pitcher_df['y']
+
+	# 데이터 분할
+	# random_state: 무작위 설정
+	X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, test_size=0.2, random_state=19)
+
+	# Model fit(학습)
+	lr = LinearRegression()
+	# cost(lost, error)함수 / Gradient Descent Algorithm
+	model = lr.fit(X_train, y_train)
+
+	# Weight값 확인: 28개(w1, w2, ...)
+	print(lr.coef_)
+	print(len(pitcher_df.columns))
+
+	# 생성모델 평가
+	print(model.score(X_train, y_train))
+	print(model.score(X_test, y_test))
+
+	# 회귀분석 평가: RMSE
+	y_train_predicts = lr.predict(X_train)
+	print(sqrt(mean_squared_error(y_train, y_train_predicts)))
+
+	# MSE
+	print(mean_squared_error(y_train, y_train_predicts))
+
+	y_test_predicts = lr.predict(X_test)
+	print(sqrt(mean_squared_error(y_test, y_test_predicts)))
+
+
+	# 만들어진 모델에 대한 적합성 검증
+	# -> 어떤 피쳐가 영향력있는지
+	import statsmodels.api as sm
+
+	# 회귀분석 수행
+	# 모델 검증
+	X_train = sm.add_constant(X_train)
+	model = sm.OLS(y_train, X_train).fit()
+	print(model.summary())
+
+	cols_name = pitcher_df.columns.tolist()
+	cols_name = cols_name[1:21]
+	print(cols_name)
+
+	import seaborn as sns
+	corr = pitcher_df[cols_name].corr(method="pearson")
+	hm = sns.heatmap(corr.values,
+	                 cbar=True,
+	                 square=True,
+	                 annot=True,
+	                 xticklabels=cols_name,
+	                 yticklabels=cols_name,
+	                 annot_kws={'size':10},
+	                 fmt=".2f")
+	plt.show()
+
+	# 다중공선성 확인: 피쳐간의 상관관계 체크
+	from statsmodels.stats.outliers_influence import variance_inflation_factor
+	vif = pd.DataFrame()
+	vif['VIF Factor'] = [variance_inflation_factor(X.values, i) for i in range(X.shape[1])]
+	vif['feature'] = X.columns
+	print(vif.round(1))
+
+	## 최적화된 모델 다시 생성
+	X = pitcher_df[['FIP', 'WAR', '볼넷/9', '삼진/9', '연봉(2017)']]
+	y = pitcher_df['y']
+
+	X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.8, test_size=0.2, random_state=19)
+
+	# 모델 학습
+	lr = LinearRegression()
+	model = lr.fit(X_train, y_train)
+
+	# 2018년 연봉 예측
+	predict_2018_salary = lr.predict(X)
+	# Sereise에 들어가는 데이터는 1차원 배열 => numpy -> list 변환
+	pitcher_df['예측연봉(2018)'] = pd.Series(predict_2018_salary)
+
+	# 원래 데이터 프레임 다시 로드
+	pitcher = pd.read_csv("Data/picher_stats_2017.csv")
+	pitcher = pitcher[['선수명', '연봉(2017)']]
+
+	# pitcher_df + pitcher 병합(merge)
+	result_df = pitcher_df.sort_values(by=['y'], ascending=False)
+	result_df.drop(['연봉(2017)'], axis=1, inplace=True, errors='ignore')
+	result_df = result_df.merge(pitcher, on=['선수명'], how='left')
+	result_df = result_df[['선수명', 'y', '예측연봉(2018)', '연봉(2017)']]
+	result_df.columns = ['선수명', '실제연봉(2018)', '예측연봉(2018)', '작년연봉(2017)']
+	print(result_df.head())
+
+	# X_train = sm.add_constant(X_train)
+	# model = sm.OLS(y_train, X_train).fit()
+	# print(model.summary())
+
+	print(result_df[result_df['실제연봉(2018)'] == result_df['작년연봉(2017)']][:5])
+
+	result_df = result_df[result_df['실제연봉(2018)']!=result_df['작년연봉(2017)']]
+	print(result_df.head())
+
+	# 도표로 나타내기
+	result_df.plot(x='선수명', y=['작년연봉(2017)', '예측연봉(2018)', '실제연봉(2018)'], kind='bar')
+	plt.show()
+
+	# 연봉이 커진 선수 TOP 20
+	result_df['연봉차'] = result_df['실제연봉(2018)'] - result_df['작년연봉(2017)']
+	result_df = result_df.sort_values(by=['연봉차'], ascending=False)
+	print(result_df.head())
+	result_df[:20].plot(x='선수명', y=['작년연봉(2017)', '예측연봉(2018)', '실제연봉(2018)'], kind='bar')
+	plt.title("작년보다 연봉이 커진 선수 TOP 20")
+	plt.show()
+
+	# 연봉이 작아진 선수 TOP 20
+	result_df = result_df.sort_values(by=['연봉차'], ascending=True)
+	print(result_df.head())
+	result_df[:20].plot(x='선수명', y=['작년연봉(2017)', '예측연봉(2018)', '실제연봉(2018)'], kind='bar')
+	plt.title("작년보다 연봉이 작아진 선수 TOP 20")
+	plt.show()
+
+--------------------------------------------------------------------------
+
+  - Python 타이타닉 생존자 분류(15주차/20.12.18)
+
+    - 로지스틱 회귀분석
+
+    import pandas as pd
+
+	from Python_Analysis.MyUtil import print_line, print_all
+
+	print_all()
+
+	passengers = pd.read_csv("Data/titanic-passengers.csv", sep=";")
+	print_line("passenger info")
+	print(passengers.head())
+	print(passengers.info())
+	print(passengers.isnull().sum())
+
+	# 데이터 전처리
+	# 성별: 1(female) or 0(male)
+	# map(function, list) -> Series.map(function)
+	passengers['Sex'] = passengers['Sex'].map({"female":1, "male":0})
+
+	# 결측치(NaN): 나이는 평균
+	# inplace=True: 덮어쓰기
+	# inplace=False: 변수를 따로 생성해서 입력받아야함
+	passengers['Age'].fillna(value=passengers['Age'].mean(), inplace=True)
+
+	# 객실등급(pclass) -> 더미변수화
+	passengers['FirstClass'] = passengers['Pclass'].apply(lambda x : 1 if x == 1 else 0)
+	passengers['SecondClass'] = passengers['Pclass'].apply(lambda x : 1 if x == 2 else 0)
+
+	features = passengers[['Sex', 'Age', 'FirstClass', 'SecondClass']]
+	survival = passengers['Survived']
+
+	from sklearn.model_selection import train_test_split
+	from sklearn.preprocessing import StandardScaler
+	from sklearn.linear_model import LogisticRegression
+
+	# train/test 분리
+	train_features, test_features, train_labels, test_labels = train_test_split(features, survival, random_state=19)
+	print(train_features.head())
+
+	# 표준화
+	scaler = StandardScaler()
+	# fit_transform(): fit() + transform()
+	# fit(): 해당 데이터로 표준화 적용
+	# transform(): 표준화가 적용된 스케일러로 데이터 표준화
+	train_features = scaler.fit_transform(train_features)
+	test_features = scaler.fit_transform(test_features)
+	print(train_features)
+	# 결과값 -> Numpy 배열
+
+	# 모델 작성
+	model = LogisticRegression()
+	model.fit(train_features, train_labels)
+
+	# 모델 평가: score
+	print("학습: ", model.score(train_features, train_labels))
+	print("실전: ", model.score(test_features, test_labels))
+
+	print_line("model.coef")
+	print(model.coef_)
+
+	## 실제 데이터 넣어서 예측
+	import numpy as np
+	Tom = np.array([0.0, 40.0, 0.0, 0.0])
+	Jane = np.array([1.0, 20.0, 0.0, 1.0])
+	Me = np.array([0.0, 26.0, 1.0, 0.0])
+
+	# 위 모델에서 Numpy 배열로 입력값을 받았음
+	real_passengers = np.array([Tom, Jane, Me])
+	print(real_passengers)
+	real_passengers = scaler.transform(real_passengers)
+
+	print(model.predict(real_passengers))
+	# 예측에 대한 확률값 출력 -> predict_proba()
+	print(model.predict_proba(real_passengers))
+
+--------------------------------------------------------------------------
+
+  - Python 분류 모델 평가(16주차/20.12.21)
+
+    - 타이타닉 생존자 예측 초기 모델
+
+	import pandas as pd
+	import numpy as np
+	import matplotlib.pyplot as plt
+	import seaborn as sns
+
+	from sklearn.linear_model import LogisticRegression
+	from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
+	from Python_Analysis.MyUtil import print_line, print_all
+
+	# 경고 메세지 무시
+	import warnings
+	warnings.filterwarnings("ignore")
+
+	print_all()
+
+	# 데이터 읽어오기
+	df_train = pd.read_csv("Data/titanic_train.csv")
+	df_test = pd.read_csv("Data/titanic_test.csv")
+
+	print_line("train info")
+	print(df_train.info())
+	print(df_train.head())
+	print(df_train.isnull().sum())
+
+	print_line("test info")
+	print(df_test.info())
+
+	# 불필요한 피쳐 제거
+	df_train = df_train.drop(['name', 'ticket', 'body', 'cabin', 'home.dest'], axis = 1)
+	df_test = df_test.drop(['name', 'ticket', 'body', 'cabin', 'home.dest'], axis = 1)
+	print(df_train.isnull().sum())
+	# print_line("df_train")
+	# print(df_train.head())
+
+	print_line("생존/사망자 정보")
+	print(df_train['survived'].value_counts())
+	df_train['survived'].value_counts().plot.bar()
+	# plt.show() -> 동기함수
+	plt.show()
+
+	# step
+	print_line("pclass별 생존/사망자 정보")
+	# 막대그래프
+	# plot.bar()
+	# sns.countplot()
+	# hue: 그룹핑, 구분
+	print(df_train.groupby(['pclass', 'survived']).count())
+	ax = sns.countplot(x='pclass', hue="survived", data=df_train)
+	plt.show()
+	print_line("sex별 생존/사망자 정보")
+	print(df_train.groupby(['sex', 'survived'])['sex'].count())
+	ax = sns.countplot(x='sex', hue='survived', data=df_train)
+	plt.show()
+
+	# 두 집단(생존/사망)간의 정보를 비교하는 함수
+	from scipy import stats
+
+	def valid_feafures(df, col_name, distribution_check=True):
+	    # 두 집단의 분포그래프 출력
+	    g = sns.FacetGrid(df, 'survived')
+	    g.map(plt.hist, col_name, bins=30)
+	    plt.show()
+
+	    # 두 집단의 표준편차
+	    # 두 집단의 표준편차의 차이가 커야 영향이 있을 확률이 높다고 판단
+	    titanic_survived = df[df['survived'] == 1]
+	    titanic_survived_static = np.array(titanic_survived[col_name])
+	    print("data std is", "%.2f"%np.std(titanic_survived_static))
+
+	    titanic_no_survived = df[df['survived'] == 0]
+	    titanic_no_survived_static = np.array(titanic_no_survived[col_name])
+	    print("data std is", "%.2f" % np.std(titanic_no_survived_static))
+
+	    # T-test
+	    # equl_var=True: 등분산(대응표본시)
+	    # equl_var=False: 독립표본시
+	    tRestResult = stats.ttest_ind(titanic_survived[col_name], titanic_no_survived[col_name])
+	    # tRestResultDiffVar = stats.ttest_ind(titanic_survived[col_name], titanic_no_survived[col_name], equal_var=False)
+
+	    print(tRestResult)
+	    # print(tRestResultDiffVar)
+
+	    if distribution_check:
+	        # Shapiro-Wilk 검정: 분포의 정규성 정도를 검증
+	        print(stats.shapiro(titanic_survived[col_name]))
+	        print(stats.shapiro(titanic_no_survived[col_name]))
+
+	# 나이별 분포 정보 탐색
+	valid_feafures(df_train[df_train['age']>0], 'age', distribution_check=True)
+
+	# # 동승한 형제/배우자
+	# valid_feafures(df_train[df_train['age']>0], 'sibsp', distribution_check=False)
+	#
+	# # 동승한 부모/자식
+	# valid_feafures(df_train[df_train['age']>0], 'parch', distribution_check=False)
+	
+	# # 요금
+	# valid_feafures(df_train[df_train['age']>0], 'fare', distribution_check=True)
+
+	# Data 전처리 작업
+	# 나이: 결측값은 평균값
+	age_mean = df_train[df_train['age']>0]['age'].mean()
+	df_train['age'] = df_train['age'].fillna(age_mean)
+	df_test['age'] = df_test['age'].fillna(age_mean)
+	print(df_train.isnull().sum())
+
+	# 탑승지역: 가장 많은 빈도수갖는 데이터
+	many_embarked = df_train['embarked'].value_counts().index[0]
+	print(many_embarked)
+	df_train['embarked'] = df_train['embarked'].fillna(many_embarked)
+	df_test['embarked'] = df_test['embarked'].fillna(many_embarked)
+
+	# one-hot data로 전환
+	# train_set + test_set
+	total_df = df_train.append(df_test)
+	train_idx_num = len(df_train)
+
+	# one-hot encoding
+	total_df_encoded = pd.get_dummies(total_df)
+	print(total_df_encoded.head())
+
+	# train/test 분리
+	df_train = total_df_encoded[:train_idx_num]
+	df_test = total_df_encoded[train_idx_num:]
+
+	# model parameter(pclass, age, sibsp, fare...) / survived 분리
+	x_train, y_train = df_train.loc[:, df_train.columns != 'survived'].values, df_train['survived']
+	print(x_train)
+	# 결과값 -> numpy 배열
+	x_test, y_test = df_test.loc[:, df_test.columns != 'survived'].values, df_test['survived']
+
+	# LogisticRegression
+	lr = LogisticRegression(random_state=0)
+	lr.fit(x_train, y_train)
+
+	# 학습모델에 대한 예측
+	y_pred = lr.predict(x_test)
+	# predict_proba()[:, 1] -> 1에 대한 예측
+	y_pred_probability = lr.predict_proba(x_test)[:, 1]
+	print(y_pred_probability)
+
+	# 정확도(Accuracy)
+	# 정밀도(Precision)
+	# 재현도(Recall)
+	# 특이도(Speciticity)
+	# F1 score / ROC Curve
+
+	# accuracy_score(실제값, 예측값)
+	print("accuracy: %.2f"% accuracy_score(y_test, y_pred))
+	print("precision: %.2f"% precision_score(y_test, y_pred))
+	print("recall: %.2f"% recall_score(y_true=y_test, y_pred=y_pred))
+	print("F1 score: %.2f"% f1_score(y_test, y_pred))
+
+	# confusion matrix 출력
+	# -> 클래스가 0, 1, 2 .. 순으로 출력 (일반적인 형태와는 다름)
+	# -> labels = [1, 0]
+	from sklearn.metrics import confusion_matrix
+	conmat = confusion_matrix(y_true=y_test, y_pred=y_pred, labels=[1, 0])
+	print_line("confusion matrix")
+	print(conmat)
+
+	# AUC(Area Under the Curve)
+	from sklearn.metrics import roc_curve, roc_auc_score
+	false_positive_rate, true_positive_rate, thresholds = roc_curve(y_test, y_pred_probability)
+	roc_auc = roc_auc_score(y_test, y_pred_probability)
+	print("AUC: %.3f"% roc_auc)
+
+	# ROC Curve 그래프 출력
+	plt.rcParams['figure.figsize'] = [5, 4]
+	plt.plot(false_positive_rate, true_positive_rate, label = 'ROC Curve (area = %0.3f)'%roc_auc,
+	         color='red', linewidth=4.0)
+	plt.plot([0, 1], [0, 1], 'k--')
+	plt.xlim([0.0, 1.0])
+	plt.ylim([0.0, 1.0])
+	plt.xlabel("False Positive Rate")
+	plt.ylabel("True Positive Rate")
+	plt.title("ROC Curve of Logistic Regression")
+	# loc: 위치 지정
+	plt.legend(loc="lower right")
+	plt.show()
+
+	# 의사결정나무 모델을 이용해서 모델평가
+	from sklearn.tree import DecisionTreeClassifier
+
+	dtc = DecisionTreeClassifier()
+	# 학습
+	dtc.fit(x_train, y_train)
+	y_pred = dtc.predict(x_test)
+	y_pred_probability = dtc.predict_proba(x_test)[:, 1]
+
+	# 의사결정나무 모델에 대한 평가
+	print_line("의사결정나무 모델에 대한 평가")
+	print("accuracy: %.2f"% accuracy_score(y_test, y_pred))
+	print("precision: %.2f"% precision_score(y_test, y_pred))
+	print("recall: %.2f"% recall_score(y_true=y_test, y_pred=y_pred))
+	print("F1 score: %.2f"% f1_score(y_test, y_pred))
+
+	# confusion matrix 출력
+	conmat = confusion_matrix(y_true=y_test, y_pred=y_pred, labels=[1, 0])
+	print_line("confusion matrix")
+	print(conmat)
+
+	false_positive_rate, true_positive_rate, thresholds = roc_curve(y_test, y_pred_probability)
+	roc_auc = roc_auc_score(y_test, y_pred_probability)
+	print("AUC: %.3f"% roc_auc)
+
+	# ROC Curve 그래프 출력
+	plt.rcParams['figure.figsize'] = [5, 4]
+	plt.plot(false_positive_rate, true_positive_rate, label = 'ROC Curve (area = %0.3f)'%roc_auc,
+	         color='red', linewidth=4.0)
+	plt.plot([0, 1], [0, 1], 'k--')
+	plt.xlim([0.0, 1.0])
+	plt.ylim([0.0, 1.0])
+	plt.xlabel("False Positive Rate")
+	plt.ylabel("True Positive Rate")
+	plt.title("ROC Curve of Logistic Regression")
+	# loc: 위치 지정
+	plt.legend(loc="lower right")
+	plt.show()
+
+    - Feature Enginnering 한 모델
+
+    import pandas as pd
+	import numpy as np
+	import matplotlib.pyplot as plt
+	import seaborn as sns
+
+	from sklearn.linear_model import LogisticRegression
+	from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+	from sklearn.metrics import roc_curve, roc_auc_score
+	from sklearn.metrics import confusion_matrix
+
+	from Python_Analysis.MyUtil import print_line, print_all
+
+	# 경고 메세지 무시
+	import warnings
+	warnings.filterwarnings("ignore")
+
+	print_all()
+
+	# 데이터 읽어오기
+	df_train = pd.read_csv("Data/titanic_train.csv")
+	df_test = pd.read_csv("Data/titanic_test.csv")
+
+	df_train = df_train.drop(['ticket', 'body', 'home.dest'], axis=1)
+	df_test = df_test.drop(['ticket', 'body', 'home.dest'], axis=1)
+
+	# Data 전처리 작업
+	# 나이: 결측값은 평균값
+	age_mean = df_train[df_train['age']>0]['age'].mean()
+	df_train['age'] = df_train['age'].fillna(age_mean)
+	df_test['age'] = df_test['age'].fillna(age_mean)
+
+	# 탑승지역: 가장 많은 빈도수갖는 데이터
+	many_embarked = df_train['embarked'].value_counts().index[0]
+	df_train['embarked'] = df_train['embarked'].fillna(many_embarked)
+	df_test['embarked'] = df_test['embarked'].fillna(many_embarked)
+
+	# one-hot data로 전환
+	# train_set + test_set
+	total_df = df_train.append(df_test)
+	train_idx_num = len(df_train)
+
+	# Cabin 결측치 처리
+	total_df['cabin'] = total_df['cabin'].fillna('X')
+	# print(total_df['cabin'].value_counts()[:10])
+	total_df['cabin'] = total_df['cabin'].apply(lambda x : x[0])
+	print(total_df['cabin'].value_counts()[:10])
+	# G or T -> X로 통합
+	# replace(): 값 변경 (딕셔너리)
+	total_df['cabin'] = total_df['cabin'].replace({'G':'X', 'T':'X'})
+
+	# 선실별 생존/사망자 그래프
+	ax = sns.countplot(x='cabin', hue='survived', data=total_df)
+	plt.show()
+
+	# name 항목 -> feature engineering
+	print(total_df['name'][:10])
+	name_grade = total_df['name'].apply(lambda x : x.split(sep=", ")[1].split(sep=".")[0])
+	name_grade = name_grade.unique().tolist()
+	print(name_grade)
+
+	# 호칭에 따른 사회적지위(등급)
+	grade_dict = { 'A':['Rev', 'Col', 'Major', 'Dr', 'Capt', 'Sir'], 
+					# 명예직
+	               'B':['Ms', 'Mme', 'Mrs', 'Dona'],                 
+	               	# 여성
+	               'C':['Jonkheer', 'the Countess'],                 
+	               	# 귀족/작위
+	               'D':['Mr', 'Don'],                                
+	               	# 남성
+	               'E':['Master'],                                   
+	               	# 젊은 남성
+	               'F':['Lady', 'Miss', 'Mlle'] }                    
+	               	# 젊은 여성
+
+	# name 피쳐에 값을 지정하는 함수
+	def give_grade(x):
+	    grade = x.split(", ")[1].split(".")[0]
+	    for key, value in grade_dict.items():
+	        for title in value:
+	            if grade == title:
+	                return key
+	    return 'G'
+
+	# 위의 함수를 이용해서 이름을 변경 -> 등급
+	total_df['name'] = total_df['name'].apply(lambda x : give_grade(x))
+	print(total_df.head())
+	print(total_df['name'].value_counts())
+
+	# one-hot encoding
+	total_df_encoded = pd.get_dummies(total_df)
+	df_train = total_df_encoded[:train_idx_num]
+	df_test = total_df_encoded[train_idx_num:]
+
+	print(total_df_encoded.head())
+
+	# 모델을 생성 -> 학습
+	x_train, y_train = df_train.loc[:, df_train.columns != 'survived'].values, df_train['survived']
+	# 결과값 -> numpy 배열
+	x_test, y_test = df_test.loc[:, df_test.columns != 'survived'].values, df_test['survived']
+
+	# LogisticRegression
+	lr = LogisticRegression(random_state=0)
+	lr.fit(x_train, y_train)
+
+	# 학습모델에 대한 예측
+	y_pred = lr.predict(x_test)
+	# predict_proba()[:, 1] -> 1에 대한 예측
+	y_pred_probability = lr.predict_proba(x_test)[:, 1]
+
+	# accuracy_score(실제값, 예측값)
+	print("accuracy: %.2f"% accuracy_score(y_test, y_pred))
+	print("precision: %.2f"% precision_score(y_test, y_pred))
+	print("recall: %.2f"% recall_score(y_true=y_test, y_pred=y_pred))
+	print("F1 score: %.2f"% f1_score(y_test, y_pred))
+
+	# confusion matrix 출력
+	# -> 클래스가 0, 1, 2 .. 순으로 출력 (일반적인 형태와는 다름)
+	# -> labels = [1, 0]
+	conmat = confusion_matrix(y_true=y_test, y_pred=y_pred, labels=[1, 0])
+	print_line("confusion matrix")
+	print(conmat)
+
+	# AUC(Area Under the Curve)
+	false_positive_rate, true_positive_rate, thresholds = roc_curve(y_test, y_pred_probability)
+	roc_auc = roc_auc_score(y_test, y_pred_probability)
+	print("AUC: %.3f"% roc_auc)
+
+	# ROC Curve 그래프 출력
+	plt.rcParams['figure.figsize'] = [5, 4]
+	plt.plot(false_positive_rate, true_positive_rate, label = 'ROC Curve (area = %0.3f)'%roc_auc,
+	         color='red', linewidth=4.0)
+	plt.plot([0, 1], [0, 1], 'k--')
+	plt.xlim([0.0, 1.0])
+	plt.ylim([0.0, 1.0])
+	plt.xlabel("False Positive Rate")
+	plt.ylabel("True Positive Rate")
+	plt.title("ROC Curve of Logistic Regression")
+	# loc: 위치 지정
+	plt.legend(loc="lower right")
+	plt.show()
+
+	# 피쳐에 대한 영향력 확인
+	cols = df_train.columns.tolist()
+	cols.remove('survived')
+	y_pos = np.arange(len(cols))
+
+	plt.rcParams['figure.figsize'] = [5, 4]
+	fig, ax = plt.subplots()
+	# barh(y축변수, x축변수): 수평 바그래프
+	ax.barh(y_pos, lr.coef_[0], align='center', color='green', ecolor='black')
+	ax.set_yticks(y_pos)
+	ax.set_yticklabels(cols)
+	ax.invert_yaxis()
+	ax.set_xlabel('Coef')
+	ax.set_title("Each Feature's Coef")
+	plt.show()
+
+	# K-fold 교차검증
+	from sklearn.model_selection import KFold
+
+	k = 5
+	cv = KFold(k, shuffle=True, random_state=0)
+	acc_history = []
+
+	# K-fold 5번의 분할 학습
+	# cv.split(data): data를 k개의 각각 학습, 테스트 데이터로 나누어 인덱스를 반환
+	for i, (train_data_row, test_data_row) in enumerate(cv.split(total_df_encoded)):
+	    df_train = total_df_encoded.iloc[train_data_row]
+	    df_test = total_df_encoded.iloc[test_data_row]
+
+	    splited_x_train, splited_y_train = df_train.loc[:, df_train.columns != 'survived'].values, df_train['survived'].values
+	    splited_x_test, splited_y_test = df_test.loc[:, df_test.columns != 'survived'].values, df_test['survived'].values
+
+	    # 학습진행
+	    lr = LogisticRegression(random_state=0)
+	    lr.fit(splited_x_train, splited_y_train)
+	    y_pred = lr.predict(splited_x_test)
+
+	    splited_acc = accuracy_score(splited_y_test, y_pred)
+	    acc_history.append(splited_acc)
+
+	# acc_history에 저장된 5번의 학습결과에 대한 accuracy 그래프로 출력
+	plt.xlabel("Each K-fold")
+	plt.ylabel("Acc of splited test data")
+	plt.plot(range(1, k+1), acc_history)
+	plt.show()
+
+	# 학습횟수에 따른 score 변화 그래프
+	import scikitplot as skplt
+	skplt.estimators.plot_learning_curve(lr, x_train, y_train)
+	plt.show()
+
+--------------------------------------------------------------------------
+
+  - Python 비트코인 시계열 분석(16주차/20.12.22)
+
+    - ARIMA 시계열 분석
+
+    import pandas as pd
+	import matplotlib.pyplot as plt
+
+	from statsmodels.tsa.arima_model import ARIMA
+
+	# ARIMA
+	# AR(Auto Regression): 현재데이터 계산시 이전 정보를 참조 -> 자기회귀모형
+	# I (Integration): different(차이) -> 차분
+	# MA(Moving Average): 이전항의 오차를 현재의 항의 상태를 추론하는데 이용 -> 이동평균모형
+
+	file_path = "Data/market-price-2012-12.csv"
+	bitcoin_df = pd.read_csv(file_path, names = ['day', 'price'])
+
+	# (AR=2 차분=1 MA=2) ARIMA
+	# -> 현재 데이터의 앞의 2일치를 가지고 해석
+	# p + q = 2, p*q = 0
+	model = ARIMA(bitcoin_df.price.values, order=(1, 1, 1))
+
+	# 결과 해석
+	# P > |z| 값을 보고 어떤 모델이 적합한지 판단
+	# ar -> AR모형
+	# ma -> MA모형
+	# D -> 차분
+	# 0.05 보다 작은 모형들로 구성하게끔 수정
+
+	# disp: 학습과정 출력
+	model_fit = model.fit(trend="c", full_output=True, disp=False)
+	print(model_fit.summary())
+
+	# 생성한 모델을 시각화
+	# 실제값/예측값을 같이 시각화
+	fig = model_fit.plot_predict()
+	# 이전값 - 현재값 차이 시각화
+	residuals = pd.DataFrame(model_fit.resid)
+	residuals.plot()
+	plt.show()
+
+	# 예측: 오늘부터 5일후
+	# forecast(steps=n): n일까지의 데이터를 예측
+	forecast_data = model_fit.forecast(steps=5)
+
+	# 예측값에 대한 검증
+	test_file_path = "Data/market-price-test-2012-12.csv"
+	bitcoin_test_df = pd.read_csv(test_file_path, names=['ds', 'y'])
+
+	# 실제값 : 예측값에 대한 비교
+	print(forecast_data)
+	# 예측값 -> forecast_data[0]
+	pred_y = forecast_data[0].tolist()
+	print(pred_y)
+	# 실제값
+	test_y = bitcoin_test_df.y.values
+
+	pred_y_lower = []   # 최소갑
+	pred_y_upper = []   # 최대값
+	# forecast_data[2] -> 예측값에 대한 상한,하한값 배열
+	for lower_upper in forecast_data[2]:
+	    lower = lower_upper[0]
+	    upper = lower_upper[1]
+	    pred_y_lower.append(lower)
+	    pred_y_upper.append(upper)
+
+	# 도표: 하한/상한/예측/실제값
+	plt.plot(pred_y, color='gold')          # 예측값
+	# plt.plot(pred_y_lower, color='red')     # 하한값
+	# plt.plot(pred_y_upper, color='blue')    # 상한값
+	plt.plot(test_y, color='green')     # 실제값
+	plt.show()
+
+	# 현재데이터: https://www.blockchain.com/ko/charts/market-price
+
+	- Prophet 시계열 분석
+
+	import pandas as pd
+	import matplotlib.pyplot as plt
+	from sklearn.metrics import mean_squared_error, r2_score
+	import math
+
+	from fbprophet import Prophet
+	from Python_Analysis.MyUtil import print_line, print_all
+	import warnings
+	warnings.filterwarnings("ignore")
+
+	print_all()
+
+	# Facebook -> Prophet
+	# conda install -c conda-forge fbprophet
+	# prophet의 input data column은 'ds' 'y' 로 고정
+	# seasonality mode: 연간, 월간, 주간, 일간등의 트랜드성을 반영
+	# 수치가 높으면 overfitting에 가까워짐
+
+	file_path = "Data/market-price.csv"
+	bitcoin_df = pd.read_csv(file_path, names=['ds', 'y'])
+
+	# 상한가 설정(선택사항) -> 'cap' 컬럼 생성
+	bitcoin_df['cap'] = 20000
+
+	# 이상치 제거(선택사항) -> 기준을 넘는값은 NA
+	bitcoin_df.loc[bitcoin_df['y']>18000, 'y'] = None
+
+	prophet = Prophet(seasonality_mode='multiplicative',
+	                  yearly_seasonality=True,
+	                  weekly_seasonality=True,
+	                  daily_seasonality=True,
+	                  changepoint_prior_scale=0.5)
+
+	prophet.fit(bitcoin_df)
+
+	# 5일 이후 내용을 예측
+	# make_fure_dataframe(): 예측할 데이터 -> 데이터프레임
+	# peroids: 기간
+	# freq: 일, 월, 년
+	future_data = prophet.make_future_dataframe(periods=5, freq='d')
+
+	# 상한가 필터링(선택사항)
+	future_data['cap'] = 20000
+
+	forecast_data = prophet.predict(future_data)
+
+	# 예측정보 출력
+	print_line("예측 데이터 뒤에서 5개")
+	# print(forecast_data)
+	print(forecast_data.tail(5))
+	print(forecast_data[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].tail(5))
+
+	# 예측결과를 시각화
+	fig1 = prophet.plot(forecast_data)
+	plt.show()
+
+	# seaonality_mode로 선택한 정보를 시각화
+	# plot_components()
+	# -> 연간, 월간, 주간, 일간
+	fig2 = prophet.plot_components(forecast_data)
+	plt.show()
+
+	# 실제데이터와 예측데이터 비교
+	test_file_path = "Data/market-price-test.csv"
+	bitcoin_test_df = pd.read_csv(test_file_path, names=['ds', 'y'])
+
+	pred_y = forecast_data.yhat.values[-5:] # 뒤에서 5개
+	test_y = bitcoin_test_df.y.values
+	pred_y_lower = forecast_data.yhat_lower.values[-5:]
+	pred_y_upper = forecast_data.yhat_upper.values[-5:]
+
+	# 도표: 하한/상한/예측/실제값
+	plt.plot(pred_y, color='gold')          # 예측값
+	plt.plot(pred_y_lower, color='red')     # 하한값
+	plt.plot(pred_y_upper, color='blue')    # 상한값
+	plt.plot(test_y, color='green')     # 실제값
+	plt.show()
+
+	# 모델 평가 -> RMSE
+	rmse = math.sqrt(mean_squared_error(pred_y, test_y))
+	print('rmse: ', rmse)
+
+--------------------------------------------------------------------------
+
+  - Python 리뷰 감정분석(16주차/20.12.23)
+
+    - 리뷰 감정분석
+
+    import pandas as pd
+	import matplotlib.pyplot as plt
+	import re
+	from konlpy.tag import Okt
+
+	from Python_Analysis.MyUtil import print_line, print_all
+	import warnings
+	warnings.filterwarnings("ignore")
+
+	print_all()
+
+	# Dataset 읽어오기
+	df = pd.read_csv("Data/review_data.csv")
+
+	# 한글만 필터링 함수
+	def text_clearn(text):
+	    # 한글 정규표현식
+	    hangul = re.compile(r'[^ ㄱ-ㅣ가-힣]+')
+	    result = hangul.sub(" ", text)
+	    return result
+
+	print_line("before")
+	print(df.head())
+
+	# review에서 한글만 남겨둔다
+	df['ko_text'] = df['review'].apply(lambda x : text_clearn(x))
+	# review 컬럼(Series) 삭제
+	del df['review']
+
+	print_line("after")
+	print(df.head())
+
+	# 형태소 분류 함수
+	# -> pos()
+	def get_pos(x):
+	    tagger = Okt()
+	    pos = tagger.pos(x)
+	    pos = [ '{}/{}'.format(word,tag) for word,tag in pos]
+	    return pos
+
+	# 형태소별 분류
+	result = get_pos(df['ko_text'][0])
+	print(result)
+
+	# text -> 수치형 변환
+	# https://wikidocs.net/book/2155
+
+	from sklearn.feature_extraction.text import CountVectorizer
+	# 형태소 -> 벡터형태의 학습데이터 셋으로 변환
+	# CounterVectorizer(): 문서단위 단어별 개수세어주는 객체
+	# DTM: 문서별 단어 행렬
+	index_vectorizer = CountVectorizer(tokenizer=lambda x : get_pos(x))
+	X = index_vectorizer.fit_transform(df['ko_text'].tolist())
+	# 결과값 -> (행개수, 형태소개수)
+	print(X.shape)
+
+	# vocabulary_: 단어:인덱스 형태로 반환
+	print_line("index_v")
+	print(str(index_vectorizer.vocabulary_))
+
+	# X[0] -> ko_text[0]의 단어인덱스
+	print_line("X[0]")
+	print(X[0])
+
+	# DTM -> TF-IDF 형태로 반환
+	# TF-IDF: DTM의 단어빈도수를 비율로 나타낸 행렬
+	# 모든 문서에서 자주 등장하는 단어는 중요도가 낮다고 판단하며, 특정 문서에서만 자주 등장하는 단어는 중요도가 높다고 판단
+	# -> TF-IDF 값이 낮으면 중요도가 낮은 것이며, TF-IDF 값이 크면 중요도가 큰 것
+	from sklearn.feature_extraction.text import TfidfTransformer
+	# TfidfTransformer(): DTM을 TF-IDF형태로 변환해주는 객체
+	tfidf_vectorizer = TfidfTransformer()
+	# DTM 형식의 데이터
+	X = tfidf_vectorizer.fit_transform(X)
+
+	print(X.shape)
+
+	print_line("TF-IDF: X[0]")
+	print(X[0])
+
+	# 여기까지 작업내용: Text전처리 작업 (텍스트를 단어별 빈도수 비율로 수치화)
+	# TextData -> 말뭉치(형태소분류) -> 학습용데이터셋(글자빈도수별 Matrix)
+
+	# train_set/ test_set 분리
+	from sklearn.model_selection import train_test_split
+	# 종속변수
+	y = df['y']
+	# 독립변수
+	x_train, x_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
+
+	print(x_train)
+	print(x_train.shape)
+	print(x_test.shape)
+
+	# model 생성
+	from sklearn.linear_model import LogisticRegression
+	from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+	from sklearn.metrics import confusion_matrix, roc_curve, roc_auc_score
+
+	# 로지스틱 모델 생성
+	lr = LogisticRegression()
+	lr.fit(x_train, y_train)
+
+	y_pred = lr.predict(x_test)
+	# 확률로 출력
+	y_pred_proba = lr.predict_proba(x_test)[:, 1]
+	print(y_pred)
+
+	# 모델평가 정보 출력
+	print("accuarcy: {:.2f}".format(accuracy_score(y_test, y_pred)))
+	print("precision: {:.2f}".format(precision_score(y_test, y_pred)))
+	print("recall: {:.2f}".format(recall_score(y_test, y_pred)))
+	print("f1 score: {:.2f}".format(f1_score(y_test, y_pred)))
+
+	# Confusion Matrix
+	conmat = confusion_matrix(y_true=y_test, y_pred=y_pred, labels=[1, 0])
+	print_line("confusion matrix")
+	print(conmat)
+	# -> 모두 1로 예측
+	# DataSet의 분포 불균형인 모델
+	# y: 1과 0의 분포 확인( 9 : 1 )
+	print(df['y'].value_counts())
+
+	# DataSet 1:1 비율로 섞어서 다시 실행
+	# 1:1 sampling
+	# sample(n): 데이터에서 n개 랜덤추출
+	positive_random_idx = df[df['y'] == 1].sample(50, random_state=30).index.tolist()
+	negative_random_idx = df[df['y'] == 0].sample(50, random_state=30).index.tolist()
+
+	print_line("sample index")
+	print(positive_random_idx)
+	print(negative_random_idx)
+
+	# Dataframe을 새로 생성(50+50)
+	random_idx = positive_random_idx + negative_random_idx
+	print(len(random_idx))
+
+	sample_X = X[random_idx, :]
+	y = df['y'][random_idx]
+
+	# train/test 분리(7:3)
+	x_train, x_test, y_train, y_test = train_test_split(sample_X, y, test_size=0.3)
+	print(x_train.shape)
+
+	# 로지스틱 모델 생성
+	lr = LogisticRegression()
+	lr.fit(x_train, y_train)
+
+	y_pred = lr.predict(x_test)
+	# 확률로 출력
+	y_pred_proba = lr.predict_proba(x_test)[:, 1]
+	print(y_pred)
+
+	# 모델평가 정보 출력
+	print("accuarcy: {:.2f}".format(accuracy_score(y_test, y_pred)))
+	print("precision: {:.2f}".format(precision_score(y_test, y_pred)))
+	print("recall: {:.2f}".format(recall_score(y_test, y_pred)))
+	print("f1 score: {:.2f}".format(f1_score(y_test, y_pred)))
+
+	# Confusion Matrix
+	conmat = confusion_matrix(y_true=y_test, y_pred=y_pred, labels=[1, 0])
+	print_line("confusion matrix")
+	print(conmat)
+
+	# AUC 수치 계산
+	false_positive_rate, true_positive_rate, thresholds = roc_curve(y_test, y_pred_proba)
+	roc_auc = roc_auc_score(y_test, y_pred_proba)
+	print("AUC: {:.3f}".format(roc_auc))
+
+	# ROC Curve 그래프 표현
+	plt.rcParams['figure.figsize'] = [5, 4]
+	plt.plot(false_positive_rate, true_positive_rate, label='ROC Curve(area={:.3f})'.format(roc_auc), color='red', linewidth=4.0)
+	plt.plot([0, 1], [0, 1], 'k--')
+	plt.xlim([0.0, 1.0])
+	plt.ylim([0.0, 1.0])
+	plt.xlabel("False Positive Rate")
+	plt.ylabel("True Positive Rate")
+	plt.title("ROC Curve")
+	plt.legend(loc="lower right")
+	plt.show()
+
+	# 모델이 학습한 계수 출력
+	plt.rcParams['figure.figsize'] = [10, 8]
+	plt.bar(range(len(lr.coef_[0])), lr.coef_[0])
+	plt.show()
+
+	# 긍정/부정평가에 대한 계수, 인덱스
+	print(sorted(((value, index) for index, value in enumerate(lr.coef_[0])), reverse=True)[:5])
+	print(sorted(((value, index) for index, value in enumerate(lr.coef_[0])), reverse=True)[-5:])
+
+	# 긍정어순으로 정렬된 정보를 얻어옴
+	coef_pos_index = sorted(((value, index) for index, value in enumerate(lr.coef_[0])), reverse=True)
+	# print(len(coef_pos_index))
+
+	# 회귀계수 / 인덱스 이용해서 어떤 형태소인지 확인
+	invert_index_vectorizer = { v:k for k,v in index_vectorizer.vocabulary_.items() }
+
+	print_line("invert_index_vectorizer")
+	print(str(invert_index_vectorizer)[:100])
+
+	# 상위 20개 긍정형태소 출력
+	print_line("긍정어 상위 20개")
+	for coef in coef_pos_index[:20]:
+	    print(invert_index_vectorizer[coef[1]], coef[0])
+
+	# 하위 20개 긍정형태소 출력
+	print_line("부정어 상위 20개")
+	for coef in coef_pos_index[-20:]:
+	    print(invert_index_vectorizer[coef[1]], coef[0])
+
+	## 문제: 명사(Noun)/형용사(Adjective) 계수가 높은 순서대로 출력
+	adj_index_vectorizer = { index:value.split(sep="/")[0] for index,value in invert_index_vectorizer.items() if value.split(sep="/")[1] == 'Adjective'}
+	noun_index_vectorizer = { index:value.split(sep="/")[0] for index,value in invert_index_vectorizer.items() if value.split(sep="/")[1] == 'Noun'}
+	print(adj_index_vectorizer)
+	print(noun_index_vectorizer)
+	print(coef_pos_index)
+	adj_keys = adj_index_vectorizer.keys()
+	coef_adj = [(value, index) for value, index in coef_pos_index if index in adj_index_vectorizer.keys()]
+
+	# 상위 20개 긍정형태소 출력
+	print_line("긍정형용사 상위 20개")
+	for coef in coef_adj[:20]:
+	    print(adj_index_vectorizer[coef[1]], coef[0])
+
+	# 하위 20개 긍정형태소 출력
+	print_line("부정형용사 하위 20개")
+	for coef in coef_adj[-20:]:
+	    print(adj_index_vectorizer[coef[1]], coef[0])
+
+	noun_keys = noun_index_vectorizer.keys()
+	coef_noun = [(value, index) for value, index in coef_pos_index if index in noun_index_vectorizer.keys()]
+
+	# 상위 20개 긍정명사 출력
+	print_line("긍정명사 상위 20개")
+	for coef in coef_noun[:20]:
+	    print(noun_index_vectorizer[coef[1]], coef[0])
+
+	# 하위 20개 긍정명사 출력
+	print_line("부정명사 하위 20개")
+	for coef in coef_noun[-20:]:
+	    print(noun_index_vectorizer[coef[1]], coef[0])
+
+    * 텍스트마이닝 참고사이트: https://wikidocs.net/book/2155
+
+--------------------------------------------------------------------------
+
+  - Python SVD(16주차/20.12.24)
+
+    - 영화 평점 SVD (파이썬)
+
+    import pandas as pd
+	from surprise import SVD
+	from surprise import Reader, Dataset
+
+	from Python_Analysis.MyUtil import print_line, print_all
+
+	# 라이브러리 설치
+	# win/mac: conda install -c conda-forge sckit-surprise
+	# win: pip install surprise
+
+	print_all()
+
+	rating = pd.read_csv("Data/movie_rating.csv")
+	print_line("rating.head")
+	print(rating.head())
+	print(rating.info())
+
+	print_line("영화를 많이본 사용자순")
+	print(rating['critic'].value_counts())
+	print_line("많이 본 영화정보")
+	print(rating['title'].value_counts())
+
+	# 관람/미관람자에 대한 정보 종합해서 출력
+	tab = pd.crosstab(rating.critic, rating.title)
+	print_line("crosstab")
+	print(tab)
+
+	# 유저/영화 rating을 그룹화
+	rating_g = rating.groupby(['critic', 'title'])
+
+	# unstack(): 행렬 구조로 변환
+	# rating_g.sum() 결과값 -> 인덱스가 critic, title인 critic, title별 rating 데이터
+	tab = rating_g.sum().unstack()
+	print_line("crosstab (rating)")
+	print(tab)
+
+	# SVD 모델 이용해서 평점예측
+	# rating_scale: 평점 범위(1~5)
+	reader = Reader(rating_scale=(1, 5))
+	data = Dataset.load_from_df(df=rating, reader=reader)
+
+	# train/test 분리
+	train = data.build_full_trainset()
+	test = train.build_testset()
+	print(train)
+
+	# Model 생성
+	model = SVD(n_factors=100, n_epochs=20, random_state=123)
+	model.fit(train)
+
+	# 예측
+	user_id = 'Toby'
+	item_ids = ['The Night', 'Just My', 'Lady']
+	real_rating = 0
+
+	print_line("평점 예측")
+	# 예측한 데이터(est)의 점수가 제일 높은 영화로 추천
+	for movie in item_ids:
+	    print(model.predict(user_id, movie, real_rating))
+
+	# 확인
+	user_id = 'Jack'
+	item_ids = ['Snakes', 'Lady']
+	real_rating = 0
+
+	print_line("평점 예측")
+	# 예측한 데이터(est)의 점수가 제일 높은 영화로 추천
+	for movie in item_ids:
+	    print(model.predict(user_id, movie, real_rating))
+
+	- 온라인 거래 SVD (주피터 노트북)
+
+	%matplotlib inline
+
+	import pandas as pd
+	import numpy as np
+	import matplotlib.pyplot as plt
+
+	import warnings
+	warnings.filterwarnings('ignore')
+
+	# cell 실행: Ctrl + Enter
+	# cell 추가: Alt + Enter
+
+	# 영국 온라인샵 거래 정보
+	df = pd.read_csv("Data/online_retail.csv", dtype={'CustomerID':str, 'InvoiceNo':str}, encoding='ISO-8859-1')
+	df['InvoiceDate'] = pd.to_datetime(df['InvoiceDate'], format='%m/%d/%Y %H:%M')
+
+	## 데이터 feature
+	 InvoiceNo   : 거래번호
+	 StockCode   : 상품번호
+	 Description : 상품명
+	 Quantity    : 수량
+	 InvoiceDate : 거래날짜
+	 UnitPrice   : 단가
+	 CustomerID  : 고객번호
+	 Country     : 국가
+
+	df.info()
+	df.head()
+
+	# 결측 데이터 확인
+	df.isnull().sum()
+
+	# 결측 데이터 삭제
+	df = df.dropna()
+	df.shape
+
+	# 상품수량이 음수인경우 제거
+	df[df['Quantity']<=0].shape
+	df = df[df['Quantity']>0]
+
+	# 단가 0 이하인 경우 제거
+	df[df['UnitPrice']<=0].shape
+	df = df[df['UnitPrice']>0]
+
+	# 상품코드가 문자열인 것 제거
+	df[df['StockCode']=='POST']
+
+	# 일반적으로 사용되지 않는 상품코드는 제거
+	# any(): 하나라도 False가 있으면 False 반환
+	# isdigit(): 숫자형인지
+	df['ContainDigit'] = df['StockCode'].apply(lambda x : any(c.isdigit() for c in x))
+	df[df['ContainDigit']==False].shape
+	df[df['ContainDigit']==False].head()
+
+	# 상품코드에 숫자가 포함되지 않는 값 제거
+	df = df[df['ContainDigit']==True]
+	len(df)
+
+	# 거래 날짜: 가장 오래된 날짜 / 가장 최근 날짜
+	# datetime.dt.date: 날짜만 반환
+	df['date'] = df['InvoiceDate'].dt.date
+	print(df['date'].min())
+	print(df['date'].max())
+
+	df[['date', 'InvoiceDate']][:5]
+
+	# 일자별 총 거래수량
+	date_quantity_sum = df.groupby('date')['Quantity'].sum()
+	date_quantity_sum[:5]
+	date_quantity_sum.plot()
+
+	# 일자별 거래 횟수
+	date_invoice_count = df.groupby('date')['InvoiceNo'].nunique()
+	date_invoice_count.plot()
+
+	# 일자별 거래된 상품종류
+	date_stockcode_count = df.groupby('date')['StockCode'].nunique()
+	date_stockcode_count[:5]
+	date_stockcode_count.plot()
+
+	# 유저별 구매패턴
+	# 유저
+	len(df['CustomerID'].unique())
+
+	# 유저별 거래횟수
+	# nunique(): 개수
+	customer_unique_transaction_series = df.groupby('CustomerID')['InvoiceNo'].nunique()
+	customer_unique_transaction_series.describe()
+
+	# 유저별 구매상품종류의 갯수
+	customer_unique_item_count = df.groupby('CustomerID')['StockCode'].nunique()
+	customer_unique_item_count.describe()
+
+	# 상품기준의 데이터 분석
+	# 총 거래상품 종류
+	len(df['StockCode'].unique())
+
+	# 거래가 가장 많은 상품 순위 10개 출력 (거래건수)
+	df.groupby('StockCode')['InvoiceNo'].nunique().sort_values(ascending=False).head(10)
+
+	# 상품별 판매수량
+	df.groupby('StockCode')['Quantity'].sum().describe()
+	plt.plot(df.groupby('StockCode')['Quantity'].sum().values)
+
+	# 거래별 발생한 가격정보
+	# 소계 = 수량 * 단가
+	df['amount'] = df['Quantity'] * df['UnitPrice']
+	df.groupby('InvoiceNo')['amount'].sum().describe()
+
+	# 거래별 결재금액 도표
+	plt.plot(df.groupby('InvoiceNo')['amount'].sum().values)
+
+	import datetime
+	# 시간별 날짜 분리
+	# 2011-11-1 기준
+	df_year_round = df[df['date'] < datetime.date(2011,11,1)] # 이전 상품
+	df_year_end = df[df['date'] >= datetime.date(2011,11,1)]  # 이후 상품
+	print(df_year_round.shape)
+	print(df_year_end.shape)
+
+	# 2011-11-1 이전상품의 정보 set 추출 (중복제거)
+	customer_item_round_set = df_year_round.groupby('CustomerID')['StockCode'].apply(set)
+	customer_item_round_set
+
+	# 11월이전 구매여부를 구분하기 위한 정보 기록(dict={key:value})
+	#                                             userid:{stocknp:'oid'}
+	customer_item_dict = {}
+
+	for customer_id, stocks in customer_item_round_set.items():
+	    customer_item_dict[customer_id] = {}
+	    for stock_code in stocks:
+	        customer_item_dict[customer_id][stock_code] = 'old'
+
+	str(customer_item_dict)[:100]
+
+	# 2011-11-1 이후상품의 정보 set 추출 (중복제거)
+	customer_item_end_set = df_year_end.groupby('CustomerID')['StockCode'].apply(set)
+	customer_item_end_set
+
+	# 11월 이전: 'old' 이후: 'new' 이전/이후:'both'
+	for customer_id, stocks in customer_item_end_set.items():
+	    # 11월 이전에 구매기록이 있나
+	    if customer_id in customer_item_dict:
+	        for stock_code in stocks:
+	            # 구매상품번호가 있냐?
+	            if stock_code in customer_item_dict[customer_id]:
+	                customer_item_dict[customer_id][stock_code]='both'
+	            else:
+	                customer_item_dict[customer_id][stock_code]='new'
+	    else:
+	        customer_item_dict[customer_id]={}
+	        for stock_code in stocks:
+	            customer_item_dict[customer_id][stock_code]='new'
+	customer_item_dict
+
+
+	# 유저별 old new both DataFrame 생성
+	columns = ['CustomerID', 'old', 'new', 'both']
+	df_order_info = pd.DataFrame(columns=columns)
+
+	for customer_id in customer_item_dict:
+	    old = 0
+	    new = 0
+	    both = 0
+	    for stock_code in customer_item_dict[customer_id]:
+	        status = customer_item_dict[customer_id][stock_code]
+	        if status == 'old':
+	            old += 1
+	        elif status == 'new':
+	            new += 1
+	        else:
+	            both += 1
+	        
+	    row = [customer_id, old, new, both]
+	    series = pd.Series(row, index=columns)
+	    df_order_info = df_order_info.append(series, ignore_index=True)
+	    
+	df_order_info
+    
+    # 유저별 거래건수
+	df_order_info.shape
+	df_order_info[(df_order_info['old']>0) & (df_order_info['new']>0)]
+	df_order_info[(df_order_info['old']>0) & (df_order_info['new']>0)].shape
+
+	# new values_count
+	df_order_info['new'].value_counts()
+
+	# 이전 데이터에서 유저와 상품 확인
+	print(len(df_year_round['CustomerID'].unique()))
+	print(len(df_year_round['StockCode'].unique()))
+
+	# Rating 데이터를 생성
+	uir_df = df_year_round.groupby(['CustomerID', 'StockCode'])['InvoiceNo'].nunique().reset_index()
+	uir_df.head()
+
+	# Rating(InvoiceNo) 분포
+	uir_df['InvoiceNo'].hist(bins=20, grid=False)
+
+	# Rating(InvoiceNo) -> Log Normalization(정규화)
+	uir_df['InvoiceNo'].apply(lambda x : np.log10(x)+1).hist(bins=20, grid=False)
+
+	# 1차 정규화
+	uir_df['Rating'] = uir_df['InvoiceNo'].apply(lambda x : np.log10(x)+1)
+	# 2차 정규화: min-max scaling (Rating: 1~5 사이값으로 설정)
+	uir_df['Rating'] = ((uir_df['Rating'] - uir_df['Rating'].min())/
+	                   (uir_df['Rating'].max() - uir_df['Rating'].min()))*4 + 1 
+	uir_df['Rating'].hist(bins=20, grid=False)
+
+	# SVD 모델에 사용할 데이터셋 생성
+	uir_df = uir_df[['CustomerID', 'StockCode', 'Rating']]
+	uir_df.head()
+
+	# SVD 모델 Sample
+	import time
+	from surprise import SVD, Dataset, Reader, accuracy
+	from surprise.model_selection import train_test_split
+
+	# Dataset => 8:2 분할
+	reader = Reader(rating_scale=(1, 5))
+	data = Dataset.load_from_df(uir_df, reader=reader)
+	train_data, test_data = train_test_split(data, test_size=0.2)
+
+	# SVD 모델 학습
+	train_start = time.time() # 모델학습할 시작 시간
+	model = SVD(n_factors=8,
+	            lr_all=0.005,
+	            reg_all=0.02,
+	            n_epochs=200)
+	model.fit(train_data)
+	train_end = time.time() # 모델학습 종료시간
+
+	print('training time of model: {}'.format(train_end-train_start))
+
+	# 모델 테스트
+	predictions = model.test(test_data)
+
+	print("RMSE(SVD model)")
+	accuracy.rmse(predictions)
+
+--------------------------------------------------------------------------
+
+  - Python SVD 적용, 텐서플로우(17주차/20.12.28)
+
+    - SVD 실제 모델 학습(주피터 노트북)
+
+    # 실제 모델 학습
+	# Dataset => 8:2 분할
+	reader = Reader(rating_scale=(1, 5))
+	data = Dataset.load_from_df(uir_df, reader=reader)
+
+	# 11월 이전 데이터 -> full trainset으로 사용
+	# build_full_trainset(): 모든 데이터를 train 데이터로 사용
+	train_data = data.build_full_trainset()
+
+	# SVD 모델 학습
+	train_start = time.time() # 모델학습할 시작 시간
+	model = SVD(n_factors=8,
+	            lr_all=0.005,
+	            reg_all=0.02,
+	            n_epochs=200)
+	model.fit(train_data)
+	train_end = time.time() # 모델학습 종료시간
+
+	print('training time of model: {}'.format(train_end-train_start))
+
+	# 1. 이전에 구매하지 않았던 상품추천
+	test_set = train_data.build_anti_testset()
+	target_user_predictions = model.test(test_data)
+
+	# 예측결과를 dict로 저장
+	new_order_prediction_dict = {}
+
+	# target_user_predictions에 속성이 많아 필요한 속성만 추출 -> customer_id, stock_code, _, predict_rating, _
+	for customer_id, stock_code, _, predict_rating, _ in target_user_predictions:
+	    if customer_id in new_order_prediction_dict:
+	        if stock_code in new_order_prediction_dict[customer_id]:
+	        	# continue == pass
+	            pass
+	        else:
+	            new_order_prediction_dict[customer_id][stock_code] = predict_rating
+	    else:
+	        new_order_prediction_dict[customer_id] = {}
+	        new_order_prediction_dict[customer_id][stock_code] = predict_rating
+
+	print(str(new_order_prediction_dict)[:300])
+	# 결과해석 -> {'유저':{'상품':예측값...}} -> 유저가 이전에 구매하지 않았던 상품을 구매했을때의 rating
+
+	# 2. 이전에 구매했던 상품추천
+	test_data = train_data.build_testset()
+	target_user_predictions = model.test(test_data)
+
+	# 예측결과를 dict로 저장
+	reorder_prediction_dict = {}
+
+	# target_user_predictions에 속성이 많아 필요한 속성만 추출 -> customer_id, stock_code, _, predict_rating, _
+	for customer_id, stock_code, _, predict_rating, _ in target_user_predictions:
+	    if customer_id in reorder_prediction_dict:
+	        if stock_code in reorder_prediction_dict[customer_id]:
+	            pass
+	        else:
+	            reorder_prediction_dict[customer_id][stock_code] = predict_rating
+	    else:
+	        reorder_prediction_dict[customer_id] = {}
+	        reorder_prediction_dict[customer_id][stock_code] = predict_rating
+
+	print(str(reorder_prediction_dict)[:300])
+	# 결과해석 -> {'유저':{'상품':예측값...}} -> 유저가 이전에 구매하지 않았던 상품을 구매했을때의 rating
+
+	# 3. 모든 상품을 대상으로 추천 -> 2개의 dict를 합침
+	total_prediction_dict = {}
+
+	# new_order_prediction_dict
+	for customer_id in new_order_prediction_dict:
+	    # total에 user정보가 없으면 등록
+	    if customer_id not in total_prediction_dict:
+	        total_prediction_dict[customer_id] = {}
+	    for stock_code, predict_rating in new_order_prediction_dict[customer_id].items():
+	        # total의 user정보에 rating이 없으면 등록
+	        if stock_code not in total_prediction_dict[customer_id]:
+	            total_prediction_dict[customer_id][stock_code] = predict_rating
+
+	# reorder_prediction_dict
+	for customer_id in reorder_prediction_dict:
+	    # total에 user정보가 없으면 등록
+	    if customer_id not in total_prediction_dict:
+	        total_prediction_dict[customer_id] = {}
+	    for stock_code, predict_rating in reorder_prediction_dict[customer_id].items():
+	        # total의 user정보에 rating이 없으면 등록
+	        if stock_code not in total_prediction_dict[customer_id]:
+	            total_prediction_dict[customer_id][stock_code] = predict_rating
+
+	print(str(total_prediction_dict)[:300])
+
+	# 11월 이후 데이터를 데이터 셋으로 이용 -> 데이터프레임 생성
+	simulation_test_df = df_year_end.groupby('CustomerID')['StockCode'].apply(set).reset_index()
+	simulation_test_df.columns = ['CustomerID', 'RealOrdered']
+	simulation_test_df.head()
+
+	# 11월 이후 데이터프레임 + predict(new) + predict(reorder) + predict(total)
+	def add_predicted_stock_set(customer_id, prediction_dict):
+	    if customer_id in prediction_dict:
+	        prediction_stock_dict = prediction_dict[customer_id]
+	        # 예측된 상품의 rating이 높은순으로 정렬
+	        sorted_stocks = sorted(prediction_stock_dict, key=lambda x : prediction_stock_dict[x], reverse=True)
+	        return sorted_stocks
+	    else:
+	        return None
+	    
+	# 각 new, reorder, total정보 추가
+	simulation_test_df['PredictedOrder(New)'] = \
+	    simulation_test_df['CustomerID'].apply(lambda x : add_predicted_stock_set(x, new_order_prediction_dict))
+	simulation_test_df['PredictedOrder(Reorder)'] = \
+	    simulation_test_df['CustomerID'].apply(lambda x : add_predicted_stock_set(x, reorder_prediction_dict))
+	simulation_test_df['PredictedOrder(Total)'] = \
+	    simulation_test_df['CustomerID'].apply(lambda x : add_predicted_stock_set(x, total_prediction_dict))
+
+	simulation_test_df.head()
+	# 결과해석 -> RealOrdered: 11월 이후 실제로 산 상품
+	#             PredictedOrder(New): 이전에 구매하지 않았던 상품을 예측
+	#             PredictedOrder(Reorder): 이전에 구매했던 상품을 예측
+	#             PredictedOrder(Total): 모든 상품을 예측
+	# 11월 이전 유저에 한에서만 예측 
+	# -> 11월 이후 새로운 유저에 대한 예측은 None
+
+	# 구매예측 상위 k순위를 갖는 recall(재현율)을 평가 기준으로 설정
+	def calculate_recall(real_order, predicted_order, k):
+	    # 만약 추천상품이 없으면 None
+	    if predicted_order is None:
+	        return None
+	    
+	    # 예측된 내용(Rating 높은순)중에서 상위 k개
+	    predicted = predicted_order[:k]
+	    true_positive = 0
+	    for stock_code in predicted:
+	        if stock_code in real_order:
+	            true_positive += 1
+	    
+	    # 실제 주문된 상품내역 중 몇개의 상품이 있느냐에 대한 비율(Recall) 계산
+	    recall = true_positive / len(predicted)
+	    return recall
+
+	# simulation_test_df에 재현율 추가
+	simulation_test_df['top_k_recall(Reorder)'] = simulation_test_df.apply(lambda x : calculate_recall(x['RealOrdered'], x['PredictedOrder(Reorder)'], 5), axis=1)
+	simulation_test_df['top_k_recall(New)'] = simulation_test_df.apply(lambda x : calculate_recall(x['RealOrdered'], x['PredictedOrder(New)'], 5), axis=1)
+	simulation_test_df['top_k_recall(Total)'] = simulation_test_df.apply(lambda x : calculate_recall(x['RealOrdered'], x['PredictedOrder(Total)'], 5), axis=1)
+
+	simulation_test_df.head()
+
+	# 평가 결과를 평균으로 확인
+	print(simulation_test_df['top_k_recall(Reorder)'].mean())
+	print(simulation_test_df['top_k_recall(New)'].mean())
+	print(simulation_test_df['top_k_recall(Total)'].mean())
+	print(simulation_test_df.describe())
+
+	# 재구매에 대한 recall
+	simulation_test_df['top_k_recall(Reorder)'].value_counts()
+	simulation_test_df['top_k_recall(New)'].value_counts()
+	simulation_test_df['top_k_recall(Total)'].value_counts()
+
+	# SVD모델에서 부적합한 데이터 필터링
+	not_recommanded_df = simulation_test_df[simulation_test_df['PredictedOrder(Reorder)'].isnull()]
+	print(not_recommanded_df.shape)
+	not_recommanded_df.head()
+
+	# PredictedOrder(Reorder): None이 아닌 데이터만 추출
+	k = 5
+	result_df = simulation_test_df[simulation_test_df['PredictedOrder(Reorder)'].notnull()]
+	result_df['PredictedOrder(Reorder)'] = result_df['PredictedOrder(Reorder)'].apply(lambda x : x[:k])
+	result_df = result_df[['CustomerID', 'RealOrdered', 'PredictedOrder(Reorder)', 'top_k_recall(Reorder)']]
+	result_df.columns = ['구매자ID', '실제주문', '5개추천결과', 'Top5추천_주문재현율']
+
+	# 임의로 5개 추출
+	result_df.sample(10).head(10)
+
+	* 주피터 노트북 테마 & 글꼴 변경 참고사이트
+	  -> https://blog.naver.com/aoikai/222179560906
+
+	- TensorFlow(텐서플로우)
+
+	  - 설치 & 실행
+
+		Anaconda Prompt 
+		-> 관리자 권한으로 실행
+		-> pip install tensorflow
+		-> 주피터 노트북 or 캐글 노트북으로 실행
+
+		* 주피터 노트북 or 캐글 노트북 자동완성 -> Tap
+
+	  - 텐서플로우 기초
+
+	 	import tensorflow as tf
+		import numpy as np
+		import pandas as pd
+
+		print(tf.__version__)
+
+		# tensor: Data를 담는 공간 -> 차원(rank)
+		# tf.constant(n): 상수선언
+		a = tf.constant(2)
+		b = tf.constant([1,2])
+		c = tf.constant([[1,2],[3,4]])
+
+		# rank(차원) 출력
+		print(tf.rank(a)) # 0차원
+		print(tf.rank(b)) # 1차원
+		print(tf.rank(c)) # 2차원
+
+		# tensor 계산
+		a = tf.constant(3)
+		b = tf.constant(2)
+
+		print(tf.add(a, b))
+		print(tf.subtract(a, b))
+		print(tf.multiply(a, b))
+		print(tf.divide(a, b))
+
+		# tensor -> numpy 변환
+		print(tf.multiply(a, b).numpy())
+		print(tf.divide(a, b).numpy())
+
+		# @tf.function: 텐서플로우 함수(텐서변수)
+
+		@tf.function
+		def square_pos(x):
+		    if x > 0:
+		        x = x * x
+		    else:
+		        x = x * -1
+		    return x
+
+		print(square_pos(tf.constant(3)))
+		print(square_pos.__class__)
+
+		# 일반함수에 텐서데이터 입력하면 결과값도 텐서데이터
+		def square_pos(x):
+		    if x > 0:
+		        x = x * x
+		    else:
+		        x = x * -1
+		    return x
+
+		print(square_pos(tf.constant(3)))
+		print(square_pos.__class__)
+
+-------------------------------------------------------------------------
+
+  - Python 텐서플로우(17주차/20.12.29)
+
+    - 머신러닝 기초
+
+    * optimizer 종류 참고사이트: https://ganghee-lee.tistory.com/24
+      자주 사용하는 optimizer: SGD, RMSProp, Adam
+
+    - OR Gate
+
+	import tensorflow as tf
+	import numpy as np
+
+	# Model을 학습시키는 일련의 공간
+	from tensorflow.keras.models import Sequential
+	# 학습시키는 단위
+	from tensorflow.keras.layers import Dense
+	# 학습 최적화 방법
+	from tensorflow.keras.optimizers import SGD
+	from tensorflow.keras.losses import mse
+
+	# 데이터(입력/출력)
+	x = np.array([[0, 0], [1, 0], [0, 1], [1, 1]])
+	y = np.array([[0], [1], [1], [1]])
+
+	# 모델 생성
+	# Sequential(): 일련의 학습 공간 (Dense(학습 단위: 뉴런)의 집합)
+	model = Sequential()
+	# Dense(출력데이터 차수, 입력데이터 차원(input_shape), 활성함수(activation))
+	model.add(Dense(1, input_shape = (2, ), activation = 'linear'))
+
+	# 모델준비
+	model.compile(optimizer = SGD(), 
+	              loss = mse,
+	              metrics = ['acc']
+	              )
+
+	# 학습
+	model.fit(x, y, epochs = 500)
+
+	# 예측결과 확인
+	result = model.predict([[1, 1]])
+	print(result)
+
+	# 모델이 학습한 계수
+	model.get_weights()
+
+	- And Gate
+
+	# 데이터(입력/출력)
+	x = np.array([[0, 0], [1, 0], [0, 1], [1, 1]])
+	y = np.array([[0], [0], [0], [1]])
+
+	# 모델 생성
+	# Sequential(): 일련의 학습 공간 (Dense(학습 단위: 뉴런)의 집합)
+	model = Sequential()
+	# Dense(출력데이터 차수, 입력데이터 차원(input_shape), 활성함수(activation))
+	model.add(Dense(1, input_shape = (2, ), activation = 'linear'))
+
+	# 모델준비
+	model.compile(optimizer = SGD(), 
+	              loss = mse,
+	              metrics = ['acc']
+	              )
+
+	# 학습
+	model.fit(x, y, epochs = 500)
+
+	# 예측결과 확인
+	result = model.predict([[1, 1]])
+	print(result)
+
+	- XOR Gate (단일 뉴런)
+
+	# 데이터(입력/출력)
+	x = np.array([[0, 0], [1, 0], [0, 1], [1, 1]])
+	y = np.array([[1], [0], [0], [1]])
+
+	# 모델 생성
+	# Sequential(): 일련의 학습 공간 (Dense(학습 단위: 뉴런)의 집합)
+	# Dense(단위뉴런: Perception)
+	model = Sequential()
+	# Dense(출력데이터 차수, 입력데이터 차원(input_shape), 활성함수(activation))
+	model.add(Dense(1, input_shape = (2, ), activation = 'linear'))
+
+	# 모델준비
+	model.compile(optimizer = SGD(), 
+	              loss = mse,
+	              metrics = ['acc']
+	              )
+
+	# 학습
+	model.fit(x, y, epochs = 500)
+
+	# 예측결과 확인
+	result = model.predict([[0, 1]])
+	print(result)
+	# XOR Gate 결과 -> 학습 실패
+	# -> linear 함수는 XOR Gate를 학습시키기에 부적합
+	# -> 다른 활성 함수를 적용 시켜야함
+
+	- Activate 함수 종류
+
+	import matplotlib.pyploy as plt
+	import math
+
+	# Sigmoid
+	def sigmoid(x):
+	    return 1 / (1 + np.exp(-x))
+
+	# tanh
+	def tanh(x):
+	    return list(map(lambda x : math.tanh(x), x))
+
+	# Relu 함수
+	def relu(x):
+	    result = []
+	    for e in x:
+	        if e <= 0:
+	            result.append(0)
+	        else:
+	            result.append(e)
+	    return result
+
+	# 시그모이드 함수
+	# np.linspace(a, b, n): a에서 b를 n으로 나눔
+	x = np.linspace(-4, 4, 100)
+
+	sig = sigmoid(x)
+	plt.plot(x, sig)
+	plt.show()
+
+	# tanh / relu
+	x = np.linspace(-4, 4, 100)
+	tanh_v = tanh(x)
+	relu_v = relu(x)
+
+	plt.figure(figsize=(15, 5))
+	plt.subplot(1, 2, 1)
+	plt.plot(x, tanh_v)
+
+	plt.subplot(1, 2, 2)
+	plt.plot(x, relu_v)
+
+	plt.show()
+
+	- XOR Gate (다중 퍼셉트론)
+
+	from tensorflow.keras.optimizers import RMSprop
+
+	# 데이터(입력/출력)
+	x = np.array([[0, 0], [1, 0], [0, 1], [1, 1]])
+	y = np.array([[1], [0], [0], [1]])
+
+	# 모델 생성
+	# Dense -> Multi-Perceptron(다중뉴런)
+	model = Sequential()
+	# 모델에 layer 추가(Hidden Layer) -> 32개 노드를 갖고 활섬함수는 Relu
+	model.add(Dense(32, input_shape = (2, ), activation = 'relu'))
+	# 모델에 layer 추가(Output Layer) -> 1개 노드를 갖고 활성함수는 Sigmoid
+	model.add(Dense(1, activation = 'sigmoid'))
+
+	# 모델준비
+	model.compile(optimizer = RMSprop(), 
+	              loss = mse,
+	              metrics = ['acc']
+	              )
+
+	# 학습
+	model.fit(x, y, epochs = 500)
+
+	# 예측결과 확인
+	result = model.predict([[0, 0], [1, 0], [0, 1], [1, 1]])
+	print(result)
+
+	- 경사하강법
+
+	x = np.linspace(-2, 2, 50)
+	x_square = [i**2 for i in x]
+
+	# x의 구간
+	x_2 = np.linspace(-2, 2, 10)
+	dev_x = [i**2 for i in x_2]
+
+	plt.title('x^2 function')
+	plt.plot(x, x_square)
+	fig = plt.scatter(x_2, dev_x, color = 'red')
+	plt.show()
+
+	# running-rate를 좁게 잡을경우
+	x = np.linspace(-2, 2, 50)
+	x_square = [i**2 for i in x]
+
+	# x의 구간
+	x_2 = np.linspace(-2, -1, 25)
+	dev_x = [i**2 for i in x_2]
+
+	plt.title('x^2 function')
+	plt.plot(x, x_square)
+	fig = plt.scatter(x_2, dev_x, color = 'red')
+	plt.show()
+
+	- MNIST 분류 (다중분류)
+
+	MNIST: 숫자판독
+		   Multi Classification(다중분류)
+	NIST: Nation Institute Standard and Techology
+
+	import numpy as np
+	import pandas as pd
+	import tensorflow as tf
+
+	train_data = pd.read_csv("../input/digit-recognizer/train.csv")
+	x_train = np.array(train_data.iloc[:, 1:]).reshape(-1, 28, 28)
+	y_train = np.array(train_data.iloc[:, 0])
+
+	test_data = pd.read_csv("../input/digit-recognizer/test.csv")
+	x_test = np.array(test_data).reshape(-1, 28, 28)
+
+	print(x_train.shape, y_train.shape)
+	print(x_test.shape)
+
+	# train set에 대한 구조 확인
+	import matplotlib.pyplot as plt
+	idx = 0
+
+	# print(np.array(x_train.iloc[idx]).reshape((28, 28))[:, 6:-4])
+
+	# 배열의 각 숫자는 색상을 의미
+	img = np.array(x_train.iloc[idx]).reshape((28, 28))
+	label = y_train.iloc[idx]
+	plt.figure()
+	plt.imshow(img)
+	plt.show()
+
+	# 임의 숫자를 출력
+	# np.random.seed(1234)
+
+	sample_size = 3
+	random_idx = np.random.randint(42000, size = sample_size)
+
+	for idx in random_idx:
+	    img = x_train[idx]
+	    label = y_train[idx]
+	    plt.figure()
+	    plt.imshow(img)
+	    plt.title("%d-th data, label is %d"%(idx, label))
+
+	# Train Dataset: Train(7) + Validation(3)
+	from sklearn.model_selection import train_test_split
+
+	x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=0.3, random_state=1234)
+
+	print('x_train={} y_train={}'.format(x_train.shape, y_train.shape))
+	print('x_val={} y_val={}'.format(x_val.shape, y_val.shape))
+
+	# Dataset전처리 작업
+	# 데이터값 -> 0 ~ 255
+	# -> 범위를 좋게 해주는게 학습에 좋음
+	# -> min-max 정규화(0 ~ 1)
+
+	num_x_train = x_train.shape[0]
+	num_x_val = x_val.shape[0]
+	num_x_test = x_test.shape[0]
+
+	# 모델에 적용하기전 데이터 전처리(Scaling(정규화))
+	print(x_train.reshape(num_x_train, 28*28))
+	# 0.0 ~ 1.0 사이값으로 변환(min-max scaler)
+	x_train = (x_train.reshape(num_x_train, 28*28)) / 255 
+	x_val = (x_val.reshape(num_x_val, 28*28)) / 255
+	x_test = (x_test.reshape(num_x_test, 28*28)) / 255 
+
+	print(x_train[0])
+
+	# Model 구성
+	from tensorflow.keras.models import Sequential
+	from tensorflow.keras.layers import Dense
+
+	model = Sequential()
+	# input layer(Output -> 다음층의 Input으로 사용)
+	# Dense에는 1차원에 데이터가 들어가야함 ( 28 * 28 -> 784 )
+	model.add(Dense(64, activation = 'relu', input_shape=(784, )))
+	# hidden layer
+	model.add(Dense(32, activation = 'relu'))
+	# output layer (softmax: 확률값 반환)
+	model.add(Dense(10, activation = 'softmax'))
+
+	# softmax - sigmoid 비교
+	# 소프트맥스
+	def softmax(arr):
+	    m = np.max(arr)
+	    arr = arr - m # exp의 오버플로우 방지
+	    arr = np.exp(arr)
+	    return arr / np.sum(arr)
+
+	def sigmoid(x):
+	    return 1 / (1 + np.exp(-x))
+
+	x1 = np.array([3.0, 3.0, 4.0])
+	x2 = np.array([2.0 ,5.0 ,3.0])
+
+	print(f'sigmoid {sigmoid(x1)}, softmax {softmax(x1)}' )
+	print(f'sigmoid {sigmoid(x2)}, softmax {softmax(x2)}' )
+
+	# 모델 학습 설정
+	# 오차함수 -> 다중분류: categorical_crossentropy
+	#         -> 회귀: mse
+	#         -> 이중분류: binary_crossentropy
+
+	model.compile(optimizer='adam',
+	              loss='categorical_crossentropy',
+	              metrics=['acc'])
+
+	# 모델 학습
+	# batch_size: 데이터를 batch_size로 각각 나눔
+	# validation_data: 검증용 데이터
+	history = model.fit(x_train, y_train,
+	                    epochs = 30,
+	                    batch_size = 128,
+	                    validation_data = (x_val, y_val)
+	                   )
+
+	# 학습결과 출력
+	# loss, acc, val_loss, val_acc의 값들을 담은 리스트
+	history.history.keys()
+
+	# 학습결과 -> 그래프
+
+	his_dict = history.history
+	loss = his_dict['loss']
+	val_loss = his_dict['val_loss']
+	epochs = range(1, len(loss)+1)
+
+	fig = plt.figure(figsize=(10, 5))
+
+	# 손실관련 데이터
+	ax1 = fig.add_subplot(1, 2, 1)
+	ax1.plot(epochs, loss, color='blue', label='train_loss')
+	ax1.plot(epochs, val_loss, color='orange', label='val_loss')
+	ax1.set_xlabel('epochs')
+	ax1.set_ylabel('loss')
+	ax1.set_title("train and val loss")
+	ax1.legend()
+
+	# 그래프 결과해석
+	# train_loss와 val_loss의 차이가 적은 epochs 관찰
+
+	# 정확도 비교
+	acc = his_dict['acc']
+	val_acc = his_dict['val_acc']
+	ax1 = fig.add_subplot(1, 2, 2)
+	ax1.plot(epochs, acc, color='blue', label='train_acc')
+	ax1.plot(epochs, val_acc, color='orange', label='val_acc')
+	ax1.set_xlabel('epochs')
+	ax1.set_ylabel('acc')
+	ax1.set_title("train and val acc")
+	ax1.legend()
+	plt.show()
+
+	# 모델 예측
+	idx = 1341
+	results = model.predict(x_test)
+	print("2번째 데이터 : {}".format(results[idx]))
+
+	# np.argmax(): 가장 큰 값의 인덱스 반환
+	arg_results = np.argmax(results, axis=-1)
+	print(arg_results)
+
+	plt.imshow(x_test[idx].reshape(28, 28))
+	plt.title('Predicted value: ' + str(arg_results[idx]))
+	plt.show()
+
+	from sklearn.metrics import classification_report, confusion_matrix
+	import seaborn as sns
+
+	# confusion matrix
+	plt.figure(figsize=(7, 7))
+	cm = confusion_matrix(np.argmax(y_test, axis=-1), np.argmax(results, axis=-1))
+	sns.heatmap(cm, annot = True, fmt = 'd', cmap='Blues')
+	plt.xlabel('Predicted')
+	plt.ylabel('Real')
+	plt.show()
+
+	# 분류 보고서
+	print(classification_report(np.argmax(y_test, axis=-1), np.argmax(results, axis=-1)))
+
+
+-------------------------------------------------------------------------
+
+  - Python Fashion MNIST-CNN(17주차/20.12.30)
+
+    - CNN(중첩신경망)
+
+    import pandas as pd
+	import numpy  as np
+	import matplotlib.pyplot as plt
+	from tensorflow.keras.utils import to_categorical
+	from sklearn.model_selection import train_test_split
+
+	train_data = pd.read_csv('../input/fashionmnist/fashion-mnist_train.csv')
+	x_train = np.array(train_data.iloc[:,1:]).reshape(-1,28,28)
+	y_train = np.array(train_data.iloc[:,0])
+
+	test_data = pd.read_csv('../input/fashionmnist/fashion-mnist_test.csv')
+	x_test = np.array(test_data.iloc[:,1:]).reshape(-1,28,28)
+	y_test = np.array(test_data.iloc[:,0])
+
+	np.random.seed(777)
+
+	# Fashion-MNIST의 레이블에 해당하는 품목입니다.
+	class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
+	               'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+
+	sample_size = 9
+	# 0 ~ 59999의 범위에서 무작위로 3개의 정수를 뽑습니다.
+	random_idx = np.random.randint(60000, size=sample_size) 
+
+	# 값의 범위를 0 ~ 1로 만들어줍니다.
+	x_train = np.reshape(x_train / 255, (-1, 28, 28, 1))
+	x_test = np.reshape(x_test / 255, (-1, 28, 28, 1))
+
+
+	# 각 데이터의 레이블을 범주형 형태로 변경합니다.
+	y_train = to_categorical(y_train)
+	y_test = to_categorical(y_test)
+
+	# 검증 데이터 세트를 만듭니다.
+
+	# 훈련/테스트 데이터를 0.7/0.3의 비율로 분리합니다.
+	x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, 
+	                                                  test_size = 0.3, random_state = 777)
+
+	print("Dataset Ready Complete!")
+
+	# 모델 구성
+	from tensorflow.keras.models import Sequential
+	from tensorflow.keras.layers import Conv2D, MaxPool2D, Dense, Flatten
+
+	# 기존 신경망 -> 다층 신경망 (Fully Connected Layers)
+	# 이미지를 전체적으로 분석
+	# -> 일렬로 나열했을때(Flatten) 특징의 순서가 다르면 인식도 달라짐
+
+	# 중첩신경망(Convolution Neural Network)
+	# 이미지를 여러개의 필터로 적용해 특징을 추출하고 병합
+	# -> 일렬로 나열했을때 추출된 특징들의 비율을 보고 분석
+	# -> 비교적 정확함
+
+	# Conv2D(): Convolution layer
+	# kernel_size: filter 크기(n x n)
+	# filters: filter 개수(개수가 많을수록 특징 추출 많음)
+	# strides: filter의 이동범위
+	# padding: 이미지 밖의 가상외곽선 추가(원본사이즈 유지)
+	# Output size = (이미지 행/열 개수 - 필터 행/열 개수)/strides + 1
+	# MaxPool2D(): MaxPooling layer
+	# Convolution Layer가 반복되면 특징이 희미해짐
+	# -> 가장 큰 특징값만 추출
+
+	model = Sequential([
+	    Conv2D(filters=16, kernel_size=3, strides=(1, 1), padding='same', activation='relu', input_shape=(28,28,1)),
+	    MaxPool2D(pool_size=(2,2), strides=2, padding='same'),
+	    Conv2D(filters=32, kernel_size=3, strides=(1, 1), padding='same', activation='relu'),
+	    MaxPool2D(pool_size=(2,2), strides=2, padding='same'),
+	    Conv2D(filters=64, kernel_size=3, strides=(1, 1), padding='same', activation='relu'),
+	    MaxPool2D(pool_size=(2,2), strides=2, padding='same'),
+	    Flatten(), # 다차원배열(Metrics) -> 1차원 형태
+	    Dense(64, activation='relu'),
+	    Dense(10, activation='softmax')
+	])
+
+	# 모델 학습
+	history = model.compile(optimizer = 'Adam',
+	                        loss = 'categorical_crossentropy',
+	                        metrics = ['acc'])
+	model.fit(x_train, y_train, 
+	          epochs = 30, 
+	          batch_size = 128,
+	          validation_data=(x_val, y_val))
+
+    # 모델 구조 확인
+	model.summary()
+
+-------------------------------------------------------------------------
+
+  - Python CIFAR10 CNN(17주차/20.12.31)
+
+    - CNN Regularize (중첩신경망 규제화)
+
+    * 딥러닝 CNN모델 구축과정 참고사이트: https://wdprogrammer.tistory.com/33
+
+    from tensorflow.keras.datasets import cifar10
+	(x_train, y_train), (x_test, y_test) = cifar10.load_data()
+	# -> 오른쪽 패널에서 Internet : on
+
+    #####데이터셋 읽어오기
+	import pickle
+	import numpy as np
+
+	for i in range(1,6):
+	    path = '../input/cifar10-python/cifar-10-batches-py/data_batch_' + str(i)
+	    with open(path, mode='rb') as file:
+	        # note the encoding type is 'latin1'
+	        batch = pickle.load(file, encoding='latin1')
+	    if i == 1:  
+	        x_train = (batch['data'].reshape((len(batch['data']), 3, 32, 32)).transpose(0, 2, 3, 1)).astype('float32')
+	        y_train = batch['labels']
+	    else:
+	        x_train_temp = (batch['data'].reshape((len(batch['data']), 3, 32, 32)).transpose(0, 2, 3, 1)).astype('float32')
+	        y_train_temp = batch['labels']
+	        x_train = np.concatenate((x_train,x_train_temp),axis = 0)
+	        y_train = np.concatenate((y_train,y_train_temp),axis=0)
+
+	path = '../input/cifar10-python/cifar-10-batches-py/test_batch'
+	with open(path,'rb') as file:
+	    # note the encoding type is 'latin1'
+	    batch = pickle.load(file, encoding='latin1')
+	    x_test = (batch['data'].reshape((len(batch['data']), 3, 32, 32)).transpose(0, 2, 3, 1)).astype('float32')
+	    y_test = batch['labels']
+
+	x_train=x_train.astype(np.uint8)
+	y_train = np.expand_dims(y_train, axis = 1)
+
+	x_test=x_test.astype(np.uint8)
+	y_test = np.expand_dims(y_test, axis = 1)
+
+	#####확인하기#####################################
+	import matplotlib.pyplot as plt
+
+	class_names = ['airplane', 'automobile', 'bird', 'cat', 'deer',
+	           'dog', 'frog', 'horse', 'ship', 'truck']
+
+	plt.figure(figsize=(10,10))
+	for i in range(30):
+	    plt.subplot(5,6,i+1)
+	    plt.xticks([])
+	    plt.yticks([])
+	    plt.grid(False)
+	    plt.imshow(np.squeeze(x_train[i]), cmap=plt.cm.binary)
+	    # The CIFAR labels happen to be arrays, 
+	    # which is why you need the extra index
+	    plt.xlabel(class_names[y_train[i][0]])
+	plt.show()
+
+	# 전처리과정(정규화): 평균: 0 표준편차: 1
+	# 이미지데이터 -> 한 점에 대한 정보가 3층으로 나누어짐(색상)
+	# axis=(0,1,2) -> 각 점에 대한 r,g,b축
+	# 각 r,g,b별 평균/표준편차
+	x_mean = np.mean(x_train, axis=(0,1,2))
+	x_std = np.std(x_train, axis=(0,1,2))
+
+	# 정규화
+	x_train = (x_train-x_mean) / x_std
+	x_test = (x_test-x_mean) / x_std
+
+	## train -> train_set(0.7) + validation_set(0.3)
+	from sklearn.model_selection import train_test_split
+
+	x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size = 0.3, random_state = 123)
+
+	print(x_train.shape, len(x_train))
+	print(x_val.shape, len(x_val))
+
+	# 모델 구성
+	from tensorflow.keras.models import Sequential
+	from tensorflow.keras.layers import Conv2D, MaxPool2D, Dense, Flatten
+	from tensorflow.keras.optimizers import Adam
+	from tensorflow.keras.regularizers import l1, l2, l1_l2
+
+	# overfit을 방지하기 위한 수단 규제화 함수
+	# tensorflow.keras.regularizers.l1(0.01): 가중치 절대값의 합
+	# tensorflow.keras.regularizers.l2(0.01): 가중치 제곱의 합
+	# tensorflow.keras.regularizers.l1_l2(0.01): 혼합(절대값합 - 제곱합)
+	# regularizers.l2(0.001): 가중치 행렬의 모든 원소를 제곱하고 0.001을 곱하여 네트워크의 전체 손실에 더해진다는 의미
+
+	# Dropout: 노드의 일부분을 훈련할 때 제외시키는 것
+	# model.add(Dropout(0.2)) -> 20%는 제외
+
+	model = Sequential()
+
+	model.add(Conv2D(filters=32, kernel_size=3, padding='same', activation='relu', input_shape = (32, 32, 3)))
+	model.add(Conv2D(filters=32, kernel_size=3, padding='same', activation='relu', kernel_regularizer=l1_l2(0.01)))
+	model.add(MaxPool2D(pool_size = (2, 2), strides=2, padding = 'same'))
+	model.add(Dropout(0.2)) # 20%는 제외
+
+	model.add(Conv2D(filters=64, kernel_size = 3, padding = 'same', activation  = 'relu'))
+	model.add(Conv2D(filters=64, kernel_size = 3, padding = 'same', activation  = 'relu', kernel_regularizer=l1_l2(0.01)))
+	model.add(MaxPool2D(pool_size = (2, 2), strides=2, padding = 'same'))
+	model.add(Dropout(0.2)) # 20%는 제외
+
+	model.add(Conv2D(filters=128, kernel_size = 3, padding = 'same', activation  = 'relu'))
+	model.add(Conv2D(filters=128, kernel_size = 3, padding = 'same', activation  = 'relu', kernel_regularizer=l1_l2(0.01)))
+	model.add(MaxPool2D(pool_size = (2, 2), strides=2, padding = 'same'))
+	model.add(Dropout(0.2)) # 20%는 제외
+
+	# Metrics(다차원) -> Vector(1차원) : Fully Connected(FC)
+	model.add(Flatten())
+	model.add(Dense(256, activation = 'relu', kernel_regularizer=l1_l2(0.01)))
+	model.add(Dense(10, activation = 'softmax'))
+
+	# optimizer(1e-4) -> learning rate(lr): 0.00001
+	# 'sparse_categorical_crossentropy' -> label(y) 데이터를 그냥 사용
+	# categorical_crossentropy -> label을 one-hot으로 변경
+	model.compile(optimizer=Adam(1e-4),
+	              loss = 'sparse_categorical_crossentropy',
+	              metrics = ['acc'])
+
+	model.summary()
+
+	# 모델 학습하기
+	# GPU 사용해야 시간이 훨씬 단축됨 -> 오른쪽 패널에서 설정
+	history = model.fit(x_train, y_train,
+	                    epochs = 30,
+	                    batch_size = 32,
+	                    validation_data = (x_val, y_val))
+
+	# 학습모델 결과를 시각화
+	import matplotlib.pyplot as plt
+
+	his_dict = history.history
+
+	loss = his_dict['loss']
+	val_loss = his_dict['val_loss']
+
+	epochs = range(1, len(loss) + 1)
+	fig = plt.figure(figsize=(10, 5))
+
+	ax1 = fig.add_subplot(1, 2, 1)
+	ax1.plot(epochs, loss, color='blue', label='train loss')
+	ax1.plot(epochs, val_loss, color='red', label='val loss')
+	ax1.set_title('train vs validation loss')
+	ax1.set_xlabel('epochs')
+	ax1.set_ylabel('loss')
+	ax1.legend()
+
+	acc = his_dict['acc']
+	val_acc = his_dict['val_acc']
+	ax2 = fig.add_subplot(1, 2, 2)
+	ax2.plot(epochs, acc, color='blue', label='train acc')
+	ax2.plot(epochs, val_acc, color='red', label='val acc')
+	ax2.set_title('train vs validation acc')
+	ax2.set_xlabel('epochs')
+	ax2.set_ylabel('acc')
+	ax2.legend()
+
+	plt.show()
+	# 결과 해석
+	# epochs가 늘어날 수록 훈련 loss는 작아짐
+	# <-> 검증 loss는 작아지다가 증가
+	#     -> 과대적합 발생
+	# regulizer, dropout을 통해 과대적합 방지
+	
+--------------------------------------------------------------------------
+
+  - Python RNN(18주차/21.01.04)
+
+    - RNN (Recurrent Neural Network)
+      : 이전 가중치의 상태값을 다음 값에 쓰임(순서를 기억)
+        문장 생성에 주로 쓰임(각 단어안의 문자순서를 학습)
+        -> 문자를 숫자로 변환
+
+    - Tokenizer
+
+    from tensorflow.keras.preprocessing.text import Tokenizer
+	from tensorflow.keras.utils import to_categorical
+
+	texts = ['You are the Best', 'You are the Nice']
+	# oov_token: 등록되지 않은 토큰 -> <OOV>로 표현
+	tokenizer = Tokenizer(num_words = 10, oov_token = '<OOV>')
+	tokenizer.fit_on_texts(texts)
+
+	# 문자 -> 숫자형식의 값으로 변환
+	sequences = tokenizer.texts_to_sequences(texts)
+
+	# 이진형태로 인코딩
+	binary_results = tokenizer.sequences_to_matrix(sequences, mode='binary')
+
+	print(tokenizer.word_index)
+	print(f'sequences: { sequences }\n')
+	print(f'binary_results: { binary_results } \n')
+
+	# one-hot으로 변경
+	print(to_categorical(sequences))
+	test_text = ['You are the One']
+	test_seq = tokenizer.texts_to_sequences(test_text)
+
+	print(f'text seq: { test_seq }')
+
+	- Embedding
+
+	# IMDB Dataset
+	from tensorflow.keras.datasets import imdb
+
+	num_words = 10000
+	(X_train, y_train), (X_test, y_test) = imdb.load_data(num_words = num_words)
+
+	# 데이터 형식 
+	print(X_train.shape, y_train.shape)
+	print(X_test.shape, y_test.shape)
+
+	# 데이터(x) -> 가장 많이 사용된 단어의 인덱스
+	# 종속변수(y) -> 데이터(문장에 포함된 단어들)가 긍정인지(1) 부정인지(0) 여부
+	print(X_train[0])
+	print('----------------')
+	print(y_train[0])
+	print(y_train)
+
+	# rank된 단어 확인
+	imdb_get_word_index = {}
+
+	for key, value in imdb.get_word_index().items():
+	    imdb_get_word_index[value] = key
+	    
+	for i in range(1, 15):
+	    print('{}번째로 가장 많이 쓰인 단어 = {}'.format(i, imdb_get_word_index[i]))
+	    
+	for i in X_train[0]:
+	    print('{}: {}'.format(i, imdb_get_word_index[i]))
+
+	# Model에 학습시키기 위해 전처리 작업(길이를 맞춤)
+	from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+	max_len = 500
+
+	print("before: ", len(X_train[0]))
+	print(X_train[0])
+
+	# pad_sequences(): 단어 인덱스의 데이터의 길이를 맞추기 위한 함수
+	# padding = 'pre': 앞쪽에 0 채우기 /'post': 뒷쪽에 0 채우기
+	pad_X_train = pad_sequences(X_train, maxlen = max_len, padding = 'pre')
+	pad_X_test = pad_sequences(X_test, maxlen = max_len, padding = 'pre')
+
+	print('after: ', len(pad_X_train[0]))
+	print(pad_X_train[0])
+
+	# 모델선언
+	from tensorflow.keras.models import Sequential
+	from tensorflow.keras.layers import Dense, Embedding, Flatten
+	from tensorflow.keras.optimizers import Adam
+
+	model = Sequential()
+	# Embedding(): 단어인덱스 데이터를 이진데이터로 변환
+	# input_dim: 입력인자의 차수(총 몇개의 단어인지)
+	# output_dim: 출력인자의 차수
+	# input_length: 입력인자의 길이(단어리스트 길이)
+	model.add(Embedding(input_dim = num_words, output_dim=32, input_length = max_len))
+	model.add(Flatten())
+	model.add(Dense(1, activation='sigmoid'))
+
+	model.compile(optimizer='adam',
+	              loss = 'binary_crossentropy',
+	              metrics = ['acc'])
+
+	model.summary()
+
+	# model 학습
+	history = model.fit(pad_X_train, y_train, batch_size = 32, epochs = 30, validation_split = 0.2)
+
+	# 모델 평가
+	model.evaluate(pad_X_test, y_test)
+
+	# 학습 내용을 그래프화
+	import matplotlib.pyplot as plt
+
+	his_dict = history.history
+
+	# Loss
+	loss = his_dict['loss']
+	val_loss = his_dict['val_loss']
+	epochs = range(1, len(loss)+1)
+	fig = plt.figure(figsize=(10, 5))
+	ax1 = fig.add_subplot(1, 2, 1)
+	ax1.plot(epochs, loss, color = 'blue', label = 'train_loss')
+	ax1.plot(epochs, val_loss, color = 'red', label = 'val_loss')
+	ax1.set_title('train and val loss')
+	ax1.set_xlabel('epochs')
+	ax1.set_ylabel('loss')
+	ax1.legend()
+
+	# Accuracy
+	acc = his_dict['acc']
+	val_acc = his_dict['val_acc']
+	ax2 = fig.add_subplot(1, 2, 2)
+	ax2.plot(epochs, acc, color = 'blue', label = 'train_acc')
+	ax2.plot(epochs, val_acc, color = 'red', label = 'val_acc')
+	ax2.set_title('train and val acc')
+	ax2.set_xlabel('epochs')
+	ax2.set_ylabel('acc')
+	ax2.legend()
+
+	plt.show()
+
+	# 결과 분석
+	# val_loss가 처음부터 계속 높아짐
+	# -> 문장이 길어지면 학습률이 떨어짐
+	# -> LSTM 사용
+
+	- RNN
+
+	# DataSet: cos함수 이용
+	import numpy as np
+	import matplotlib.pyplot as plt
+
+	np.random.seed(2021)
+
+	# 365일 가정한 데이터
+	time = np.arange(30*12 + 1)
+	month_time = (time%30) / 30
+
+	# np.where(): ifelse(삼항연산자)
+	time_series = 20 * np.where(month_time < 0.5, 
+	                            np.cos(2*np.pi*month_time),
+	                            np.cos(2*np.pi*month_time) + np.random.random(361))
+	# 도표로 출력
+	plt.figure(figsize = (10, 5))
+	plt.xlabel('Time')
+	plt.ylabel('value')
+
+	# 학습용 데이터
+	plt.plot(np.arange(0, 30*11 + 1), time_series[:30*11+1], color = 'black', alpha = 0.7)
+
+	# 테스트용 데이터
+	plt.plot(np.arange(30*11, 30*12 + 1), time_series[30*11:30*12+1], color = 'orange')
+	plt.show()
+
+	# 데이터 전처리 작업
+	# 순서(시계열) 데이터에서 n개씩 끊어서 n개의 데이터 리스트와 n+1값을 반환하는 함수
+
+	def make_sequence(time_series, n):
+	    x_train, y_train = list(), list()
+	    
+	    for i in range(len(time_series)):
+	        x = time_series[i:(i+n)]
+	        if (i + n) < len(time_series):
+	            x_train.append(x)
+	            y_train.append(time_series[i+n])
+	        else:
+	            break
+	            
+	    return np.array(x_train), np.array(y_train)
+	            
+	# test
+	test_arr = np.arange(100)
+	a,b = make_sequence(test_arr, 10)
+
+	print('----make_sequence test----')
+	for i in range(1, 4):
+	    print(a[i], ':', b[i])
+	    
+	# 실제 전처리
+	n = 10
+	x_train, y_train = make_sequence(time_series, n)
+
+	x_train = x_train.reshape(-1, n, 1)
+	y_train = y_train.reshape(-1, 1)
+
+	# train test set 나누기
+	# from sklearn.model_selection import train_test_split
+
+	# 1~11월 -> train
+	patial_x_train = x_train[:30*11]
+	patial_y_train = y_train[:30*11]
+
+	# 12월 -> test 
+	x_test = x_train[30*11:]
+	y_test = y_train[30*11:]
+
+	print('train: ', patial_x_train.shape, patial_y_train.shape)
+	print('test: ', x_test.shape, y_test.shape)
+
+	# SimpleRNN 모델 구성
+	from tensorflow.keras.layers import SimpleRNN, Flatten, Dense
+	from tensorflow.keras.models import Sequential
+
+	model = Sequential()
+
+	# SimpleRNN(): RNN
+	# units: 출력차수
+	model.add(SimpleRNN(units = 32, activation='tanh', input_shape=(n, 1)))
+	model.add(Dense(1, activation='linear'))
+
+	model.compile(optimizer='adam', loss='mse')
+	model.summary()
+
+	# 모델 학습시키기
+	model.fit(x_train, y_train, epochs=200, batch_size=12)
+
+	# 예측결과를 비교
+	pred = model.predict(x_test)
+
+	pred_range = np.arange(len(y_train), len(y_train)+len(pred))
+	plt.figure(figsize = (15, 5))
+	plt.title("Prediction")
+	plt.xlabel('Time')
+	plt.ylabel('Value')
+	plt.plot(pred_range, y_test.reshape(-1, ), color='orange', label='true-value')
+	plt.plot(pred_range, pred.reshape(-1, ), color='blue', label='predict-value')
+	plt.legend()
+	plt.show()
+
+	## SimpleRNN -> imdb이용
+	from tensorflow.keras.datasets import imdb
+	num_words = 10000
+	(X_train, y_train),(X_test, y_test) = imdb.load_data(num_words=num_words)
+
+	from tensorflow.keras.preprocessing.sequence import pad_sequences
+
+	max_len = 500
+
+	pad_X_train = pad_sequences(X_train, maxlen=max_len)
+	pad_X_test = pad_sequences(X_test, maxlen=max_len)
+
+	from tensorflow.keras.models import Sequential
+	from tensorflow.keras.layers import SimpleRNN, Dense, Embedding
+
+	model = Sequential()
+	# 어휘에 관련 내용을 학습시키려면 제일 먼저 Embedding 추가
+	model.add(Embedding(input_dim = num_words, output_dim = 32))
+
+	model.add(SimpleRNN(32, return_sequences=True, dropout=0.15, recurrent_dropout=0.15))
+	model.add(SimpleRNN(32))
+	model.add(Dense(1, activation='sigmoid'))
+
+	model.compile(optimizer = 'adam',
+	              loss = 'binary_crossentropy',
+	              metrics = ['acc'])
+
+	history = model.fit(pad_X_train, y_train, batch_size = 32, epochs = 15, validation_split = 0.2)
+
+	# 데이터가 너무 커서 시간이 오래걸림
+
+	- 셰익스피어 문장 예측 (RNN-LSTM)
+
+	import tensorflow as tf
+
+	import numpy as np
+	import os
+	import time
+
+	path_to_file = tf.keras.utils.get_file('shakespeare.txt', 'https://storage.googleapis.com/download.tensorflow.org/data/shakespeare.txt')
+
+	# 읽은 다음 파이썬 2와 호환되도록 디코딩합니다.
+	text = open(path_to_file, 'rb').read().decode(encoding='utf-8')
+	# 텍스트의 길이는 그 안에 있는 문자의 수입니다.
+	print ('텍스트의 길이: {}자'.format(len(text)))
+
+	# 텍스트의 처음 250자를 살펴봅니다
+	print(text[:250])
+
+	# 파일의 고유 문자수를 출력합니다.
+	vocab = sorted(set(text))
+	print ('고유 문자수 {}개'.format(len(vocab)))
+
+	## 텍스트 처리 - 텍스트 벡터화
+
+	# 고유 문자에서 인덱스로 매핑 생성
+	char2idx = {u:i for i, u in enumerate(vocab)}
+	idx2char = np.array(vocab)
+
+	text_as_int = np.array([char2idx[c] for c in text])
+
+	print('{')
+	for char,_ in zip(char2idx, range(20)):
+	    print('  {:4s}: {:3d},'.format(repr(char), char2idx[char]))
+	print('  ...\n}')
+
+	# 텍스트에서 처음 13개의 문자가 숫자로 어떻게 매핑되었는지를 보여줍니다
+	print ('{} ---- 문자들이 다음의 정수로 매핑되었습니다 ---- > {}'.format(repr(text[:13]), text_as_int[:13]))
+
+	## 훈련 샘플과 타깃 생성
+
+	# 단일 입력에 대해 원하는 문장의 최대 길이
+	seq_length = 100
+	examples_per_epoch = len(text)//seq_length
+
+	# 훈련 샘플/타깃 만들기
+	char_dataset = tf.data.Dataset.from_tensor_slices(text_as_int)
+
+	for i in char_dataset.take(5):
+	  print(idx2char[i.numpy()])
+
+	# 시퀀스로 변환
+	sequences = char_dataset.batch(seq_length+1, drop_remainder=True)
+
+	for item in sequences.take(5):
+	  print(repr(''.join(idx2char[item.numpy()])))  
+
+	# 각 시퀀스에서, map 메서드를 사용해 각 배치에 간단한 함수를 적용하고 
+	# 입력 텍스트와 타깃 텍스트를 복사 및 이동
+	def split_input_target(chunk):
+	    input_text = chunk[:-1]
+	    target_text = chunk[1:]
+	    return input_text, target_text
+
+	dataset = sequences.map(split_input_target)
+
+	# 샘플의 타깃값 출력
+	for input_example, target_example in  dataset.take(1):
+	  print ('입력 데이터: ', repr(''.join(idx2char[input_example.numpy()])))
+	  print ('타깃 데이터: ', repr(''.join(idx2char[target_example.numpy()])))
+
+	for i, (input_idx, target_idx) in enumerate(zip(input_example[:5], target_example[:5])):
+	    print("{:4d}단계".format(i))
+	    print("  입력: {} ({:s})".format(input_idx, repr(idx2char[input_idx])))
+	    print("  예상 출력: {} ({:s})".format(target_idx, repr(idx2char[target_idx])))
+
+	## 훈련 배치 생성
+
+	# 배치 크기
+	BATCH_SIZE = 64
+
+	# 데이터셋을 섞을 버퍼 크기
+	# (TF 데이터는 무한한 시퀀스와 함께 작동이 가능하도록 설계되었으며,
+	# 따라서 전체 시퀀스를 메모리에 섞지 않습니다. 대신에,
+	# 요소를 섞는 버퍼를 유지합니다).
+	BUFFER_SIZE = 10000
+
+	dataset = dataset.shuffle(BUFFER_SIZE).batch(BATCH_SIZE, drop_remainder=True)
+
+	dataset
+
+	## 모델 설계
+
+	# 문자로 된 어휘 사전의 크기
+	vocab_size = len(vocab)
+
+	# 임베딩 차원
+	embedding_dim = 256
+
+	# RNN 유닛(unit) 개수
+	rnn_units = 1024
+
+	# RNN - LSTM 모델설계 함수
+	def build_model(vocab_size, embedding_dim, rnn_units, batch_size):
+	  model = tf.keras.Sequential([
+	    tf.keras.layers.Embedding(vocab_size, embedding_dim,
+	                              batch_input_shape=[batch_size, None]),
+	    tf.keras.layers.LSTM(rnn_units,
+	                        return_sequences=True,
+	                        stateful=True,
+	                        recurrent_initializer='glorot_uniform'),
+	    tf.keras.layers.Dense(vocab_size)
+	  ])
+	  return model
+
+	model = build_model(
+	  vocab_size = len(vocab),
+	  embedding_dim=embedding_dim,
+	  rnn_units=rnn_units,
+	  batch_size=BATCH_SIZE)
+
+	# 출력 형태 확인
+	for input_example_batch, target_example_batch in dataset.take(1):
+	  example_batch_predictions = model(input_example_batch)
+	  print(example_batch_predictions.shape, "# (배치 크기, 시퀀스 길이, 어휘 사전 크기)")
+
+	model.summary()
+
+	# 각 타임 스텝(time step)에서 다음 문자 인덱스에 대한 예측을 제공
+	sampled_indices = tf.random.categorical(example_batch_predictions[0], num_samples=1)
+	sampled_indices = tf.squeeze(sampled_indices,axis=-1).numpy()
+
+	sampled_indices
+
+	print("입력: \n", repr("".join(idx2char[input_example_batch[0]])))
+	print()
+	print("예측된 다음 문자: \n", repr("".join(idx2char[sampled_indices ])))
+
+	## 모델 훈련
+
+	def loss(labels, logits):
+	  return tf.keras.losses.sparse_categorical_crossentropy(labels, logits, from_logits=True)
+
+	example_batch_loss  = loss(target_example_batch, example_batch_predictions)
+	print("예측 배열 크기(shape): ", example_batch_predictions.shape, " # (배치 크기, 시퀀스 길이, 어휘 사전 크기")
+	print("스칼라 손실:          ", example_batch_loss.numpy().mean())
+
+	model.compile(optimizer='adam', loss=loss)
+
+    ## 체크포인트
+    #  훈련 중 체크포인트(checkpoint)가 저장
+
+	# 체크포인트가 저장될 디렉토리
+	checkpoint_dir = './training_checkpoints'
+	# 체크포인트 파일 이름
+	checkpoint_prefix = os.path.join(checkpoint_dir, "ckpt_{epoch}")
+
+	checkpoint_callback=tf.keras.callbacks.ModelCheckpoint(
+	    filepath=checkpoint_prefix,
+	    save_weights_only=True)
+
+	## 훈련 실행
+
+	EPOCHS=30
+	history = model.fit(dataset, epochs=EPOCHS, callbacks=[checkpoint_callback])
+
+	## 텍스트 생성
+	# 최근 체크 포인트 복원
+	# 이 예측 단계를 간단히 유지하기 위해 배치 크기로 1을 사용
+
+	# RNN 상태가 타임 스텝에서 타임 스텝으로 전달되는 방식이기 때문에 모델은 한 번 빌드된 고정 배치 크기만 허용
+
+	# 다른 배치 크기로 모델을 실행하려면 모델을 다시 빌드하고 체크포인트에서 가중치를 복원
+
+	tf.train.latest_checkpoint(checkpoint_dir)
+
+	model = build_model(vocab_size, embedding_dim, rnn_units, batch_size=1)
+
+	model.load_weights(tf.train.latest_checkpoint(checkpoint_dir))
+
+	model.build(tf.TensorShape([1, None]))
+
+	model.summary()
+
+	## 단어의 다음 단어들을 예측하는 함수
+
+	def generate_text(model, start_string):
+	  # 평가 단계 (학습된 모델을 사용하여 텍스트 생성)
+
+	  # 생성할 문자의 수
+	  num_generate = 1000
+
+	  # 시작 문자열을 숫자로 변환(벡터화)
+	  input_eval = [char2idx[s] for s in start_string]
+	  input_eval = tf.expand_dims(input_eval, 0)
+
+	  # 결과를 저장할 빈 문자열
+	  text_generated = []
+
+	  # 온도가 낮으면 더 예측 가능한 텍스트가 됩니다.
+	  # 온도가 높으면 더 의외의 텍스트가 됩니다.
+	  # 최적의 세팅을 찾기 위한 실험
+	  temperature = 1.0
+
+	  # 여기에서 배치 크기 == 1
+	  model.reset_states()
+	  for i in range(num_generate):
+	  	  # 단어 예측
+	      predictions = model(input_eval)
+	      # 배치 차원 제거
+	      predictions = tf.squeeze(predictions, 0)
+
+	      # 범주형 분포를 사용하여 모델에서 리턴한 단어 예측
+	      predictions = predictions / temperature
+	      predicted_id = tf.random.categorical(predictions, num_samples=1)[-1,0].numpy()
+
+	      # 예측된 단어를 다음 입력으로 모델에 전달
+	      # 이전 은닉 상태와 함께
+	      input_eval = tf.expand_dims([predicted_id], 0)
+
+	      text_generated.append(idx2char[predicted_id])
+
+	  return (start_string + ''.join(text_generated))
+
+	  # 예측된 단어 출력
+	  print(generate_text(model, start_string=u"GREGORY: "))
+
+-----------------------------------------------------------------------------

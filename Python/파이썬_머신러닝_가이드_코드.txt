@@ -1,0 +1,1622 @@
+  - 파이썬 머신러닝 가이드 코드
+
+    - apply lambda 식을 활용해 사용자 함수를 적용
+
+    # 나이에 따라 세분화된 분류를 수행하는 함수 생성
+    def get_category(age):
+    	cat = ''
+    	if age <= 5: cat = 'Baby'
+    	elif age <= 18: cat = 'Teenager'
+	    elif age <= 35: cat = 'Young Adult'
+		else: cat = 'Elderly'
+
+		return cat
+
+	df['Age_Cat'] = df['Age'].apply(lambda x : get_category(x))
+
+	- seaborn 시각화 예제 사이트
+	  : http://seaborn.pydata.org/index.html
+
+	- 데이터프레임에서 카테고리형 변수 -> 숫자형 변환
+
+	from sklearn.preprocessing import LabelEncoder()
+
+	def encode_features(df, features):
+		for feature in features:
+			le = LabelEncoder()
+			df[feature] = le.fit_transform(df[feature])
+
+		return df
+
+	- 오차행렬 및 여러 분류 정확도 측정값 출력
+
+	from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score, confusion_matrix, roc_auc_score
+
+	# AUC값을 구하지 않을 시 
+	def get_clf_eval(y_test, y_pred = None, pred_proba = None):
+		confusion = confusion_matrix(y_test, y_pred)
+		accuarcy = accuracy_score(y_test, y_pred)
+		precision = precision_score(y_test, y_pred)
+		recall = recall_score(y_test, y_pred)
+		f1score = f1_score(y_test, y_pred)
+		roc_auc = roc_auc_score(y_test, pred_proba)
+		print('오차행렬')
+		print(confusion)
+		print('정확도: {0:.4f}, 정밀도: {1:.4f}, 재현율: {2:.4f}, F1 스코어: {3:.4f}, AUC: {4:.4f}'.format(accuarcy, precision, recall, f1score, roc_auc))
+
+	- 임계값을 변경시키면서 평가 지표 출력
+
+	from sklearn.preprocessing import Binarizer
+
+	thresholds = [0.40, 0.45, 0.50, 0.55, 0.60]
+
+	def get_eval_by_threshold(y_test, pred_proba_c1, thresholds):
+		# pred_proba_c1 = pred_proba[:, 1].reshape(-1, 1)
+		for custom_threshold in thresholds:
+			binarizer = Binarizer(threshold = custom_threshold).fit(pred_proba_c1)
+			custom_predict = binarizer.transform(pred_proba_c1)
+			print('임계값: ',custom_threshold)
+			get_clf_eval(y_test, custom_predict)
+
+
+	- 분류 결정 임계값에 따라 정밀도,재현율 선 그래프 시각화	
+
+	import matplotlib.pyplot as plt
+	import matplotlib.ticker as ticker
+	from sklearn.metrics import precision_recall_curve
+
+	def precision_recall_curve_plot(y_test, pred_proba_c1):
+
+		precisions, recalls, thresholds = precision_recall_curve(y_test, pred_proba_c1)
+
+		plt.figure(figsize=(8, 6))
+		threshold_boundary = thresholds.shape[0]
+		plt.plot(thresholds, precisions[0:threshold_boundary], linestyle = '--', label = 'precision')
+		plt.plot(thresholds, recalls[0:threshold_boundary],  label = 'recall')
+
+		start, end = plt.xlim()
+		plt.xticks(np.round(np.range(start, end, 0.1), 2))
+
+		plt.xlabel('Thresholds value')
+		plt.ylabel('Precision and Recall value')
+		plt.legend()
+		plt.grid()
+		plt.show()
+
+	- ROC 곡선 시각화 함수
+
+	from sklearn.metrics import roc_curve
+	import matplotlib.pyploy as plt
+
+	def roc_curve_plot(y_test, pred_proba_c1):
+		fprs, tprs, thresholds = roc_curve(y_test, pred_proba_c1)
+		plt.plot(fprs, tprs, label = 'ROC')
+		plt.plot([0, 1], [0, 1], 'k--', label = 'Random')
+
+		start, end = plt.xlim()
+		plt.xticks(np.round(np.range(start, end, 0.1), 2))
+		plt.xlim(0, 1)
+		plt.ylim(0, 1)
+		plt.xlabel('FPR(1 - Sensitivity)')
+		plt.ylabel('TPR(Recall')
+		plt.legend()
+
+	- 변경된 분류 결정 임계값으로 예측
+
+	from sklearn.preprocessing import Binarizer
+
+	def predict_changed_threshold(custom_threshold = 0.5, pred_proba, y_test):
+
+		# pred_proba = clf.preddict_proba(X_test)
+
+		pred_proba_c1 = pred_proba[:, 1].reshape(-1, 1)
+
+		binarizer = Binarizer(threshold = custom_threshold).fit(pred_proba_c1)
+		custom_predict = binarizer.transform(pred_proba_c1)
+
+		get_clf_eval(y_test, custom_predict, pred_proba[:, 1])
+
+	- 의사결정트리/XGBoost 트리 모형 시각화
+
+	from sklearn.tree import export_graphviz
+	import graphviz
+
+	export_graphviz(df_clf, out_pile = 'tree.dot', class_names = data.target_names, feature_names = data.feature_names, impurity = True, filled = True)
+
+	with open('tree.dot') as f:
+		dot_graph = f.read()
+	graphviz.Source(dot_graph)
+
+	- 분류함수의 분류 경계선을 시각화 하는 함수
+	
+	import numpy as np
+	import matplotlib.pyplot as plt
+
+	# Classifier의 Decision Boundary를 시각화 하는 함수
+	def visualize_boundary(model, X, y):
+	    fig,ax = plt.subplots()
+	    
+	    # 학습 데이타 scatter plot으로 나타내기
+	    ax.scatter(X[:, 0], X[:, 1], c=y, s=25, cmap='rainbow', edgecolor='k',
+	               clim=(y.min(), y.max()), zorder=3)
+	    ax.axis('tight')
+	    ax.axis('off')
+	    xlim_start , xlim_end = ax.get_xlim()
+	    ylim_start , ylim_end = ax.get_ylim()
+	    
+	    # 호출 파라미터로 들어온 training 데이타로 model 학습 . 
+	    model.fit(X, y)
+	    # meshgrid 형태인 모든 좌표값으로 예측 수행. 
+	    xx, yy = np.meshgrid(np.linspace(xlim_start,xlim_end, num=200),np.linspace(ylim_start,ylim_end, num=200))
+	    Z = model.predict(np.c_[xx.ravel(), yy.ravel()]).reshape(xx.shape)
+	    
+	    # contourf() 를 이용하여 class boundary 를 visualization 수행. 
+	    n_classes = len(np.unique(y))
+	    contours = ax.contourf(xx, yy, Z, alpha=0.3,
+	                           levels=np.arange(n_classes + 1) - 0.5,
+	                           cmap='rainbow', clim=(y.min(), y.max()),
+	                           zorder=1)
+
+	dt_clf = DecisionTreeClassifier().fit(X_features, y_labels)
+	visualize_boundary(dt_clf, X_features, y_labels)
+
+	- 의사결정트리/랜덤포레스트 모델에서 변수 중요도 시각화
+
+	import seaborn as sns
+	import pandas as pd
+
+	importances_values = df_clf.feature_importances_
+
+	importances = pd.Series(importances_values, index = X_train.columns)
+	top20 = importances.sort_values(ascending = False)[:20]
+
+	plt.figure(figsize = (8, 6))
+	plt.title('Feature importances Top 20')
+	sns.barplot(x = top20, y = top20.index)
+	plt.show()
+
+	- 보팅 분류기를 통한 예측
+
+	from sklearn.ensemble import VotingClassifier
+
+	# estimators -> 학습된 모델 리스트
+	# voting -> 'soft', 'hard'
+	vo_clf = VotingClassifier(estimators = [('LR', lr_clf), ('KNN', knn_clf)], voting = 'soft')
+
+	vo_clf.fit(X_train, Y_train)
+	vo_pred = vo_clf.predict(X_test)
+
+	- 개별 모델의 학습/예측/평가
+
+	classifiers = [lr_clf, knn_clf]
+	for classifier in classifiers:
+		classifier.fit(X_train, Y_train)
+		pred = classifier.predict(X_test)
+		class_name = classifier.__class__.__name__
+		print('{0} 정확도: {1:.4f}'.format(class_name, accuracy_score(Y_test, pred)))
+
+	- 사이킷런의 Estimator 객체와 학습/테스트 데이터 세트를 입력받아서 학습/예측/평가
+
+	# 분류 모델
+	def get_model_train_eval(model, ftr_train = None, ftr_test = None, tg_train = None, tg_test = None):
+		model.fit(ftr_train, tg_train)
+		pred = model.predict(ftr_test)
+		pred_proba = model.predict_proba(ftr_test)[:, 1]
+		get_clf_eval(tg_test, pred, pred_proba)
+
+	- 클래스가 1인 데이터 프레임의 해당 칼럼의 이상치 인덱스를 반환하는 함수
+
+	def get_outlier(df = None, column = None, weight = 1.5):
+		fraud = df[df['Class'] == 1][column]
+
+		quantile_25 = np.percentile(fraud.values, 25)
+		quantile_75 = np.percentile(fraud.values, 75)
+
+		iqr = quantile_75 - quantile_25
+		iqr_weight = iqr * weight
+		lowest_val = quantile_25 - iqr_weight
+		highest_val = quantile_75 + iqr_weight
+
+		outlier_index = fraud[(fraud < lowest_val) | (fraud > highest_val)].index
+		return outlier_index
+
+	- 데이터 전처리 함수
+
+	def get_preprocessing_df(df = None):
+		df_copy = df.copy()
+
+		# Example
+		amount_n = np.log1p(df_copy['Amount'])
+		df_copy.insert(0, 'Amount_Scaled', amount_n)
+		df_copy.drop(['Time', 'Amount'], axis = 1, inplace = True)
+
+		outlier_index = get_outlier(df = df_copy, column = 'V14', weight = 1.5)
+		df_copy.drop(outlier_index. axis = 0, inplace = True)
+
+		return df_copy
+
+	- SMOTE 오버 샘플링(불균형한 데이터 클래스에 적용)
+
+	from imblearn.over_sampling import SMOTE
+
+	# 테스트 데이터세트에는 적용하지 말아야 함
+	smote = SMOTE(random_state = 1234)
+	X_train_over, y_train_over = smote.fit_sample(X_train, y_train)
+
+	- CV-Stacking 모델 구현
+
+	from sklearn.model_selection import KFold
+	from sklearn.metrics import mean_squared_error
+
+	# 개별 기반 모델에서 최종 메타 모델이 사용할 학습 및 테스트용 데이터를 생성하기 위한 함수
+	def get_stacking_base_datasets(model, X_train_n, y_train_n, X_test_n, n_folds):
+		kf = KFold(n_splits = n_folds, shuffle=False, random_state = 0)
+		
+		train_fold_pred = np.zeros((X_train_n.shape[0], 1))
+		test_pred = np.zeros((X_test_n.shape[0], n_folds))
+
+		print(model.__class__.__name__, ' model 시작 ')
+
+		for folder_counter, (train_index, valid_index) in enumerate(kf.split(X_train_n)):
+			# 입력된 학습 데이터에서 기반 모델이 학습/예측할 폴드 데이터 세트 추출
+			print('\t 폴드 세트: ', folder_counter, ' 시작')
+			X_tr = X_train_n[train_index]
+			y_tr = y_train_n[train_index]
+			X_te = X_train_n[valid_index]
+
+			model.fit(X_tr, y_tr)
+			# 폴드 세트 내부에서 다시 만들어진 검증 데이터로 기반 모델 예측 후 데이터 저장
+			train_fold_pred[valid_index, :] = model.predict(X_te).reshape(-1, 1)
+			# 입력된 원본 테스트 데이터를 폴드 세트내 학습된 기반 모델에서 예측 후 데이터 저장
+			test_pred[:, folder_counter] = model.predict(X_test_n)
+
+		# 폴드 세트 내에서 원본 테스트 데이터를 예측한 데이터를 평균하여 테스트 데이터로 생성
+		test_pred_mean = np.mean(test_pred, axis = 1).reshape(-1, 1)
+
+		# train_fold_pred = 최종 메타 모텔 학습데이터, test_pred_mean = 테스트 데이터
+		return train_fold_pred, test_pred_mean
+
+	# 위의 함수를 이용해 각 모델들의 학습용/테스트 데이터 생성
+	model_train, model_test = get_stacking_base_datasets(clf, X_train, y_train, X_test, 7)
+	# np.concatenate(): 여러 개의 넘파이 배열을 칼럼 또는 로우 레벨로 합쳐주는 기능
+	Stack_final_X_train = np.concatenate((model_train, model2_train), axis = 1)
+	Stack_final_X_test = np.concatenate((model_test, model2_test), axis = 1)
+
+	ml_final.fit(Stack_final_X_train, y_train)
+	stack_final = ml_final.predict(Stack_final_X_test)
+
+	print('최종 메타 모델의 정확도: {0:.4f}'.format(accuracy_score(y_test, stack_final)))
+
+	- 산점도와 선형 회귀 직선을 동시에 시각화
+
+	fig, axs = plt.subplots(figsize = (16, 8), ncols = a, nrows = b)
+	lm_features = ['column1', 'column2', 'column3', 'column4']
+	for i, feature in enumerate(lm_features):
+		row = int(i/4)
+		col = i%4
+		sns.regplot(x=feature, y='target', data=df, ax=axs[row][col])
+
+	- 선형회귀를 적합한 결과의 회귀 계수 값을 내림 차순으로 정렬
+	coeff = pd.Series(data = np.round(lr.coef_, 1), index = X_data.columns)
+	coeff.sort_values(ascending = False)
+
+	- 사이킷런 기반의 RMSE 구하기
+	# cross_val_score(scoring = 'neg_mean_squared_error') 결과값은 모두 음수
+	neg_mse_scores = cross_val_score(lr, X_data, y_target, scoring = 'neg_mean_squared_error', cv = 5)
+	rmse_scores = np.sqrt(-1 * neg_mse_scores)
+	avg_rmse = np.mean(rmse_scores)
+
+	- alpha 값의 변화에 따른 피쳐의 회귀 계수값을 가로 막대 그래프로 시각화(Ridge)
+	fig, axs = plt.subplots(figsize = (18, 6), nrows = 1, ncols = 5)
+	coeff_df = pd.DataFrame()
+	alphas = [0, 0.1, 1, 10, 100]
+
+	for pos, alpha in enumerate(alphas):
+		ridge = Ridge(alpha = alpha)
+		ridge.fit(X_data, y_target)
+
+		coeff = pd.Series(data = ridge.coef_, index = X_data.columns)
+		colname = 'alpha:' + str(alpha)
+		coeff_df[colname] = coeff
+
+		coeff = coeff.sort_values(ascending = False)
+		axs[pos].set_title(colname)
+		axs[pos].set_xlim(-3, 6)
+		sns.barplot(x = coeff.values, y = coeff.index, ax = axs[pos])
+
+	plt.show()
+
+	- Ridge, Lasso 회귀 적용시켜 평가
+	from sklearn.linear_model import Lasso, ElasticNet
+
+	def get_linear_reg_eval(model_name, params = None, X_data_n = None, y_target_n = None, verbose = True):
+		coeff_df = pd.DataFrame()
+		if verbose : print('##### ', model_name, ' ######')
+		for param in params:
+			if model_name == 'Ridge': model = Ridge(alpha = param)
+			elif model_name == 'Lasso': model = Lasso(alpha = param)
+			elif model_name == 'ElasticNet': model = ElasticNet(alpha = param, l1_ratio = 0.7)
+			
+			neg_mse_scores = cross_val_score(model, X_data_n, y_target_n, scoring = "neg_mean_squared_error", cv = 5)
+			avg_rmse = np.mean(np.sqrt(-1 * neg_mse_scores))
+			
+			print('alpha {0}일 때 5 폴드 세트의 평균 RMSE: {1:.3f}'.format(param, avg_rmse))
+			model.fit(X_data, y_target)
+			# alpha에 따른 피처별 회귀 계수를 Series로 변환하고 이를 DataFrame의 칼럼으로 추가
+			coeff = pd.Series(data = model.coef_, index = X_data.columns)
+			colname = 'alpha:' + str(param)
+			coeff_df[colname] = coeff
+		return coeff_df
+
+	lasso_alphas = [0.07, 0.1, 0.5, 1, 3]
+	coeff_lasso_df = get_linear_reg_eval('Lasso', params = lasso_alphas, X_data_n = X_data, y_target_n = y_target)
+
+	elastic_alphas = [0.07, 0.1, 0.5, 1, 3]
+	coeff_elastic_df = get_linear_reg_eval('ElasticNet', params = elastic_alphas, X_data_n = X_data, y_target_n = y_target)
+	
+	- 데이터 변환 자동화 함수
+
+	def get_scaled_data(method = 'None', p_degree = None, input_data = None):
+		if method = 'Standard':
+			scaled_data = StandardScaler().fit_transform(input_data)
+		elif method = 'MinMax':
+			scaled_data = MinMaxScaler().fit_transform(input_data)
+		elif method = 'Log':
+			scaled_data = np.log1p(input_data)
+		else:
+			scaled_data = input_data
+
+		if p_degree != None:
+			scaled_data = PolynomialFeatures(degree = p_degree, include_bais = False).fit_transform(scaled_data)
+
+		return scaled_data
+
+	- 모델을 입력받아 교차 검증으로 평균 RMSE를 계산해주는 함수
+
+	def get_model_cv_prediction(model, X_data, y_target):
+		neg_mse_scores = cross_val_score(model, X_data, y_target, scroing = "neg_mean_squared_error", cv = 5)
+		rmse_scores = np.sqrt(-1 * neg_mse_scores)
+		avg_rmse = np.mean(rmse_scores)
+		print('##### ', model.__class__.__name__, ' #####')
+		print(' 5 교차 검증의 평균 RMSE: {0:.3f}'.format(avg_rmse))
+
+	models = [dt_reg, rf_reg, gb_reg]
+	for model in models:
+	get_model_cv_prediction(model, X_data, y_target)
+
+	- 회귀 분석에서 RMSE, RMSLE, MAE 계산 함수
+
+	from sklearn.metrics import mean_squared_error, mean_absolute_error
+
+	# log 값 변환 시 Nan 등의 이슈로 log()가 아닌 log1p()를 이용해 RMSLE 계산
+	def rmsle(y, pred):
+		log_y = np.log1p(y)
+		log_pred = np.log1p(pred)
+		squared_error = (log_y - log_pred) ** 2
+		rmsle = np.sqrt(np.mean(squared_error))
+		return rmsle
+
+	def rmse(y, pred):
+		return np.sqrt(mean_squared_error(y, pred))
+
+	# RMSLE, RMSE, MAE 구하기
+	def evaluate_reg(y, pred):
+		rmsle_val = rmsle(y, pred)
+		rmse_val = rmse(y, pred)
+		mae_val = mean_absolute_error(y, pred)
+		print('RMSLE: {0:.3f}, RMSE: {0:.3f}, MAE: {0:.3f}'.format(rmsle_val, rmse_val, mae_val))
+
+	# log1p()로 변환된 값은 expm1() 함수로 원래 스케일로 복원
+
+	- 실제값과 예측값의 차이가 큰 상위 n개 출력
+
+	def get_top_error_data(y_test, pred, n_tops = 5):
+		result_df = pd.DataFrame(y_test.values, columns = ['real_count'])
+		result_df['predicted_count'] = np.round(pred)
+		result_df['diff'] = np.abs(result_df['real_count'] - result_df['predicted_count'])
+
+		print(result_df.sort_values('diff', ascending = False)[:n_tops])
+
+	- 선형 회귀 적합 후 성능 평가 수치 반환하는 함수
+
+	def get_model_predict(model, X_train, X_test, y_train, y_test, is_expm1 = False):
+		model.fit(X_train, y_train)
+		pred = model.predict(X_test)
+		if is_expm1:
+			y_test = np.expm1(y_test)
+			pred = np.expm1(pred)
+		print('### ', model.__class__.__name__, ' ###')
+		evaluate_reg(y_test, pred)
+
+	models = [lr_reg, ridge_reg, lasso_reg]
+
+	for model in models:
+		get_model_predict(model, X_train, X_test, y_train, y_test, is_expm1 = True)
+
+	- 회귀 계수 가로 막대그래프 시각화
+
+	coef = pd.Series(lr_reg.coef_, index = X_features.columns)
+	coef_sort = coef.sort_values(ascending = False)[:20]
+	sns.barplot(x = coef_sort.values, y = coef_sort.index)
+
+	- 회귀 계수 상위, 하위 피처 반환 함수
+
+	def get_top_bottom_coef(model, n = 10):
+		coef = pd.Series(model.coef_, index = X_features.columns)
+
+		coef_high = coef.sort_values(ascending=False).head(10)
+		coef_low = coef.sort_values(ascending=False).tail(10)
+		return coef_high, coef_low
+
+	- n개의 모델 리스트를 받아 각 모델의 회귀 계수 막대그래프 비교 시각화
+
+	def visualize_coefficient(models):
+		# 3개 모델 시각화 -> 1행 3열
+		fig, axs = plt.subplots(figsize = (24, 10), nrows = 1, ncols = 3)
+		fig.tight_layout()
+
+		for i_num, model in enumerate(models):
+			coef_high, coef_low = get_top_bottom_coef(model)
+			coef_concat = pd.concat([coef_high, coef_low])
+			# ax subplot에 barchar로 표현. 한 화면에 표현하기 위해 tick label 위치와 font 크기 조정
+			axs[i_num].set_title(model.__class__.__name__ + 'Coeffiecents', size = 25)
+			axs[i_num].tick_params(axis = 'y', direction = 'in', pad = -120)
+			for label in (axs[i_num].get_xticklabels() + axs[i_num].get_yticklabels()):
+				label.set_fontsize(22)
+			sns.barplot(x=coef_concat.values, y=coef_concat.index, ax = axs[i_num])
+
+	models = [lr_reg, ridge_reg, lasso_reg]
+	visualize_coefficient(modles)
+
+	- 회귀 모델 리스트를 받아 교차 검증으로 RMSE를 평가해주는 함수
+
+	from sklearn.model_selection import cross_val_score
+
+	def get_avg_rmse_cv(models):
+		for model in models:
+			rmse_list = np.sqrt(-cross_val_score(model, X_features, y_target, scoring = "neg_mean_squared_error", cv = 5))
+			rmse_avg = np.mean(rmse_list)
+			print('\n{0} CV RMSE 값 리스트: {1}'.format(model.__class__.__name__, np.round(rmse_list, 3)))
+			print('\n{0} CV 평균 RMSE 값: {1}'.format(model.__class__.__name__, np.round(rmse_avg, 3)))
+
+	models = [lr_reg, ridge_reg, lasso_reg]
+	get_avg_rmse_cv(models)
+
+	- 선형 회귀 최적 하이퍼 파라미터(alpha) 튜닝 함수
+
+	from sklearn.model_selection import GridSearchCV
+	
+	def print_best_params(model, params):
+		grid_model = GridSearchCV(model, param_grid = params, scoring = "neg_mean_squared_error", cv = 5)
+		grid_model.fit(X_features, y_target)
+		rmse = np.sqrt(-1 * grid_model.best_score_)
+
+		print('{0} 5 CV시 최적 평균 RMSE 값: {1}, 최적 alpha: {2}'.format(model.__class__.__name__, np.round(rmse, 4), grid_model.best_params_))
+
+	lasso_params = {'alpha':[0.001, 0.005, 0.008, 0.05, 0.03, 0.1, 0.5, 1, 5, 10]}
+	print_best_params(lasso_reg, lasso_params)
+
+	- 왜곡 정도가 높은 피쳐 추출, 변환
+
+	from scipy.stats import skew
+
+	# object가 아닌 숫자형 피쳐의 칼럼 index 객체 추출
+	# df는 원핫 인코딩이 되지 않은 데이터 프레임
+	features_index = df.dtypes[df.dtypes != 'object'].index
+	skew_features = df[features_index].apply(lambda x : skew(x))
+	# skew 반환값이 일반적으로 1 이상인 피쳐를 왜곡 정도가 높다고 판단 -> 상황에 따라 다를수도 있음
+	skew_features_top = skew_features[skew_features > 1]
+	print(skew_features_top.sort_values(ascending = False))
+
+	# 왜곡 정도가 높은 피쳐를 로그 변환
+	df[skew_features_top.index] = np.log1p(df[skew_features_top.index])
+
+	- 조건에 따라 이상치 제거
+
+	# 칼럼이 로그 변환됐으면 값도 로그 변환
+	cond1 = df['column1'] > np.log1p(4000)
+	cond2 = df['column2'] < 5000
+	outlier_index = df[cond1 & cond2].index
+
+	df.drop(outlier_index, axis = 0, inplace=True)
+
+	- 회귀 모델 예측 결과 혼합
+
+	def get_rmse_predict(preds):
+		for key in preds.keys():
+			pred_value = preds[key]:
+			mse = mean_squared_error(y_test, pred_value)
+			rmse = np.sqrt(mse)
+			print('{0} 모델의 RMSE: {1}'.format(key, rmse))
+
+	# 좀 더 나은 성능을 가진 예측치에 가중치를 높게 설정
+	pred = 0.4 * ridge_pred + 0.6 * lasso_pred
+	preds = {'최종 혼합':pred, 'Ridge':ridge_pred, 'Lasso':lasso_pred}
+	get_rmse_predict(preds)
+
+	- 회귀 트리 XGBoost, LightGBM 피처 중요도 시각화 함수
+
+	# 모델의 중요도 상위 20개의 피처명과 그때의 중요도값을 Series로 반환.
+	def get_top_features(model):
+	    ftr_importances_values = model.feature_importances_
+	    ftr_importances = pd.Series(ftr_importances_values, index=X_features.columns  )
+	    ftr_top20 = ftr_importances.sort_values(ascending=False)[:20]
+	    return ftr_top20
+
+	def visualize_ftr_importances(models):
+	    # 2개 회귀 모델의 시각화를 위해 2개의 컬럼을 가지는 subplot 생성
+	    fig, axs = plt.subplots(figsize=(24,10),nrows=1, ncols=2)
+	    fig.tight_layout() 
+	    # 입력인자로 받은 list객체인 models에서 차례로 model을 추출하여 피처 중요도 시각화. 
+	    for i_num, model in enumerate(models):
+	        # 중요도 상위 20개의 피처명과 그때의 중요도값 추출 
+	        ftr_top20 = get_top_features(model)
+	        axs[i_num].set_title(model.__class__.__name__+' Feature Importances', size=25)
+	        #font 크기 조정.
+	        for label in (axs[i_num].get_xticklabels() + axs[i_num].get_yticklabels()):
+	            label.set_fontsize(22)
+	        sns.barplot(x=ftr_top20.values, y=ftr_top20.index , ax=axs[i_num])
+
+	# 앞 예제에서 print_best_params( )가 반환한 GridSearchCV로 최적화된 모델의 피처 중요도 시각화    
+	models = [best_xgb, best_lgbm]
+	visualize_ftr_importances(models)
+
+	- 이진/다중 클래스에 따라 데이터 세트가 어떤 식으로 분포되있는지 시각화
+
+	# 3개 클래스라고 가정
+	markers = ['^', 's', 'o']
+	target_names = df.target.unique().index.tolist()
+
+	for i, marker in enumerate(markers):
+		x_axis_data = df[df['target'] == i]['column1']
+		y_axis_data = df[df['target'] == i]['column2']
+		ply.scatter(x_axis_data, y_axis_data, marker = marker, label = target_names[i])
+
+	plt.legend()
+	plt.xlabel('column1')
+	plt.ylabel('column2')
+	plt.show()	
+
+	- PCA(주성분 분석)
+
+	from sklearn.preprocessing import StandardScaler
+	from sklearn.decomposition import PCA
+
+	# Target값을 제외한 모든 속성 값을 표준화
+	df_scaled = StandardScaler().fit_transform(df.iloc[:, :-1])
+
+	# 2차원으로 압축
+	pca = PCA(n_components = 2)
+
+	pca.fit(df_scaled)
+	df_pca = pca.transform(df_scaled)
+
+	pca_columns = ['pca_component_1', 'pca_component_2']
+	DF_pca = pd.DataFrame(df_pca, columns = pca_columns)
+	DF_pca['target'] = df.target
+	DF_pca
+
+	# 전체 변동성에서 개별 PCA 컴포넌트별로 차지하는 변동성 비율 출력
+	print(pca.explained_variance_ratio_)
+
+	- LDA(선형 판별 분석)
+	# PCA와의 차이점은 PCA -> 공분산 행렬, LDA -> 클래스 내부와 클래스 간 분산 행렬을 구함
+	#				  PCA -> 비지도학습,  LDA -> 지도학습(클래스 값 필요)
+
+	from sklearn.discriminant_anaysis import LinearDiscriminantAnalysis
+
+	# Target값을 제외한 모든 속성 값을 표준화
+	df_scaled = StandardScaler().fit_transform(df.iloc[:, :-1])	
+
+	# 2차원으로 압축
+	lda = LinearDiscriminantAnalysis(n_components = 2)
+	lda.fit(df_scaled, df.target)
+	df_lda = lda.transform(df_scaled)
+
+	- Truncated SVD (절삭된 특이값 분해)
+
+	from sklearn.decomposition import TruncatedSVD
+
+	# 2개의 주요 컴포넌트로 TruncatedSVD 변환
+	tsvd = TrauncatedSVD(n_components = 2)
+	tsvd.fit(data)
+	data_tsvd = tsvd.transform(data)
+
+	# 데이터가 스케일링되면 PCA와 SVD는 거의 동일한 변환을 수행
+	# PCA -> SVD 알고리즘으로 구현됨
+	# PCA -> 밀집 행렬에 대한 변환만 수행
+	# SVD -> 희소 행렬에 대한 변환도 가능
+
+	- NMF
+
+	from sklearn.decomposition import NMF
+
+	# 2개의 주요 컴포넌트로 TruncatedSVD 변환
+	nmf = NMF(n_components = 2)
+	nmf.fit(data)
+	data_nmf = nmf.transform(data)
+
+	- K-평균 군집화(K-means Clustering)
+
+	from sklearn.cluster import KMeans
+
+	# 중심점 3개, 최대반복횟수 300번
+	kmeans = KMeans(n_clusters = 3, init = 'k-means++', max_iter = 300, random_state = 0)
+	kmeans.fit(data)
+
+	# label_ 속성에 군집 레이블 저장
+	data['clust'] = kmeans.labels_
+	# cluster_centers_ 속성에 개별 군집의 중심 위치 좌표 저장
+
+	- PCA로 차원축소 후 군집화 확인
+
+	from sklearn.decomposition import PCA
+
+	pca = PCA(n_components = 2)
+	pca_transformed = pca.fit_transform(df)
+
+	df['pca_x'] = pca_transformed[:, 0]
+	df['pca_y'] = pca_transformed[:, 1]
+
+	marker0_ind = df[df['cluster'] == 0].index
+	marker1_ind = df[df['cluster'] == 1].index
+	marker2_ind = df[df['cluster'] == 2].index
+
+	plt.scatter(x = df.loc[marker0_ind, 'pca_x'], y = df.loc[marker0_ind, 'pca_y'], marker = 'o')
+	plt.scatter(x = df.loc[marker1_ind, 'pca_x'], y = df.loc[marker1_ind, 'pca_y'], marker = 's')
+	plt.scatter(x = df.loc[marker2_ind, 'pca_x'], y = df.loc[marker2_ind, 'pca_y'], marker = '^')
+
+	plt.xlabel('PCA 1')
+	plt.ylabel('PCA 2')
+	plt.title('3 Clusters Visualization by 2 PCA Components')
+	plt.show()
+
+	## 군집 중심 위치 좌표도 같이 시각화
+	centers = kmeans.cluster_centers_
+	unique_labels = np.unique(kmeans.fit_predict(df))
+
+	markers = ['o', 's', '^', 'P', 'D', 'H', 'x']
+
+	for label in unique_labels:
+		label_cluster = df[df['cluster'] == label]
+		center_x_y = centers[label]
+		plt.scatter(x = df['pca_x'], y = df['pca_y'], edgecolor = 'k', marker = markers[label])
+
+		# 군집별 중심 위치 좌표 시각화
+		plt.scatter(x = center_x_y[0], y = center_x_y[1], s = 200, color = 'white', alpha = 0.9, edgecolor = 'k', marker = markers[label])
+		plt.scatter(x = center_x_y[0], y = center_x_y[1], s = 70, color = 'k', edgecolor = 'k', marker = '$%d$' % label)
+
+	plt.show()
+
+	- 실루엣 분석(군집화 평가)
+
+	from sklearn.metrics import silhouette_samples, silhouette_score
+
+	# 모든 개별 데이터에 실루엣 계수를 구함
+	# -1 < 실루엣 계수 < 1
+	# 1로 가까워질수록 근처의 군집과 더 멀리 떨어져있다는 것
+	# 0에 가까울수록 근처의 군집과 가까워진다는 것
+	# -값은 아예 다른 군집에 데이터 포인트가 할당됐다는 것
+	score_samples = silhouette_samples(df.features, df['cluster'])
+
+	# 실루엣 계수 칼럼 추가
+	df['silhouette_coeff'] = score_samples
+
+	# 모든 데이터의 평균 실루엣 계수 = np.mean(silhouette_samples())
+	# 값은 0 ~ 1 사이값, 1에 가까울 수록 좋음
+	average_score = silhouette_score(df.features, df['cluster'])
+	print('Silhouette Analysis Score: {0:.3f}'.format(average_score))
+
+	# 군집별 실루엣 계수 평균
+	df.groupby('cluster')['silhouette_coeff'].mean()
+
+	# 전체 실루엣 계수의 평균값과 더불어 개별 군집의 평균값의 편차가 크지 않아야 함
+	# 개별 군집의 실루엣 계수 평균값이 전체 평균값에서 크게 벗어나지 않는 것이 좋음
+
+	- K-평균 군집화를 수행했을 때 개별 군집별 평균 실루엣 계수 값 시각화
+
+	### 여러개의 클러스터링 갯수를 List로 입력 받아 각각의 실루엣 계수를 면적으로 시각화한 함수 작성
+	def visualize_silhouette(cluster_lists, X_features): 
+	    
+	    from sklearn.datasets import make_blobs
+	    from sklearn.cluster import KMeans
+	    from sklearn.metrics import silhouette_samples, silhouette_score
+
+	    import matplotlib.pyplot as plt
+	    import matplotlib.cm as cm
+	    import math
+	    
+	    # 입력값으로 클러스터링 갯수들을 리스트로 받아서, 각 갯수별로 클러스터링을 적용하고 실루엣 개수를 구함
+	    n_cols = len(cluster_lists)
+	    
+	    # plt.subplots()으로 리스트에 기재된 클러스터링 수만큼의 sub figures를 가지는 axs 생성 
+	    fig, axs = plt.subplots(figsize=(4*n_cols, 4), nrows=1, ncols=n_cols)
+	    
+	    # 리스트에 기재된 클러스터링 갯수들을 차례로 iteration 수행하면서 실루엣 개수 시각화
+	    for ind, n_cluster in enumerate(cluster_lists):
+	        
+	        # KMeans 클러스터링 수행하고, 실루엣 스코어와 개별 데이터의 실루엣 값 계산. 
+	        clusterer = KMeans(n_clusters = n_cluster, max_iter=500, random_state=0)
+	        cluster_labels = clusterer.fit_predict(X_features)
+	        
+	        sil_avg = silhouette_score(X_features, cluster_labels)
+	        sil_values = silhouette_samples(X_features, cluster_labels)
+	        
+	        y_lower = 10
+	        axs[ind].set_title('Number of Cluster : '+ str(n_cluster)+'\n' \
+	                          'Silhouette Score :' + str(round(sil_avg,3)) )
+	        axs[ind].set_xlabel("The silhouette coefficient values")
+	        axs[ind].set_ylabel("Cluster label")
+	        axs[ind].set_xlim([-0.1, 1])
+	        axs[ind].set_ylim([0, len(X_features) + (n_cluster + 1) * 10])
+	        axs[ind].set_yticks([])  # Clear the yaxis labels / ticks
+	        axs[ind].set_xticks([0, 0.2, 0.4, 0.6, 0.8, 1])
+	        
+	        # 클러스터링 갯수별로 fill_betweenx( )형태의 막대 그래프 표현. 
+	        for i in range(n_cluster):
+	            ith_cluster_sil_values = sil_values[cluster_labels==i]
+	            ith_cluster_sil_values.sort()
+	            
+	            size_cluster_i = ith_cluster_sil_values.shape[0]
+	            y_upper = y_lower + size_cluster_i
+	            
+	            color = cm.nipy_spectral(float(i) / n_cluster)
+	            axs[ind].fill_betweenx(np.arange(y_lower, y_upper), 0, ith_cluster_sil_values, \
+	                                facecolor=color, edgecolor=color, alpha=0.7)
+	            axs[ind].text(-0.05, y_lower + 0.5 * size_cluster_i, str(i))
+	            y_lower = y_upper + 10
+	            
+	        axs[ind].axvline(x=sil_avg, color="red", linestyle="--")
+
+	# Example
+	# 군집화를 2, 3, 4, 5 진행했을 때의 실루엣 계수값 시각화
+	visualize_silhouette([2, 3, 4, 5], iris.data)
+
+	- 평균 이동 군집화(Means Shift)
+
+	from sklearn.cluster import estimate_bandwidth, MeanShift
+
+	# K-평균 -> 데이터 간 거리의 평균에 기반 (거리 기반 군집화)
+	# 평균이동 -> 데이터의 밀도에 기반 (확률 기반 군집화)
+
+	# 데이터의 분포 유형에 따라 bandwidth 값의 변화는 군집화의 개수에 큰 영향을 미침
+	best_bandwidth = estimate_bandwidth(df.features)
+
+	meanshift = MeanShift(bandwidth = best_bandwidth)
+	cluster_labels = meanshift.fit_predict(df.features)
+	print('cluster label 유형: ', np.unique(cluster_labels))
+
+	# K-평균과 똑같이 cluster_centers_ 속성에 중심 좌표 위치 저장
+
+	- GMM
+
+	from sklearn.mixture import GaussianMixture
+
+	# GMM -> 확률 기반 군집화 (여러 개의 가우시안 함수 분포가 섞인 데이터라고 가정)
+
+	gmm = GaussianMixture(n_components = 3, random_state = 0)
+	gmm.fit(df.features)
+	gmm_cluster_labels = gmm.predict(df.features)
+
+	df['cluster'] = gmm_cluster_labels
+
+	# K-평균 -> 데이터가 원형으로 형성된 경우에 적합
+	# GMM -> 데이터가 타원형으로 형성된 경우에 적합(일렬로 늘어선 데이터 세트)
+	# 군집 중심 좌표가 제공되지 않음
+
+	- 군집화 시각화 함수
+	### 클러스터 결과를 담은 DataFrame과 사이킷런의 Cluster 객체등을 인자로 받아 클러스터링 결과를 시각화하는 함수  
+	# clusterobj -> fit, predict로 군집화를 완료한 객체
+	# iscenter -> Cluster객체가 군집 중심 좌표를 제공하면 True, 아니면 False
+	def visualize_cluster_plot(clusterobj, dataframe, label_name, iscenter=True):
+	    if iscenter :
+	        centers = clusterobj.cluster_centers_
+	        
+	    unique_labels = np.unique(dataframe[label_name].values)
+	    markers=['o', 's', '^', 'x', '*']
+	    isNoise=False
+
+	    for label in unique_labels:
+	        label_cluster = dataframe[dataframe[label_name]==label]
+	        if label == -1:
+	            cluster_legend = 'Noise'
+	            isNoise=True
+	        else :
+	            cluster_legend = 'Cluster '+str(label)
+	        
+	        plt.scatter(x=label_cluster['ftr1'], y=label_cluster['ftr2'], s=70,\
+	                    edgecolor='k', marker=markers[label], label=cluster_legend)
+	        
+	        if iscenter:
+	            center_x_y = centers[label]
+	            plt.scatter(x=center_x_y[0], y=center_x_y[1], s=250, color='white',
+	                        alpha=0.9, edgecolor='k', marker=markers[label])
+	            plt.scatter(x=center_x_y[0], y=center_x_y[1], s=70, color='k',\
+	                        edgecolor='k', marker='$%d$' % label)
+	    if isNoise:
+	        legend_loc='upper center'
+	    else: legend_loc='upper right'
+	    
+	    plt.legend(loc=legend_loc)
+	    plt.show()
+
+	# Example
+	kmeans = KMeans(3, random_state = 0)
+	kmeans_label = kmeans.fit_predict(df)
+	df['kmeans_label'] = kmeans_label
+
+	visualize_cluster_plot(kmeans, df, 'kmeans_label', iscenter=False)
+
+	- DBSCAN
+
+	# DBSCAN -> 밀도 기반 군집화
+	# 내부의 원 모양과 외부의 원 모양 형태의 분포를 가진 데이터 세트에도 적용 가능
+
+	from sklearn.cluster import DBSCAN
+
+	# eps -> 입실론 주변의 반경, 일반적으로 1 이하의 값 설정
+	# min_samples -> 핵심 포인트가 되기 위해 입실론 주변 영역 내에 포함돼야 할 데이터의 최소 개수
+	# 군집의 개수를 알고리즘에 따라 자동으로 지정 -> 군집의 개수를 지정하는 건 무의미
+
+	dbscan = DBSCAN(eps = 0.6, min_samples = 8, metric = 'euclidean')
+	dbscan_labels = dbscan.fit_predict(df.features)
+
+	df['dbscan_cluster'] = dbscan_labels
+
+	# 군집 레이블이 -1인 것은 노이즈에 속하는 군집
+
+	- 텍스트, 문서를 문장, 단어 토큰화 함수(NLTK)
+
+	from nltk import word_tokenize, sent_tokenize
+
+	nltk.download('punkt')
+
+	def tokenize_text(text):
+
+		# 문장별로 분리 토큰
+		setences = sent_tokenize(text)
+		# 분리된 문장별 단어 토큰화
+		word_tokens = [word_tokenize(sentence) for sentence in sentences]
+		# 반환값은 여러 리스트를 가진 리스트 객체
+		return word_tokens
+
+	- Stop words 제거 (NLTK)
+
+	import nltk
+	nltk.download('stopwords')
+
+	stopwords = nltk.corpus.stopwords.words('english')
+	all_tokens = []
+
+	# 위에서 만든 함수의 결과
+	word_tokens = tokenize_text(text)
+
+	for sentence in word_tokens:
+		filtered_words = []
+		for word in sentence:
+			# 소문자로 변환
+			word = word.lower()
+			# 토큰화된 개별 단어가 스톱 워드의 단어에 포함되지 않으면 word_tokens에 추가
+			if word not in stopwords:
+				filtered_words.append(word)
+
+		all_tokens.append(filtered_words)
+
+	- Stemming, Lemmatization 어근 추출(NLTK)
+
+	# Stemming -> 빠름 but 부정확
+	# Lemmatization -> 느림 but 정확
+
+	from nltk.stem import LancasterStemmer
+	from nltk.stem import WordNetLemmatizer
+	import nltk
+	nltk.download('wordnet')
+	
+	stmmer = LancasterStemmer()
+	lemma = WordNetLemmatizer()
+
+	print(stmmer.stem('word'))
+	# Lemmatization은 품사로 입력해야함
+	print(lemma.lemmatize('word', 'v'))
+	print(lemma.lemmatize('word', 'a'))
+
+	- Lemmatization 구현 함수
+
+	from nltk.stem import WordNetLemmatizer
+	import nltk
+	import string
+
+	remove_punct_dict = dict((ord(punct), None) for punct in string.punctuation)
+	lemmar = WordNetLemmatizer()
+
+	def LemTokens(tokens):
+	    return [lemmar.lemmatize(token) for token in tokens]
+
+	def LemNormalize(text):
+	    return LemTokens(nltk.word_tokenize(text.lower().translate(remove_punct_dict)))
+
+	# Example
+	tfidf_vect = TfidfVectorizer(tokenizer = LemNormalize, stop_words = 'english', ngram_range = (1, 2), min_df = 0.05, max_df = 0.85)
+	tfidf_vect.fit_transform(df['text'])
+
+	- COO, CSR 형태 희소행렬 변환
+
+	from scipy import sparse
+
+	# 입력 파라미터는 CountVectorizer나 TF-IDF Vectorizer 객체의 변환값 또는 희소행렬
+	# 희소행렬은 메모리를 많이 차지해 변환이 필요
+	# COO -> 0이 아닌 데이터, 데이터의 위치값
+	# CSR -> 0이 아닌 데이터, 데이터의 위치값에서 중복을 제거한 위치값
+
+	coo = sparse.coo_matrix(dense)
+	csr = sparse.csr_matrix(dense)
+
+	- BOW(Bag of Words) 모델 (CountVectorizer, TF-IDF Vectorizer) 
+	
+	from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
+
+	# TF-IDF -> 문서 내에 텍스트가 많고 많은 문서를 가지는 텍스트 분석에서 좋은 예측 결과를 예측
+
+	cnt_vect = CountVectorizer()
+	tfidf_vect = TfidfVectorizer()
+
+	X_train_cnt_vect = cnt_vect.fit_transform(X_train)
+	X_train_tfidf_vect = tfidf_vect.fit_transform(X_train)
+
+	X_test_cnt_vect = cnt_vect.transform(X_test)
+	X_test_tfidf_vect = tfidf_vect.transform(X_test)
+
+
+	- 파이프라인 코드 작성(Pipeline)
+
+	from sklearn.pipeline import Pipeline
+
+	# 모든 데이터 전처리 작업과 Estimator 결합
+
+	pipeline = Pipeline([
+			('tfidf_vect', TfidfVectorizer(stop_words = 'englisth')),
+			('lr_clf', LogisticRegression())
+		])
+
+	pipeline.fit(X_train, y_train)
+	pred = pipeline.predict(X_test)
+
+	# GridSearch + Pipeline
+	# 파이프라인의 객체명 + "__" + 하이퍼 파라미터명을 파라미터에 딕셔너리 형태로 저장
+	# 시간이 많이 소모됨
+
+	params = {
+		'tfidf_vect__ngram_range':[(1, 1), (1, 2), (1, 3)],
+		'tfidf_vect__max_df':[100, 300, 700],
+		'lr_clf__C':[1, 5, 10]
+	}
+
+	grid_cv_pipe = GridSearchCV(pipeline, param_gird = params, cv = 3, scoring = 'accuracy', verbose = 1)
+	grid_cv_pipe.fit(X_train, y_train)
+	print(grid_cv_pipe.best_params_, grid_cv_pipe.best_score_)
+
+	pred = grid_cv_pipe.predict(X_test)
+	print('Pipeline을 통한 로지스틱 회귀의 예측 정확도:{0:.3f}'.format(accuracy_score(y_test, pred)))
+
+	- 영어 문자열이 아닌 문자는 모두 공백으로 변환
+
+	import re
+
+	df['column'] = df['column'].apply(lambda x : re.sub("[^a-zA-Z]", " ", x))
+
+	- WordNet 기반 단어 유사도 측정
+
+	import nltk
+	nltk.download('all')
+
+	from nltk.corpus import wordnet as wn
+	
+	word1 = wn.synset('word1.n.01')
+	word2 = wn.synset('word2.n.02')
+	word3 = wn.synset('word3.v.01')
+
+	entities = [word1, word2, word3]
+	similarities = []
+	entity_names = [entity.name().split('.')[0] for entity in entities]
+
+	# 단어별 synset을 반복하면서 다른 단어의 synset과 유사도를 측정
+	# synset.path_similarity(synset): 다른 단어(synset 객체)와의 유사도 측정
+	
+	for entity in entities:
+		similarity = [round(entity.path_similarity(compared_entity), 2) for compared_entity in entities]
+		similarities.append(similarity)
+
+	similarity_df = pd.DataFrame(similarities, columns = entity_names, index = entity_names)
+	similarity_df	
+
+	- VADER를 이용한 감성분석
+
+	# nltk.download('all')로 VADER 다운로드
+	from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
+	# analyzer.polarity_scores(text)
+	# -> 'neg': 부정 감성 지수
+	# -> 'neu': 중립 감성 지수
+	# -> 'pos': 긍정 감성 지수
+	# -> 'compound': 감성 지수들을 조합해 -1 ~ 1 사이의 감성 지수 표현
+	# 보통 0.1 이상이면 긍정, 이하면 부정
+	
+	def vader_polarity(text, threshold = 0.1):
+		analyzer = SentimentIntensityAnalyzer()
+		scores = analyzer.polarity_scores(text)
+
+		# compound 값에 기반에 threshold 입력값보다 크면 1, 그렇지 않으면 0 반환
+		agg_score = scores['compound']
+		final_sentiment = 1 if agg_score >= threshold else 0
+		return final_sentiment
+
+	pred = df['column'].apply(lambda x : vader_polarity(x))
+
+	- 문서 토픽 모델링 (LDA - LatentDirichletAllocation)
+
+	from sklean.feature_extraction.text import CountVectorizer
+	from sklean.decomposition import LatentDirichletAllocation
+
+	# LDA -> 문서 내의 숨겨져 있는 주제를 추출
+
+	# LDA는 Count기반의 벡터화만 적용
+	count_vect = CountVectorizer()
+
+	feat_vect = count_vect.fit_transform(data)
+
+	# n_components -> n개의 토픽으로 분류
+	lda = LatentDirichletAllocation(n_components = 8, random_state = 0)
+	lda.fit(feat_vect)
+	# 개별 토픽별로 각 word 피쳐가 얼마나 많이 그 토픽에 할당됐는지에 대한 수치, 높은 값일수록 해당 word피쳐는 그 토픽의 중심 word가 됌
+	lda.components_
+
+	# 각 토픽별로 연관도가 높은 순으로 word를 나열해 출력
+	def display_topics(model, feature_names, top_words_num):
+		for topic_index, topic in enumerate(model.components_):
+			print('Topic # ', topic_index)
+
+			# components_ array에서 가장 값이 큰 순으로 나열했을때, 그 값의 array 인덱스를 반환
+			topic_word_indexes = topic.argsort()[::-1]
+			top_indexes = topic_word_indexes[:top_words_num]
+
+			feature_concat = ' '.join([feautre_names[i] for i in top_indexes])
+			print(feature_concat)
+
+	# CountVectorizer 객체 내의 전체 word의 명칭을 get_features_names()를 통해 추출
+	feature_names = count_vect.get_feature_names()
+
+	# 토픽별 가장 연관도가 높은 word를 15개만 추출
+	display_topics(lda, feature_names, 15)
+
+	- 해당 디렉터리 내의 모든 파일을 파일명과 내용을 데이터 프레임에 저장하는 함수
+
+	import pandas as pd
+	import glob, os
+
+	def dir_file_to_df(dir_path, data_name = "*.data"):
+		all_files = glob.glob(os.path.join(dir_path, data_name))
+		filename_list = []
+		opinion_text = []
+
+		for file_ in all_files:
+			df = pd.read_table(file_, index_col=None, header=0)
+
+			filename_ = file_.split('\\')[-1]
+			filename = filename_.split('.')[0]
+
+			filename_list.append(filename)
+			opinion_text.append(df.to_string())
+
+		document_df = pd.DataFrame({'filename':filename_list, 'opinion_text':opinion_text})
+		return document_df
+
+	- 문서 군집화 (K-평균 군집화 활용)
+
+	from sklearn.feature_extraction.text import TfidfVectorizer
+	from sklearn.cluster import KMeans
+
+	tfidf_vect = TfidfVectorizer(tokenizer = LemNormalize, stop_words = 'english', ngram_range = (1,2), min_df = 0.05, max_df = 0.85)
+	feature_vect = tfidf_vect.fit_transform(df['text'])
+
+	km_cluster = KMeans(n_clusters = 3, max_iter = 1000, random_state = 0)
+	km_cluster.fit(feature_vect)
+	cluster_label = km_cluster.labels_
+	cluster_centers = km_cluster.cluster_centers_
+
+	df['cluster_label'] = cluster_label
+	df.sort_values(by = 'cluster_label')
+
+	# 군집별 top n 핵심 단어, 그 단어의 중심 위치 상댓값, 대상 파일명 반환
+	def get_cluster_details(cluster_model, cluster_data, feature_names, clusters_num, top_n_features = 10):
+		cluster_details = {}
+
+		# cluster_centers array의 값이 큰 순으로 정렬된 인덱스 반환
+		centroid_feature_ordered_ind = cluster_model.cluster_centers_.argsort()[:, ::-1]
+
+		# 개별 군집별로 반복하면서 핵심 단어, 그 단어의 중심 위치 상댓값, 대상 파일명 입력
+		for cluster_num in range(clusters_num):
+			cluster_details[cluster_num] = {}
+			cluster_details[cluster_num]['cluster'] = cluster_num
+
+			# top n 피쳐를 구함
+			top_feature_indexes = centroid_feature_ordered_ind[cluster_num, :top_n_features]
+			top_features = [ feature_names[ind] for ind in top_feature_indexes ]
+
+			# 피처 단어의 중심 위치 상댓값
+			top_feature_values = cluster_model.cluster_centers_[cluster_num, top_feature_indexes].tolist()
+
+			# cluster_details 딕셔너리 객체에 개별 군집별 핵심단어와 중심위치 상댓값, 해당 파일명 입력
+			cluster_details[cluster_num]['top_features'] = top_features
+			cluster_details[cluster_num]['top_features_value'] = top_feature_values
+			filenames = cluster_data[cluster_data['cluster_label'] == cluster_num]['filename']
+			filenames = filenames.values.tolist()
+
+			cluster_details[cluster_num]['filenames'] = filenames
+
+		return cluster_details
+
+	# 결과값 -> 개별 군집번호, 핵심단어, 핵심단어 중심위치 상댓값, 파일명
+	# 위의 결과값 cluster_details를 보기좋게 출력하는 함수
+	def print_cluster_details(cluster_details):
+		for cluster_num, cluster_detail in cluster_details.items():
+			print('###### Cluster {0}'.format(cluster_num))
+			print('Top features: ', cluster_detail['top_features'])
+			print('파일명: ', cluster_detail['filenames'][:7])
+			print('===============================================')
+
+	feature_names = tfidf_vect.get_feature_names()
+	cluster_details = get_cluster_details(cluster_model = km_cluster, cluster_data = df, feature_names = feature_names, cluster_num = 3, top_n_features = 10)
+	print_cluster_details(cluster_details)
+
+	- 문서 유사도 측정 (코사인 유사도)
+
+	from sklearn.feature_extraction.text import TfidfVectorizer
+	from sklearn.metrics.pairwise import cosine_similarity
+
+	import seaborn as sns
+	import numpy as np
+	import matplotlib.pyploy as plt
+	
+	tfidf_vect = TfidfVectorizer(tokenizer = LemNormalize, stop_words = 'english', ngram_range = (1,2), min_df = 0.05, max_df = 0.85)
+	feature_vect = tfidf_vect.fit_transform(df['text'])
+
+	similarity = cosine_similarity(feature_vect[0], feature_vect)
+	compare_doc = feature_vect.loc[0, 'filename']
+	
+	# 첫 번째 문서와 다른 문서간에 유사도가 높은 순으로 정렬하고 시각화
+	# 유사도가 높은 순으로 정렬한 인덱스를 추출하되 자기 자신은 제외
+	sorted_index = similarity.argsort()[:, ::-1]
+	sorted_index = sorted_index[:, 1:]
+
+	sim_value = np.sort(similarity.reshape(-1))[::-1]
+	sim_value = sim_value[1:]
+
+	sim_df = pd.DataFrame()
+	sim_df['filename'] = df.iloc[sorted_index]['filename']
+	sim_df['similarity'] = sim_value
+
+	sns.barplot(x = 'similarity', y = 'filename', data = sim_df)
+	plt.title(compare_doc)
+
+	- 한글 텍스트 분석(KoNLP)
+
+	import re
+	from konlpy.tag import Twitter
+	from sklearn.feature_extraction.text import TfidfVectorizer
+	from sklearn.model_selection import GridSearchCV
+	from sklearn.linear_model import LogisticRegression
+	from sklearn.metrics import accuracy_score
+
+	twitter = Twitter()
+
+	def tw_tokenizer(text):
+		# 입력 인자로 들어온 텍스트를 형태소 단어로 토큰화해 리스트 형태로 반환
+		tokens_ko = twitter.morphs(text)
+		return tokens_ko
+
+	# 한글 형태소 분석을 통해 감성분석 분류라고 가정
+
+	tfidf_vect = TfidfVectorizer(tokenizer = tw_tokenizer, ngram_range = (1, 2), min_df = 3, max_df = 0.9)
+	tfidf_vect.fit(df['document'])
+	tfidf_mat_train = tfidf_vect.transform(df['document'])
+
+	# 로지스틱 이용해 감성 분석 분류 수행
+	lg_clf = LogisticRegression(random_state = 0)
+
+	params = { 'C' : [1, 3.5, 4.5, 5.5, 10]}
+
+	grid_cv = GridSearchCV(lg_clf, param_gird = params, cv = 3, scoring = accuracy, verbose = 1)
+	grid_cv.fit(tfidf_mat_train, train_df['label'])
+	print(grid_cv.best_params_, grid_cv.best_score_)
+
+	tfidf_mat_test = tfidf_vect.transform(test_df['document'])
+
+	best_estimator = grid_cv.best_estimator_
+	preds = best_estimator_.predict(tfidf_mat_test)
+
+	print('정확도: ', accuracy_score(test_df['label'], preds))
+
+	- 문자열인 열 분할해서 다수 열로 생성
+
+	def split_cat(category_name):
+		# Null값인 열을 split할 경우 Error 발생
+		try:
+			return category_name.split('/')
+		except:
+			return ['Other_Null', 'Other_Null', 'Other_Null']
+
+	df['col1'], df['col2'], df['col3'] = zip(*df['category_name'].apply(lambda x : split_cat(x)))
+
+	- 희소행렬 원-핫 인코딩 후 인코딩,벡터화 데이터 세트 결합
+
+	from sklearn.preprocessing import LabelBinarizer
+	from scipy.sparse import hstack
+
+	lb = LabelBinarizer(sparse_output = True)
+	lb_fitted = lb_fitted.fit_transform(df['column1'])
+
+	lb2 = LabelBinarizer(sparse_output = True)
+	lb2_fitted = lb2_fitted.fit_transform(df['column2'])
+
+	sparse_mat_list = (lb_fitted, lb2_fitted)
+
+	features = hstack(sparse_mat_list).tocsr()
+
+	- 데이터 프레임에서 딕셔너리 형태의 문자열을 리스트로 변환
+
+	from ast import literal_eval
+
+	# 문자열을 분해해서 파이썬 리스트 객체로 추출
+	# literal_eval() -> 문자열이 의미하는 list[dict1, dict2] 객체로 만듬
+	df['column'] = df['column'].apply(literal_eval)
+
+	# 열의 딕셔너리에서 원하는 키 값만 추출
+	df['column'] = df['column'].apply(lambda x : [ y['key'] for y in x ])
+
+	- 콘텐츠 기반 필터링 영화 추천
+
+	from sklearn.feature_extraction.text import CountVectorizer
+	from sklearn.metrics.pairwise import cosine_similarity
+
+	# 장르 컨텐츠 유사도 측정
+	cnt_vect = CountVectorizer(min_df = 0, ngram_range = (1,2))
+	genre_mat = cnt_vect.fit_transform(movies_df['genres'])
+
+	# 장르 유사도 행렬
+	genre_sim = cosine_similarity(genre_mat, genre_mat)
+
+	# 높은 순으로 정렬된 비교 행 위치의 인덱스 값 추출
+	genre_sim_soreted_ind = genre_sim.argsort()[:, ::-1]
+
+	# 평가 횟수를 반영한 가중 평점 생성
+	percentile = 0.6
+	m = movies_df['vote_count'].quantile(percentile)
+	C = movies_df['vote_average'].mean()
+
+	def weighted_vote_average(record):
+		v = record['vote_count']
+		R = record['vote_average']
+
+		return ( (v/(v+m)) * R ) + ( (m/(m+v)) * C )
+
+	movies_df['weighted_vote'] = movies_df.apply(weighted_vote_average, axis = 1)
+
+	# 알고싶은 영화 제목과 비슷한 영화를 콘텐츠 기반으로 추천(가중 평점으로 정렬)
+	def find_sim_movie(df, sorted_ind, title_name, top_n = 10):
+		title_movie = df[df['title'] == title_name]
+		title_index = title_movie.index.values
+
+		# top_n의 2배에 해당하는 장르 유사성이 높은 인덱스 추출
+		similar_indexes = soreted_ind[title_index, :(top_n*2)]
+		similar_indexes = similar_indexes.reshapes(-1)
+
+		# 기준 영화 인덱스는 제외
+		similar_indexes = similar_indexes[similar_indexes != title_index]
+
+		# top_n의 2배에 해당하는 후보군에서 가중 평점이 높은 순으로 top_n 추출
+		return df.iloc[similar_indexes].sort_values('weighted_vote', ascending=False)[:top_n]
+
+	similar_movies = find_sim_movie(movies_df, genre_sim_soreted_ind, 'Movie_Name', 10)
+	similar_movies[['title', 'vote_average', 'weighted_vote']]
+
+	- 최근접 이웃 협업 필터링 영화 추천(아이템 기반)
+
+	from sklearn.metrics.pairwise import cosine_similarity
+
+	ratings = df[['userId', 'title', 'rating']]
+	# df.pivot_table(value_column, index = index_column, columns = row_column)
+	# -> 인덱스 칼럼을 인덱스로, 로우 칼럼을 행으로, 값 칼럼을 각 데이터로 변환
+	ratings_mat = ratings.pivot_table('rating', index = 'userId', columns = 'title')
+	# NaN 값이 있다면 0으로 대체
+	ratings_mat.fillna(0)
+
+	# 사용자-아이템 기반 중 아이템 기반이 더 예측 정확도가 높음
+	# 아이템 기반 -> 인덱스 칼럼에 아이템
+	# 사용자 기반 -> 인덱스 칼럼에 사용자
+
+	# 사용자 기반 행렬일 경우 전치행렬로 변환
+	ratings_mat_T = ratings_mat.transpose()
+
+	# 영화의 코사인 유사도 측정
+	item_sim = cosine_similarity(ratings_mat_T, ratings_mat_T)
+	item_sim_df = pd.DataFrame(data = item_sim, index = ratings_mat_T.columns, columns = ratings_mat_T.columns)
+
+	# 콘텐츠 기반 필터링과 다르게 장르가 다른 영화도 추천
+	# 사용자의 평점 정보를 모두 취합해 영화에 따라 유사한 다른 영화를 추천
+	# -> 개인에게 특화된 추천 알고리즘
+
+	# 모든 영화와 유사도 벡터를 적용하면 예측 정확도가 떨어짐
+	# -> 가장 비슷한 유사도를 가지는 영화에 대해서만 유사도 벡터 적용(상위 20개)
+	# 영화 유사도 행렬데이터에 기반한 사용자 평점 예측
+	def predict_rating_topsim(ratings_arr, item_sim_srr, n = 20):
+		# 사용자-아이템 평점 행렬 크기만큼 0으로 채운 예측 행렬 초기화
+		pred = np.zeros(ratings_arr.shape)
+
+		for col in range(ratings_arr.shape[1]):
+			# 유사도 행렬에서 유사도가 큰 순으로 n개 데이터 행렬의 인덱스 반환
+			top_n_items = [np.argsort(item_sim_arr[:, col])[:-n-1:-1]]
+
+			# 개인화된 예측 평점 계산
+			for row in range(ratings_arr.shape[0]):
+				pred[row, col] = item_sim_arr[col, :][top_n_items].dot(ratings_arr[row, :][top_n_items].T)
+				pred[row, col] /= np.sum(np.abs(item_sim_arr[col, :][top_n_items]))
+
+		return pred
+
+	ratings_pred = predict_rating_topsim(ratings_mat.values, item_sim_df, n = 20)
+
+	ratings_pred_mat = pd.DataFrame(data = ratings_pred, index = ratings_mat.index, columns = ratings_mat.columns)
+
+	# 예측 평점과 실제 평점의 MSE
+	def movie_mse(pred, actual):
+		# 평점이 있는 실제 영화만 추출
+		# nonzero() -> 0이 아닌 데이터 인덱스
+		# flatten() -> 1차원으로 변환
+		pred = pred[actual.nonzero()].flatten()
+		actual = actual[actual.nonzero()].flatten()
+		return mean_squared_error(pred, actual)
+
+	movie_mse(ratings_pred, ratings_mat.values)
+
+	# 특정 사용자에 대해 영화 추천(본 영화도 포함)
+	user_rating_id = ratings_mat.loc[9, :]
+	user_rating_id[ user_rating_id > 0].sort_values(ascending=False)[:10]
+
+	# 사용자가 이미 본 영화를 제외하고 추천할 수 있도록 평점을 주지 않은 영화를 리스트 객체로 반환
+	def get_unseen_movies(ratings_mat, userId):
+		# userId로 입력받은 사용자의 모든 영화 정보를 추출해 Series로 반환
+		# 영화명을 인덱스로 가지는 Series 객체
+		user_rating = ratings_mat[userId, :]
+
+		# user_rating이 0보다 크면 기존에 관람한 영화라고 가정, 대상 추출
+		already_seen = user_rating[ user_rating >0 ].index.tolist()
+
+		movies_list = ratings_mat.columns.tolist()
+
+		# list comprehension 으로 already_seen에 해당하는 영화는 movies_list에서 제외
+		unseen_list = [ moive for movie in movies_list if movie not in already_seen ]
+
+		return unseen_list
+
+	# 특정 사용자에 대해 아이템 기반 최근접 협업 필터링으로 보지 않은 영화 추천
+	def recomm_movie_by_userid(pred_df, userId, unseen_list, top_n = 10):
+		# 예측 평점 DataFrame에서 사용자 id 인덱스와 unseen_list로 들어온 영화명 칼럼 추출해 가장 예측 평점이 높은 순으로 정렬
+		recomm_movies = pred_df.loc[userId, unseen_list].sort_values(ascending=False)[:top_n]
+		return recomm_movies
+
+	# 사용자가 관람하지 않은 영화 추출
+	unseen_list = get_unseen_movies(ratings_mat, 9)
+
+	# 아이템 기반의 최근접 협업 필터링으로 영화 추천
+	recomm_movies = recomm_movie_by_userid(ratings_pred_mat, 9, unseen_list, top_n = 10)
+	recomm_movies = pd.DataFrame(data = recomm_movies.values, index = recomm_movies.index, columns = ['pred_score'])
+	recomm_movies
+
+	- 잠재 요인 협업 필터링 영화 추천(행렬 분해)
+
+	from sklearn.metrics import mean_squared_error
+	import numpy as np
+
+	# 실제 행렬과 예측 행렬의 오차를 구하는 함수
+	def mat_rmse(R, P, Q, non_zeros):
+		error = 0
+
+		# 두 개의 분해된 행렬 P와 Q.T의 내적으로 예측 행렬 R 생성
+		full_pred_mat = np.dot(P. Q.T)
+
+		# 실제 R 행렬에서 널이 아닌 값의 위치 엔득스를 추출해 실제 R 행렬과 예측 행렬의 RMSE 추출
+		x_non_zero_ind = [ non_zero[0] for non_zero in non_zeros ]
+		y_non_zero_ind = [ non_zero[1] for non_zero in non_zeros ]
+		R_non_zeros = R[x_non_zero_ind, y_non_zero_ind]
+		full_pred_mat_non_zeros = full_pred_mat[x_non_zero_ind, y_non_zero_ind]
+		mse = mean_squared_error(R_non_zeros, full_pred_mat_non_zeros)
+		rmse = np.sqrt(mse)
+
+		return rmse
+
+	# 확률적 경사 하강법을 이용한 행렬 분해
+	def mat_factorization(R, K, steps = 200, learning_rate = 0.01, r_lambda = 0.01):
+		num_users, num_items = R.shape
+		# P와 Q 매트릭스의 크기를 지정하고 정규분포를 가진 랜덤한 값으로 입력
+		np.random.seed(1)
+		P = np.random.normal(scale = 1./K, size = (num_users, K))
+		Q = np.random.normal(scale = 1./K, size = (num_items, K))
+
+		prev_rmse = 10000
+		break_count = 0
+
+		# R > 0인 행 위치, 열 위치, 값을 non_zeros 리스트 객체에 저장
+		non_zeros = [ (i, j, R[i, j]) for i in range(num_users) for j in range(num_items) if R[i, j] > 0 ]
+
+		# SGD(확률적 경사 하강) 기법으로 P와 Q 매트릭스를 계속 업데이트
+		for step in range(steps):
+			for i, j, r in non_zeros:
+				# 실제값과 예측값의 차이인 오류값
+				eij = r - np.dot(P[i, :], Q[j, :].T)
+				# Regularization을 반영한 SGD 업데이트 공식 적용
+				P[i, :] = P[i, :] + learning_rate * (eij * Q[j, :] - r_lambda * P[i, :])
+				Q[j, :] = Q[j, :] + learning_rate * (eij * P[i, :] - r_lambda * Q[j, :])
+
+			rmse = mat_rmse(R, P, Q, non_zeros)
+			if (step % 10) == 0:
+				print('### iteration step : ', step, ' rmse : ', rmse)
+
+		return P, Q
+	
+	# 사용자-아이템 평점 행렬 생성
+	ratings_mat = rating_movies.pivot_table('rating', index = 'userId', columns = 'title')
+
+	P, Q = mat_factorization(ratings_mat.values, K = 50, steps = 200, learning_rate = 0.01, r_lambda = 0.01)
+
+	pred_mat = np.dot(P, Q.T)
+
+	# 사용자-아이템 예측 평점 행렬 생성
+	ratings_pred_mat = pd.DataFrame(data = pred_mat, index = ratings_mat.index, columns = ratings_mat.columns)
+
+	# 잠재 요인 협업 필터링을 통한 영화 추천
+
+	# 사용자가 관람하지 않은 영화 추출
+	unseen_list = get_unseen_movies(ratings_mat, 9)
+
+	# 아이템 기반의 최근접 협업 필터링으로 영화 추천
+	recomm_movies = recomm_movie_by_userid(ratings_pred_mat, 9, unseen_list, top_n = 10)
+	recomm_movies = pd.DataFrame(data = recomm_movies.values, index = recomm_movies.index, columns = ['pred_score'])
+	recomm_movies
+
+	- Surprise 패키지를 이용한 추천 시스템 구축 기본
+
+	from surprise import SVD
+	from surprise import Dataset
+	from surprise import accuracy
+	from surprise import Reader
+	from surprise.model_selection import train_test_split
+
+	import pandas as pd
+
+	# OS 파일 데이터 로딩할 경우
+	# 로딩되는 데이터 파일에 칼럼명을 가지는 헤더 문자열이 있어서는 안됨
+	# Reader 클래스를 이용해 파싱 포맷을 정의
+	# line_format -> 열의 이름 및 순서을 공백으로 구분
+	# sep -> 각 칼럼의 분리 문자
+	# rating_scale -> 평점 칼럼의 최소, 최대값
+	reader = Reader(line_fotmat = 'user item rating', sep = ',', rating_scale = (0.5, 5))
+	data = Dataset.load_from_file('./data.csv', reader = reader)
+
+	# 판다스 DataFrame에서 데이터 로딩할 경우
+	# DataFrame이 사용자 아이디, 아이템 아이디, 평점 칼럼 순서를 지켜야함
+
+	reader = Reader(rating_scale = (0.5, 5))
+	data = Dataset.load_from_df(data[['userId', 'movieId', 'rating']], reader)
+
+	trainset, testset = train_test_split(data, test_size = 0.3, random_state = 0)
+
+	# SVD로 잠재요인 협업 필터링 수행
+	# n_factors -> 잠재요인 파라미터 크기
+	algo = SVD(n_factors = 50, random_state = 0)
+	algo.fit(trainset)
+
+	# test() -> 사용자-아이템 평점 데이터 세트 전체에 대해서 추천을 예측
+	predictions = algo.test(testset)
+	# 반환값 -> Prediction 객체
+	#        -> 개별 사용자 아이디(uid), 아이템 아이디(iid), 실제 평점(r_ui), 추천 예측 평점(est)
+	#        -> details 속성: 내부 처리 시 추천 예측을 할 수 없는 경우에 로그용으로 데이터를 남기는데 사용, was_impossible = True -> 예측값을 생성할 수 없는 데이터
+
+	# 개별 사용자, 아이템, 예측 평점 출력
+	[ (pred.uid, pred.iid, pred.est) for pred in predictions ]
+
+	# predict() -> 개별 사용자와 영화에 대한 추천 평점 반환
+	# uid, iid -> 사용자, 아이템 아이디(문자열로 입력해야함)
+	prediction = algo.predict(uid, iid)
+
+	# 성능평가 정보 제공
+	accuracy.rmse(predictions)
+
+	- Surprise 패키지의 교차검증과 하이퍼 파라미터 튜닝
+	
+	from surprise.model_selection import cross_validate
+	from surprise.model_selection import GridSearchCV
+	from surprise import Reader
+	from surprise import Dataset
+	from surprise import SVD
+
+	reader = Reader(rating_scale = (0.5, 5))
+	data = Dataset.load_from_df(data[['userId', 'movieId', 'rating']], reader)
+
+	algo = SVD(random_state = 0)
+	# 교차검증 수행
+	# cross_validate(알고리즘객체, 데이터, 성능 평가 방법, CV수)
+	cross_validate(algo, data, measures = ['RMSE', 'MAE'], cv = 5, verbose = True)
+
+	param_grid = {'n_epochs':[20, 40, 60], 'n_factors':[50, 100, 200]}
+
+	grid_cv = GridSearchCV(SVD, param_grid, measures = ['rmse', 'mae'], cv = 3)
+	grid_cv.fit(data)
+
+	# 최고 RMSE 점수와 하이퍼 파라미터
+	print(grid_cv.best_score['rmse'])
+	print(grid_cv.best_params['rmse'])
+
+	- Surprise 패키지를 활용한 개인화 영화 추천 시스템 구축	
+
+	# 데이터 세트 전체를 학습 데이터로 사용할 경우
+	from surprise.dataset import DatasetAutoFolds
+	from surprise import Reader
+	from surprise import SVD
+
+	reader = Reader(line_format = 'user item rating', sep = ',', rating_scale = (0.5, 5))
+	data = DatasetAutoFolds(ratings_file = './data.csv', reader = reader)
+
+	# 전체 데이터를 학습 데이터로 생성
+	trainset = data.build_full_trainset()
+
+	algo = SVD(n_epochs = 20, n_factors = 50, random_state = 0)
+	algo.fit(trainset)
+
+	# 영화에 대한 상세 속성 정보 DataFrame 로딩
+	movies = pd.read_csv('./movies.csv')
+
+	# 사용자가 평점을 매기지 않은 영화 추출(surprise 기반)
+	def get_unseen_surprise(ratings, movies, userId):
+		# 입력값으로 들어온 userId에 해당하는 사용자가 평점을 매긴 모든 영화를 리스트로 생성
+		seen_movies = ratings[ratings['userId'] == userId]['movieId'].tolist()
+
+		# 모든 영화의 movieId 리스트
+		total_movies = movies['movieId'].tolist()
+
+		# 모든 영화의 movieId중 이미 평점을 매긴 영화의 movieId를 제외한 후 리스트 생성
+		unseen_movies = [ movie for movie in total_movies if movie not in seen_movies ]
+		print('평점 매긴 영화수: ', len(seen_movies), '추천 대상 영화 수: ', len(unseen_movies), '전체 영화 수':, len(total_movies))
+
+		return unseen_movies
+
+
+	# 학습된 추천 알고리즘을 이용해 높은 예측 평점을 가진 순으로 영화 추천
+	def recomm_movie_by_surprise(algo, userId, unseen_movies, top_n = 10):
+		# 알고리즘 객체의 predict() 메서드를 평점이 없는 영화에 반복 수행한 결과를 list 객체로 저장
+		predictions = [ algo.predict(str(userId), str(movieId)) for movieId in unseen_movies ]
+
+		# prediction list 객체는 surprise의 Prediction 객체를 원소로 가짐
+		# 이를 est 값으로 정렬하기 위해 아래 sortkey_est 함수를 정의
+		# sortkey_est 함수는 list 객체의 sort() 함수의 키 값으로 사용되어 정렬 수행
+		def sortkey_est(pred):
+			return pred.est
+
+		# sortkey_est() 반환값의 내림차순으로 정렬을 수행하고 top_n 개의 최상위 값 추출
+		predictions.sort(key = sortkey_est, reverse = True)
+		top_predictions = predictions[:top_n]
+
+		# top_n으로 추출된 영화의 정보 추출. 영화 아이디, 추천 예상 평점, 제목 추출
+		top_movie_ids = [ int(pred.iid) for pred in top_predictions ]
+		top_movie_rating = [ pred.est for pred in top_predictions ]
+		top_movie_titles = movies[movies.movieId.isin(top_movie_ids)]['title']
+
+		top_movie_preds = [ (id, title, rating) for id, title, rating in zip(top_movie_ids, top_movie_titles, top_movie_rating) ]
+
+		return top_movie_preds
+
+	unseen_movies = get_unseen_surprise(ratings, movies, 9)
+	top_movie_preds = recomm_movie_by_surprise(algo, 9, unseen_movies, top_n = 10)
+
+	print('##### Top-10 추천 영화 리스트 #####')
+	for top_movie in top_movie_preds:
+		print(top_movie[1], ":", top_movie[2])

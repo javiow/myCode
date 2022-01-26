@@ -1,0 +1,76 @@
+<R 강의내용>
+
+  - R(18주차~/21.01.05~)
+
+    - 연산자
+
+    %%: 나머지 연산자
+    %/%: 몫만 구하기
+
+    - 데이터프레임
+
+    dim(df): 데이터프레임 차수
+    View(df): 데이터 테이블 뷰어
+    rename(df, col=col1): 데이터의 열 이름 변경
+
+    - ggplot2
+
+    qplot(): 간단한 그래프 생성
+    geom_text(): 그래프에 텍스트 추가
+
+    - stringr
+
+    str_replace_all(text, "\\w", " "): text에서 특수문자(\\w)를 공백으로 변환
+
+    - RColorBrewer
+
+    brewer.pal(n, "Dark2"): Dark2라는 파레트에서 n개의 색상을 가져옴
+    
+    - tibble
+
+    rownames_to_column(data, var="..."): 데이터의 행 이름을 열로 추가
+
+    - maps
+
+    map_data("state"): 미국 50개주의 위치 정보
+
+    - ggCh
+
+    ggChoropleth(data, aes(fill, map_id), map, interactive): 지도 그리기
+
+    - xts(시계열 그래프)
+
+    xts(data, order.by): 시계열 데이터 생성
+    					 data -> 데이터 값
+    					 order.by -> 날짜 데이터
+    dygraph(): 시계열 그래프
+    dygraph() %>% dyRangeSelector(): 시계열 그래프 셀렉터
+
+    - Oracle 연동
+
+    ojdbc14.jar -> R work 폴더에 복사
+
+    library(DBI)
+    library(RJDBC)
+    library(rJava)
+    drv = JDBC("orcle.jdbc.driver.OracleDriver", 'C:/R...')
+    conn = dbConnect(drv, 'jdbc:oracle:thin:@//localhost:1521/xe', 'user', 'pwd')
+    query = "select * from emp"
+    emp = dbGetQuery(conn, query)
+    dept = dbGetQuery(conn, "select * from dept")
+
+    write.csv(emp, "filename", row.names = F)
+
+    emp2 = read.csv("filename")
+
+    - grep
+
+    grep("정규표현식", data): 데이터에서 정규표현식을 만족하는 인덱스를 반환
+
+    - doBy
+
+    df[order(column, decreasing=T), ]: 데이터프레임의 특정열로 정렬
+    df[order(col1, -col2, decreasing=T), ]: col1 내림차순, col2는 오름차순 정렬
+
+    orderBy(~column, df): 데이터프레임의 특정열로 정렬
+    orderBy(~-column, df): 데이터프레임의 특정열로 정렬(내림차순)
