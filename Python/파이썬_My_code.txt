@@ -1327,7 +1327,43 @@
   random.shuffle(keys)
   shuffled_dict = dict([(key, d[key]) for key in keys])
 
-  
+  - 오늘날짜 문자열('yyyy-mm-dd')
+
+  import datetime as dt
+
+  nowtime = dt.datetime.now()
+  nowtime = str(nowtime.year) + \
+  	(('0'+str(nowtime.month)) if nowtime.month < 10 else str(nowtime.month)) + \
+  	(('0'+str(nowtime.day)) if nowtime.day < 10 else str(nowtime.day))
+
+  - 이메일 알림 보내기
+
+  import smtplib
+  from email.mime.text import MIMEText
+
+  EMAIL_KEY = "@#$@#%Q#$FBGV"
+
+  try:
+
+    ...
+
+  except Exception as error:
+
+      nowtime = dt.datetime.now()
+
+      s = smtplib.SMTP('smtp.gmail.com', 587)
+
+      s.starttls()
+      s.login('send_from@email.com', EMAIL_KEY)
+
+      msg = MIMEText("""
+          시각: {} 
+          에러 내용: {}
+      """.format(nowtime, str(error)))
+      msg['Subject'] = 'BASIC-ML-PIPELINE: 데이터 추출 작업 중 에러가 발생했습니다.'
+
+      s.sendmail('send_from@email.com', 'send_to@email.com', msg.as_string())
+      s.quit()
 
 
 -----------------------------------------------------------------------------
