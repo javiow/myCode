@@ -1327,7 +1327,7 @@
   random.shuffle(keys)
   shuffled_dict = dict([(key, d[key]) for key in keys])
 
-  - 오늘날짜 문자열('yyyy-mm-dd')
+  - 오늘날짜 문자열('yyyymmdd')
 
   import datetime as dt
 
