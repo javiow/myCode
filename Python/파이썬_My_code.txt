@@ -1097,7 +1097,8 @@
 
   plt.style.use('fivethirtyeight')
 
-  - 문자열 딕셔너리 -> 딕셔너리형으로 변환
+  - 순서형 문자열 -> 순서형 객체로 변환
+  (딕셔너리 문자열 -> 딕셔너리, 리스트 문자열 -> 리스트)
 
   import ast
   ast.literal_eval(json_string)
@@ -1365,6 +1366,11 @@
       s.sendmail('send_from@email.com', 'send_to@email.com', msg.as_string())
       s.quit()
 
+  - 리스트 앞부터 값 추가
+
+  # list.insert(index, value)
+  listSample.insert(0, "val")
+
 
 -----------------------------------------------------------------------------
   - My Util/Function
@@ -1603,6 +1609,9 @@
 
   - SARIMAX 적합
 
+  import itertools
+  import statsmodels.api as sm
+
   def timeseries_eval(data, value_col, season_val, eval_date):
 
   	### data: 데이터프레임
@@ -1692,3 +1701,8 @@
     plt.legend(loc=1)
     plt.show()
 
+    return model
+
+
+  # 테스트 데이터 이후의 날짜를 예측할 경우
+  model.forecast(stpes=n)
