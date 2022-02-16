@@ -1371,6 +1371,16 @@
   # list.insert(index, value)
   listSample.insert(0, "val")
 
+  - 월 기준으로 시간 추가하기 timedelta(months)
+
+  import datetime as dt
+  from dateutil.relativedelta import relativedelta
+
+  now = dt.datetime.now()
+  delta = relativedelta(months=3)
+
+  diff = now - delta
+
 
 -----------------------------------------------------------------------------
   - My Util/Function
