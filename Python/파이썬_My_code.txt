@@ -1716,3 +1716,7 @@
 
   # 테스트 데이터 이후의 날짜를 예측할 경우
   model.forecast(stpes=n)
+
+  - AWS S3 데이터 불러오기
+
+  def get_data():
