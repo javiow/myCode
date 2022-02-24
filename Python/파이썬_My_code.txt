@@ -849,7 +849,7 @@
   with open(data, 'r', encoding = 'UTF8') as json_file:
 		json_file = json.load(json_file)
 
-	- 디렉토리(폴더) 생성
+	- 디렉토리(폴더) 생성 
 
 	import os
 
@@ -1719,4 +1719,97 @@
 
   - AWS S3 데이터 불러오기
 
-  def get_data():
+  	import boto3
+
+	def get_data(
+	    BUCKET_NAME:str, 
+	    ACCESSKEY:str, 
+	    SECRETKEY:str, 
+	    REGION_NAME:str, 
+	    data_path:str):
+
+	    s3 = boto3.client('s3',
+	        aws_access_key_id = ACCESSKEY,
+	        aws_secret_access_key = SECRETKEY,
+	        region_name = REGION_NAME)
+
+	    s3_object = s3.get_object(Bucket=BUCKET_NAME, Key=data_path)
+	    data = pd.read_csv(s3_object['Body'], encoding='utf-8')
+	    return data
+
+  - AWS S3 데이터 저장하기
+
+  	def upload_data(BUCKET_NAME, ACCESSKEY, SECRETKEY, REGION_NAME, data, save_key):
+	    s3 = boto3.client('s3',
+	        aws_access_key_id = ACCESSKEY,
+	        aws_secret_access_key = SECRETKEY,
+	        region_name = REGION_NAME)
+
+	    bytes_io = BytesIO()
+	    joblib.dump(data, bytes_io)
+	    s3.put_object(Bucket=BUCKET_NAME, Body=bytes_io.getvalue(), Key=save_key)
+
+  - 시각화 라이브러리 초기 설정
+
+	import matplotlib.pyplot as plt
+	import matplotlib.font_manager as fm
+	import seaborn as sns
+	import plotly as py
+	import plotly.graph_objects as go
+	import plotly.express as px
+	import plotly.offline as pyo
+	import plotly.io as pio
+	import chart_studio
+	from plotly.subplots import make_subplots
+	from chart_studio.plotly import plot, iplot
+	plt.style.use('fivethirtyeight')
+	
+	### 폰트 설정
+	font_path = "C:/Windows/Fonts/GULIM.ttc"
+	fontprop = fm.FontProperties(fname=font_path, size=16)
+	plt.rc('font', family=fontprop.get_name())
+
+	### plotly jupyter notebook 설정
+	pio.renderers.default='notebook_connected'
+
+	### chart studio 온라인 설정
+	chart_studio.tools.set_credentials_file(username='javiow', api_key='XzoA810NTQG75ndkw1UV')
+
+
+  - 유틸리티 초기 설정
+
+  	import os
+	import glob
+	import psutil
+	import re
+	import joblib
+	import pandas as pd
+	import numpy as np
+	import warnings
+	import cv2 as cv
+	from IPython.core.display import display, HTML
+	warnings.filterwarnings('ignore')
+
+	### jupyter notebook 너비 설정
+	display(HTML("<style>.container {width:80% !important;}</style>"))
+
+	# pandas dataframe 출력 설정
+	pd.options.display.float_format = '{:.2f}'.format
+	pd.set_option('display.max_rows', 100)
+	pd.set_option('display.max_columns', 100)
+	pd.set_option('display.width', 1000)
+
+
+  - 크롤링(셀레니움) 초기 설정
+
+  	import time
+	from selenium import webdriver
+	from selenium.webdriver.common.by import By
+	from selenium.webdriver.support.ui import WebDriverWait
+	from selenium.webdriver.support import expected_conditions as EC
+	import datetime as dt
+	import pandas as pd
+	import numpy as np
+	import schedule
+	import os
+	import smtplib
