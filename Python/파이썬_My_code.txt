@@ -1728,6 +1728,7 @@
 	    REGION_NAME:str, 
 	    data_path:str):
 
+		### CSV 파일의 경우
 	    s3 = boto3.client('s3',
 	        aws_access_key_id = ACCESSKEY,
 	        aws_secret_access_key = SECRETKEY,
@@ -1735,6 +1736,11 @@
 
 	    s3_object = s3.get_object(Bucket=BUCKET_NAME, Key=data_path)
 	    data = pd.read_csv(s3_object['Body'], encoding='utf-8')
+
+	    ### Binary 파일의 경우
+	    s3 = S3FileSystem(key=ACCESSKEY, secret=SECRETKEY)
+    	data = joblib.load(s3.open(f's3://{BUCKET_NAME}/{data_path}'))
+
 	    return data
 
   - AWS S3 데이터 저장하기
@@ -1813,3 +1819,27 @@
 	import schedule
 	import os
 	import smtplib
+
+  - MySQL DB 데이터 조회하기
+
+	import pymysql
+
+	# DB 접속 정보
+	juso_db = pymysql.connect(
+	    user = 'user',
+	    passwd = 'passwd',
+	    host = 'ip',
+	    charset = 'utf8',
+	    db='db',
+	    port = 'port'
+	)
+
+	cursor = juso_db.cursor(pymysql.cursors.DictCursor)
+
+	# 발전소 정보
+	sql = "SELECT * FROM table_name"
+
+	cursor.execute(sql)
+	result = cursor.fetchall()
+
+	data = pd.DataFrame(result)
