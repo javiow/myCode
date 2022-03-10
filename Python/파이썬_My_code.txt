@@ -1721,7 +1721,7 @@
 
   	import boto3
 
-	def get_data(
+	def aws_get_data(
 	    BUCKET_NAME:str, 
 	    ACCESSKEY:str, 
 	    SECRETKEY:str, 
@@ -1743,9 +1743,11 @@
 
 	    return data
 
+	aws_get_data(BUCKET_NAME, ACCESSKEY, SECRETKEY, REGION_NAME, data_path)
+
   - AWS S3 데이터 저장하기
 
-  	def upload_data(BUCKET_NAME, ACCESSKEY, SECRETKEY, REGION_NAME, data, save_key):
+  	def aws_upload_data(BUCKET_NAME, ACCESSKEY, SECRETKEY, REGION_NAME, data, save_key):
 	    s3 = boto3.client('s3',
 	        aws_access_key_id = ACCESSKEY,
 	        aws_secret_access_key = SECRETKEY,
@@ -1754,6 +1756,8 @@
 	    bytes_io = BytesIO()
 	    joblib.dump(data, bytes_io)
 	    s3.put_object(Bucket=BUCKET_NAME, Body=bytes_io.getvalue(), Key=save_key)
+
+	aws_upload_data(BUCKET_NAME, ACCESSKEY, SECRETKEY, REGION_NAME, data, save_path)
 
   - 시각화 라이브러리 초기 설정
 
@@ -1824,22 +1828,30 @@
 
 	import pymysql
 
-	# DB 접속 정보
-	juso_db = pymysql.connect(
-	    user = 'user',
-	    passwd = 'passwd',
-	    host = 'ip',
-	    charset = 'utf8',
-	    db='db',
-	    port = 'port'
-	)
+	def mysql_get_data(table_name=None, query=None):
 
-	cursor = juso_db.cursor(pymysql.cursors.DictCursor)
+		# DB 접속 정보
+		juso_db = pymysql.connect(
+		    user = 'user',
+		    passwd = 'passwd',
+		    host = 'ip',
+		    charset = 'utf8',
+		    db='db',
+		    port = 'port'
+		)
 
-	# 발전소 정보
-	sql = "SELECT * FROM table_name"
+		cursor = juso_db.cursor(pymysql.cursors.DictCursor)
 
-	cursor.execute(sql)
-	result = cursor.fetchall()
+		if query==None:
+			# 발전소 정보
+			sql = f"SELECT * FROM {table_name}"
 
-	data = pd.DataFrame(result)
+		else:
+			sql = query
+
+		cursor.execute(sql)
+		result = cursor.fetchall()
+
+		data = pd.DataFrame(result)
+
+		return data
