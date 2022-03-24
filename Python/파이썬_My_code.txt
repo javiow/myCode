@@ -1031,6 +1031,10 @@
 
   - 플로틀리 그래프 온라인 저장
 
+  from chart_studio.plotly import plot, iplot
+  import chart_studio
+  chart_studio.tools.set_credentials_file(username='javiow', api_key='...')
+
   fig = go.Figure()
   fig.add_trace(go.Scatter(x, y))
   plot(fig, filename='filename', auto_open=True)
@@ -1145,7 +1149,7 @@
   df.sample(n=n)
 
   # 지정된 비율로 추출
-  df.sample(freq=p)
+  df.sample(frac=p)
 
   # 랜덤 seed 지정
   df.sample(n, random_state)
@@ -1374,12 +1378,51 @@
   - 월 기준으로 시간 추가하기 timedelta(months)
 
   import datetime as dt
-  from dateutil.relativedelta import relativedelta
-
+  
   now = dt.datetime.now()
   delta = relativedelta(months=3)
 
   diff = now - delta
+
+  - datetime활용 컬럼별 날짜 특성 추출
+
+  dataframe['월'] = dataframe['sale_dt'].dt.month
+  dataframe['일'] = dataframe['sale_dt'].dt.day
+  dataframe['요일'] = dataframe['sale_dt'].dt.weekday
+  dataframe['분기'] = dataframe['sale_dt'].dt.quarter
+  dataframe['n주차'] = dataframe['sale_dt'].dt.weekofyear
+  dataframe['n일차'] = dataframe['sale_dt'].dt.dayofyear
+
+  - groupby for문
+
+  for cat, data in dataframe.groupby(group):
+  	# 묶은 group
+  	print(cat)
+
+  	# group별 데이터 = dataframe[dataframe[group] == cat]
+  	print(data)
+
+  - pandas 결측치 대체(bfill, ffill)
+
+  # 앞의 값으로 대체
+  df.fillna(method='ffill')
+  # 뒤의 값으로 대체
+  df.fillna(method='bfill')
+
+  - 문자열 -> 날짜 변환
+
+  import datetime as dt
+  dt.datetime.strptime(string, date_format)
+
+  - 스크립트에서 프로그램 종료 명령어
+
+  import sys
+  import os
+  sys.exit()
+  os.exit()
+  quit()
+  exit()
+
 
 
 -----------------------------------------------------------------------------
@@ -1720,6 +1763,7 @@
   - AWS S3 데이터 불러오기
 
   	import boto3
+  	from s3fs import S3FileSystem
 
 	def aws_get_data(
 	    BUCKET_NAME:str, 
@@ -1757,7 +1801,11 @@
 	    joblib.dump(data, bytes_io)
 	    s3.put_object(Bucket=BUCKET_NAME, Body=bytes_io.getvalue(), Key=save_key)
 
-	aws_upload_data(BUCKET_NAME, ACCESSKEY, SECRETKEY, REGION_NAME, data, save_path)
+	    string_io = StringIO()
+		data.to_csv(string_io, index=False)
+    	s3.put_object(Bucket=BUCKET_NAME, Body=string_io.getvalue(), Key=save_key)
+
+	aws_upload_data(BUCKET_NAME, ACCESSKEY, SECRETKEY, REGION_NAME, data, save_key)
 
   - 시각화 라이브러리 초기 설정
 
@@ -1855,3 +1903,13 @@
 		data = pd.DataFrame(result)
 
 		return data
+
+  - 실수형 문자 확인
+
+	def isNumber(s):
+	    try:
+		    float(s)
+		    return True
+		except ValueError:
+		    return False
+  
