@@ -1423,6 +1423,30 @@
   quit()
   exit()
 
+  - 에러 추적 및 로깅
+
+  import traceback
+  import logging
+  logging.basicConfig(level=logging.ERROR)
+
+  try:
+  	...
+  except:
+  	logging.error(traceback.format_exc())
+
+  - 판다스 누적합 구하기
+
+  df[col].cumsum()
+
+  - 리스트 값 제거
+
+  ### 모든 메서드는 반환형이 아님
+  # 리스트에서 'value' 제거
+  list.remove('value')
+  # 리스트에서 n번째값 제거
+  list.pop(n)
+  # 리스트에서 n번째값 제거
+  del list[n]
 
 
 -----------------------------------------------------------------------------
