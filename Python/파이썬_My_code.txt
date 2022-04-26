@@ -1002,7 +1002,6 @@
 
   df.groupby(['col1'])['col2'].agg(['min', 'max', 'sum'])
 
-
   - 플로틀리 시각화 방법
 
   1. px
@@ -1447,6 +1446,11 @@
   list.pop(n)
   # 리스트에서 n번째값 제거
   del list[n]
+
+  - 데이터프레임 중복열 제거
+
+  dataframe = dataframe.loc[:, ~dataframe.T.duplicated()]
+
 
 
 -----------------------------------------------------------------------------
