@@ -1451,7 +1451,11 @@
 
   dataframe = dataframe.loc[:, ~dataframe.T.duplicated()]
 
+  - 폴더/파일 기본 경로
 
+  import os
+
+	base_dir = os.path.dirname(os.path.abspath(__file__))
 
 -----------------------------------------------------------------------------
   - My Util/Function
@@ -1790,30 +1794,31 @@
 
   - AWS S3 데이터 불러오기
 
-  	import boto3
-  	from s3fs import S3FileSystem
+		import boto3
+		from s3fs import S3FileSystem
 
-	def aws_get_data(
-	    BUCKET_NAME:str, 
-	    ACCESSKEY:str, 
-	    SECRETKEY:str, 
-	    REGION_NAME:str, 
-	    data_path:str):
+		def aws_get_data(
+		    BUCKET_NAME:str, 
+		    ACCESSKEY:str, 
+		    SECRETKEY:str, 
+		    REGION_NAME:str, 
+		    data_path:str):
 
-		### CSV 파일의 경우
-	    s3 = boto3.client('s3',
-	        aws_access_key_id = ACCESSKEY,
-	        aws_secret_access_key = SECRETKEY,
-	        region_name = REGION_NAME)
+		    ### CSV 파일의 경우
+		    try:
+		        s3 = boto3.client('s3',
+		            aws_access_key_id = ACCESSKEY,
+		            aws_secret_access_key = SECRETKEY,
+		            region_name = REGION_NAME)
+		        s3_object = s3.get_object(Bucket=BUCKET_NAME, Key=data_path)
+		        data = pd.read_csv(s3_object['Body'], encoding='utf-8')
 
-	    s3_object = s3.get_object(Bucket=BUCKET_NAME, Key=data_path)
-	    data = pd.read_csv(s3_object['Body'], encoding='utf-8')
+		    ### Binary 파일의 경우
+		    except:
+		        s3 = S3FileSystem(key=ACCESSKEY, secret=SECRETKEY)
+		        data = joblib.load(s3.open(f's3://{BUCKET_NAME}/{data_path}'))
 
-	    ### Binary 파일의 경우
-	    s3 = S3FileSystem(key=ACCESSKEY, secret=SECRETKEY)
-    	data = joblib.load(s3.open(f's3://{BUCKET_NAME}/{data_path}'))
-
-	    return data
+		    return data
 
 	aws_get_data(BUCKET_NAME, ACCESSKEY, SECRETKEY, REGION_NAME, data_path)
 
@@ -1830,7 +1835,7 @@
 	    s3.put_object(Bucket=BUCKET_NAME, Body=bytes_io.getvalue(), Key=save_key)
 
 	    string_io = StringIO()
-		data.to_csv(string_io, index=False)
+			data.to_csv(string_io, index=False)
     	s3.put_object(Bucket=BUCKET_NAME, Body=string_io.getvalue(), Key=save_key)
 
 	aws_upload_data(BUCKET_NAME, ACCESSKEY, SECRETKEY, REGION_NAME, data, save_key)
