@@ -846,7 +846,7 @@
 
   # json 파일 불러오기
   # 한글 깨짐 현상 => encoding = 'UTF8'으로 해결
-  with open(data, 'r', encoding = 'UTF8') as json_file:
+  with open('data.json', 'r', encoding = 'UTF8') as json_file:
 		json_file = json.load(json_file)
 
 	- 디렉토리(폴더) 생성 
@@ -1462,11 +1462,16 @@
 	import sys
 	sys.path.append("..")
 
+	- Colab 구글 드라이브 마운트
+
+	from google.colab import drive
+	drive.mount('/content/gdrive')
+
 -----------------------------------------------------------------------------
   - My Util/Function
 
-    - 주피터 노트북 Cell 확장
-    from IPython.core.display import display, HTML
+  - 주피터 노트북 Cell 확장
+  from IPython.core.display import display, HTML
 	display(HTML("<style>.container {width:100% !important;}</style>"))
 
 	- 주피터 노트북 테마 및 글꼴 변경
@@ -1480,30 +1485,30 @@
 	# 어두운 테마 적용하기
 	jt -t onedork -T -N -kl -f hack -fs 9 -tfs 9 -nfs 11 -ofs 8
 
-    - 데이터프레임 출력 확장
+  - 데이터프레임 출력 확장
 
-    # 최대 출력 행 수 설정
+  # 최대 출력 행 수 설정
 	pd.set_option('display.max_rows', 50)
 	# 최대 출력 열 수 설정
 	pd.set_option('display.max_columns', 100)
 	# 표시할 가로의 길이
 	pd.set_option('display.width', 1000)
 
-    - 수치형인 독립변수 히스토그램, 박스플롯 그리기 함수
+  - 수치형인 독립변수 히스토그램, 박스플롯 그리기 함수
 
-    def make_hist_boxplot(data, column):
+  def make_hist_boxplot(data, column):
     
-    	print(data[column].describe())
-	    plt.rcParams['figure.figsize'] = [10, 8]
-	    flg = plt.figure()
-	    ax = flg.add_subplot(1, 2, 1)
-	    plt.hist(data[column])
-	    ax.set_title("{} histogram".format(column), color = 'white')
+    print(data[column].describe())
+	  plt.rcParams['figure.figsize'] = [10, 8]
+	  flg = plt.figure()
+	  ax = flg.add_subplot(1, 2, 1)
+	  plt.hist(data[column])
+	  ax.set_title("{} histogram".format(column), color = 'white')
 
-	    ax = flg.add_subplot(1, 2, 2)
-	    plt.boxplot(data[column])
-	    ax.set_title("{} boxplot".format(column), color = 'white')
-	    plt.show()
+	  ax = flg.add_subplot(1, 2, 2)
+	  plt.boxplot(data[column])
+	  ax.set_title("{} boxplot".format(column), color = 'white')
+	  plt.show()
 
 	- 범주형인 독립변수 바 그래프 그리기(빈도수도 같이 표시)
 
