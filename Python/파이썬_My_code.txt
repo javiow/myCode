@@ -1467,6 +1467,10 @@
 	from google.colab import drive
 	drive.mount('/content/gdrive')
 
+  - 숫자 포함된 문자열 리스트에서 숫자로 정렬하기
+  list1 = ["male_1.jpg", "male_2.jpg", "male_3.jpg"]
+  sorted(list1, key = lambda x : int(x.split(".")[0].split("_")[1]))
+
 -----------------------------------------------------------------------------
   - My Util/Function
 
