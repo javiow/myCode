@@ -123,7 +123,7 @@
 	  : 가장 작은 값의 인덱스
 
 	- np.where(조건절)
-	  : 조건절을 만족하는 값의 인덱스
+	  : 조건절을 만족하는 값의 인덱스 반환
 
 	- sns.distplot(pd.Series)
 	  : 수치형 변수의 분포도 출력
@@ -1470,6 +1470,39 @@
   - 숫자 포함된 문자열 리스트에서 숫자로 정렬하기
   list1 = ["male_1.jpg", "male_2.jpg", "male_3.jpg"]
   sorted(list1, key = lambda x : int(x.split(".")[0].split("_")[1]))
+
+  - 리스트 합집합, 교집합, 차집합
+  # 합집합
+  lst1 = ['A', 'B', 'C', 'D']
+	lst2 = ['C', 'D', 'E', 'F']
+	union = list(set(lst1) | set(lst2))
+	print( union ) # ['C', 'F', 'A', 'E', 'B', 'D']
+	union = list(set().union(lst1,lst2))
+	print( union ) # ['C', 'F', 'A', 'E', 'B', 'D']
+
+	# 교집합
+	lst1 = ['A', 'B', 'C', 'D']
+	lst2 = ['C', 'D', 'E', 'F']
+	intersection = list(set(lst1) & set(lst2))
+	print( intersection ) # ['C', 'D']
+	intersection = list(set(lst1).intersection(lst2))
+	print( intersection ) # ['C', 'D']
+
+	# 차집합
+	lst1 = ['A', 'B', 'C', 'D']
+	lst2 = ['C', 'D', 'E', 'F']
+	complement = list(set(lst1) - set(lst2))
+	print( complement ) # ['B', 'A']
+	complement = list(set(lst1).difference(lst2))
+	print( complement ) # ['A', 'B']
+
+	# 대칭차집합
+	lst1 = ['A', 'B', 'C', 'D']
+	lst2 = ['C', 'D', 'E', 'F']
+	sym_diff = list(set(lst1) ^ set(lst2))
+	print( sym_diff ) # ['F', 'E', 'A', 'B']
+	sym_diff = list(set(lst1).symmetric_difference(lst2))
+	print( sym_diff ) # ['F', 'E', 'A', 'B']
 
 -----------------------------------------------------------------------------
   - My Util/Function
