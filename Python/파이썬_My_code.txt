@@ -1504,6 +1504,9 @@
 	sym_diff = list(set(lst1).symmetric_difference(lst2))
 	print( sym_diff ) # ['F', 'E', 'A', 'B']
 
+	- 리스트 역순으로 출력
+	print(list1[::-1])
+
 -----------------------------------------------------------------------------
   - My Util/Function
 
